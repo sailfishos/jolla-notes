@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
-import "pages"
+import "qml"
 
 ApplicationWindow
 {

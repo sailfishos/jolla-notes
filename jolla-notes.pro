@@ -8,7 +8,7 @@ SOURCES += main.cpp
 HEADERS +=
 
 # QML files and folders
-qml.files = *.qml pages cover main.qml
+qml.files = main.qml qml
 
 # The .desktop file
 desktop.files = jolla-notes.desktop
