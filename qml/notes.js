@@ -52,26 +52,25 @@ function randomColor() {
 }
 
 function newNote(model, pagenr) {
-    var db = openDb();
-    var color = randomColor();
+    var db = openDb()
+    var color = randomColor()
 
     db.transaction(function (tx) {
-        tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr <= ?',
+        tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr >= ?',
                       [pagenr])
         tx.executeSql('INSERT INTO notes (pagenr, color, body) VALUES (?, ?, ?)',
-                      [pagenr, color, '']);
+                      [pagenr, color, ''])
     })
 
-    for (var i = model.count - 1; i >= 0; i--) {
+    var i
+    for (i = model.count - 1; i >= 0; i--) {
         var row = model.get(i)
         if (row.pagenr >= pagenr)
-            model.setProperty("pagenr", row.pagenr + 1)
-        else {
-            model.insert(i + 1,
-                         { "pagenr": pagenr, "text": '', "color": color });
+            model.setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
+        else
             break;
-        }
     }
+    model.insert(i + 1, { "pagenr": pagenr, "text": '', "color": color });
 }
 
 function deleteNote(model, seq) {
