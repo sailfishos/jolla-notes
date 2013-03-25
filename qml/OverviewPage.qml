@@ -5,10 +5,15 @@ Page {
     id: page
 
     SilicaGridView {
+        id: view
+
         anchors.fill: page
         delegate: NoteItem {
             text: model.text
             color: model.color
+            pageNumber: model.pagenr
+            height: view.cellHeight
+            width: view.cellWidth
             onClicked: pageStack.push(notePage, {currentIndex: model.index})
         }
         model: notesModel

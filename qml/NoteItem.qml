@@ -4,12 +4,11 @@ import Sailfish.Silica 1.0
 import "colors.js" as ColorUtil
 
 MouseArea {
+    id: noteitem
+
     property int pageNumber
     property color color
     property string text
-
-    height: GridView.view.cellHeight
-    width: GridView.view.cellWidth
 
     clip: true;
 
@@ -45,7 +44,7 @@ MouseArea {
             // Is there any way to get the exact height?
             maximumLineCount: Math.floor(height / (font.pixelSize * 1.1875))
             elide: Text.ElideRight
-            text: model.text
+            text: noteitem.text
         }
 
         Rectangle {
@@ -56,7 +55,7 @@ MouseArea {
             width: 64
             height: 8
             radius: 2
-            color: model.color
+            color: noteitem.color
         }
     }
 
@@ -71,6 +70,6 @@ MouseArea {
         color: theme.primaryColor
         font { pixelSize: theme.fontSizeExtraLarge }
         horizontalAlignment: Text.AlignRight
-        text: model.pagenr
+        text: noteitem.pageNumber
     }
 }
