@@ -26,12 +26,18 @@ Page {
             anchors.fill: parent
             onClicked: {
                 console.log("Click!")
-                notesModel.newNote(1)
-                pageStack.push(notePage, {currentIndex: 1})
+                //notesModel.newNote(1)
+                //pageStack.push(notePage, {currentIndex: 1})
             }
         }
 
-        Component.onCompleted: viewbackground.parent = flickable.contentItem
+        function debugdump() {
+            console.log("Debug dump")
+            for (var i = 0; i < contentItem.children.length; i++) {
+                var item = contentItem.children[i]
+                console.log("Note " + i + " page " + item.pageNumber + " color " + item.color + " text " + item.text)
+            }
+        }
     }
 
     NotesModel {

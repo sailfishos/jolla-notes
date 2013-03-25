@@ -70,14 +70,14 @@ function newNote(model, pagenr) {
         else
             break;
     }
-    model.insert(i + 1, { "pagenr": pagenr, "text": '', "color": color });
+    model.insert(i + 1, { "pagenr": pagenr, "text": '', "color": color })
 }
 
 function deleteNote(model, seq) {
     var db = openDb();
     db.transaction(function (tx) {
-        tx.executeSql('DELETE FROM notes WHERE seq = ?', [seq]);
+        tx.executeSql('DELETE FROM notes WHERE seq = ?', [seq])
         tx.executeSql('UPDATE notes SET seq = seq - 1 WHERE seq > ?', [seq])
     })
-    model.remove(seq);
+    model.remove(seq)
 }

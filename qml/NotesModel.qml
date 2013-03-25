@@ -13,4 +13,12 @@ ListModel {
     }
 
     function newNote(pagenr) { NoteScript.newNote(listmodel, pagenr) }
+
+    function debugdump() {
+        console.log("Model!")
+        for (var i = 0; i < count; i++) {
+            var item = get(i)
+            console.log( "Note " + i + " page " + item.pagenr + " " + item.color + " " + item.text)
+        }
+    }
 }
