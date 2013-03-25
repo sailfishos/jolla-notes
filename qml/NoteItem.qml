@@ -34,9 +34,15 @@ MouseArea {
         anchors.margins: theme.paddingLarge
 
         Text {
-            anchors.fill: parent
-            anchors.bottomMargin: theme.paddingLarge
-            font { pixelSize: theme.fontSizeMedium }
+            anchors {
+                baseline: parent.top
+                baselineOffset: font.pixelSize * 3/4
+                left: parent.left
+                right: parent.right
+            }
+            // leave room for colortag and pagenumber
+            height: parent.height - theme.paddingLarge
+            font { pixelSize: theme.fontSizeSmall }
             color: theme.primaryColor
             textFormat: Text.PlainText
             wrapMode: Text.Wrap
