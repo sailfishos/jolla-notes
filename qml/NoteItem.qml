@@ -8,6 +8,11 @@ MouseArea {
     property color color
     property string text
 
+    height: GridView.view.cellHeight
+    width: GridView.view.cellWidth
+
+    clip: true;
+
     // Create a tint with 10% of the primaryColor in the lower left,
     // down to 0% in the upper right.
     // Is there any way to use OpacityRampEffect instead of Gradient here?
