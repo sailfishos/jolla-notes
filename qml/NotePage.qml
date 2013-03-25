@@ -26,7 +26,6 @@ Page {
                 contentItem.color = model.color
             }
             Component.onDestruction: {
-                notesModel.setProperty(currentIndex, "text", text)
                 itemPool.free(contentItem)
             }
         }
