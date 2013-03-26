@@ -43,7 +43,7 @@ Page {
                 delegate.clicked(mouse)
             else {
                 notesModel.newNote(1)
-                pageStack.push(notePage, {currentIndex: 1})
+                pageStack.push(notePage, {currentIndex: 0})
             }
         }
     }
@@ -52,5 +52,8 @@ Page {
         id: notesModel
     }
 
-    NotePage { id: notePage }
+    Component {
+        id: notePage
+        NotePage { }
+    }
 }

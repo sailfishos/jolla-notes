@@ -4,47 +4,35 @@ import Sailfish.Silica 1.0
 Page {
     id: notePage
 
-    property alias currentIndex: notesList.currentIndex
+    property int currentIndex: -1
 
-    SlideshowView {
-        id: notesList
-
-        model: notesModel
-        anchors.fill: parent
-        interactive: count > 1
-
-        delegate:  Item {
-            id: wrapper
-
-            property Item contentItem
-            width: PathView.view.width
-            height: notePage.height
-
-            Component.onCompleted: {
-                contentItem = itemPool.get(wrapper)
-                contentItem.text = model.text
-                contentItem.color = model.color
-            }
-            Component.onDestruction: {
-                itemPool.free(contentItem)
-            }
+    onCurrentIndexChanged: {
+        if (currentIndex >= 0 && currentIndex < notesModel.count) {
+            var item = notesModel.get(currentIndex)
+            noteview.text = item.text
+            noteview.color = item.color
+            noteview.pageNumber = item.pagenr
+        } else {
+            noteview.text = ''
+            noteview.color = "white"
+            noteview.pageNumber = 0
         }
     }
-    ItemPool {
-        id: itemPool
-        SilicaFlickable {
 
-            property color color
-            property alias text: textArea.text
+    SilicaFlickable {
+        id: noteview
 
+        property color color
+        property alias text: textArea.text
+        property int pageNumber
+
+        focus: true
+        anchors.fill: parent
+
+        TextArea {
+            id: textArea
             focus: true
             anchors.fill: parent
-
-            TextArea {
-                id: textArea
-                focus: true
-                anchors.fill: parent
-            }
         }
     }    
 }
