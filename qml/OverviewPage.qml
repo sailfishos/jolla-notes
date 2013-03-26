@@ -43,7 +43,7 @@ Page {
                 delegate.clicked(mouse)
             else {
                 notesModel.newNote(1)
-                pageStack.push(notePage, {currentIndex: 0})
+                pageStack.push(notePage, {currentIndex: 0, editMode: true})
             }
         }
     }

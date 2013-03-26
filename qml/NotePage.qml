@@ -5,6 +5,7 @@ Page {
     id: notePage
 
     property int currentIndex: -1
+    property alias editMode: textArea.focus
 
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
@@ -26,12 +27,10 @@ Page {
         property alias text: textArea.text
         property int pageNumber
 
-        focus: true
         anchors.fill: parent
 
         TextArea {
             id: textArea
-            focus: true
             anchors.fill: parent
         }
     }    
