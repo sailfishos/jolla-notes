@@ -42,7 +42,7 @@ MouseArea {
             }
             // leave room for colortag and pagenumber
             height: parent.height - theme.paddingLarge
-            font { pixelSize: theme.fontSizeSmall }
+            font { family: theme.fontFamily; pixelSize: theme.fontSizeSmall }
             color: theme.primaryColor
             textFormat: Text.PlainText
             wrapMode: Text.Wrap
@@ -74,7 +74,7 @@ MouseArea {
         anchors.rightMargin: theme.paddingMedium
         opacity: 0.4
         color: theme.primaryColor
-        font { pixelSize: theme.fontSizeExtraLarge }
+        font { family: theme.fontFamily; pixelSize: theme.fontSizeLarge }
         horizontalAlignment: Text.AlignRight
         text: noteitem.pageNumber
     }

@@ -32,6 +32,7 @@ Page {
         TextArea {
             id: textArea
             anchors.fill: parent
+            font { family: theme.fontFamily; pixelSize: theme.fontSizeMedium }
         }
     }    
 }
