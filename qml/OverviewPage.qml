@@ -37,6 +37,16 @@ Page {
                 pageStack.push(notePage, {currentIndex: 0, editMode: true})
             }
         }
+
+        PullDownMenu {
+            MenuItem {
+                text: "New note"
+                onClicked: {
+                    notesModel.newNote(1)
+                    pageStack.push(notePage, {currentIndex: 0, editMode: true})
+                }
+            }
+        }
     }
 
     NotesModel {

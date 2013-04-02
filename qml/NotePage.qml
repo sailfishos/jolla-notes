@@ -31,11 +31,42 @@ Page {
         property string savedText
 
         anchors.fill: parent
+        contentHeight: childrenRect.height
+
+        PullDownMenu {
+            MenuItem {
+                text: "New note"
+                onClicked: newNoteAnimation.restart()
+                SequentialAnimation {
+                    id: newNoteAnimation
+                    NumberAnimation {
+                        target: noteview
+                        property: "opacity"
+                        duration: 200
+                        easing.type: Easing.InOutQuad
+                        to: 0.0
+                    }
+                    ScriptAction {
+                        script: {
+                            notesModel.newNote(noteview.pageNumber + 1)
+                            notePage.currentIndex = notePage.currentIndex + 1
+                            notePage.editMode = true
+                            noteview.opacity = 1.0
+                        }
+                    }
+                }
+            }
+            MenuItem {
+                text: "Overview"
+                onClicked: pageStack.pop()
+            }
+        }
 
         TextArea {
             id: textArea
-            anchors.fill: parent
             font { family: theme.fontFamily; pixelSize: theme.fontSizeMedium }
+            width: noteview.width
+            height: Math.max(noteview.height, implicitHeight)
 
             onTextChanged: {
                 if (text != noteview.savedText)
