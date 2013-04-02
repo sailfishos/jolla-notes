@@ -34,24 +34,32 @@ MouseArea {
         anchors.margins: theme.paddingLarge
 
         Text {
+            id: summary
+
             anchors {
                 baseline: parent.top
                 baselineOffset: font.pixelSize * 3/4
                 left: parent.left
                 right: parent.right
             }
-            // leave room for colortag and pagenumber
-            height: parent.height - theme.paddingLarge
+            height: parent.height
             font { family: theme.fontFamily; pixelSize: theme.fontSizeSmall }
             color: theme.primaryColor
             textFormat: Text.PlainText
             wrapMode: Text.Wrap
             // @todo this uses an approximation of the real line height.
             // Is there any way to get the exact height?
-            maximumLineCount: Math.floor(height / (font.pixelSize * 1.1875))
+            maximumLineCount: Math.floor((height - theme.paddingLarge) / (font.pixelSize * 1.1875))
             elide: Text.ElideRight
             text: noteitem.text
         }
+
+       OpacityRampEffect {
+           sourceItem: summary
+           slope: 0.6
+           offset: 0
+           direction: OpacityRampEffect.TopToBottom
+       }
 
         Rectangle {
             id: colortag
