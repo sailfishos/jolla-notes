@@ -27,21 +27,12 @@ Page {
                 console.log("Note " + i + " page " + item.pageNumber + " color " + item.color + " text " + item.text)
             }
         }
-    }
 
-    // Capture clicks that don't hit any delegate
-    // Do this by capturing all clicks on the gridview and forwarding
-    // those that do hit a delegate.
-    // @todo is there a better way?
-    MouseArea {
-        id: viewbackground
-        anchors.fill: view
-        onClicked: {
-            var mapped = mapToItem(view.contentItem, mouse.x, mouse.y)
-            var delegate = view.contentItem.childAt(mapped.x, mapped.y)
-            if (delegate)
-                delegate.clicked(mouse)
-            else {
+        // Capture clicks that don't hit any delegate
+        flickableChildren: MouseArea {
+            id: viewbackground
+            anchors.fill: parent
+            onClicked: {
                 notesModel.newNote(1)
                 pageStack.push(notePage, {currentIndex: 0, editMode: true})
             }
