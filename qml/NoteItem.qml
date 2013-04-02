@@ -54,12 +54,12 @@ MouseArea {
             text: noteitem.text
         }
 
-       OpacityRampEffect {
-           sourceItem: summary
-           slope: 0.6
-           offset: 0
-           direction: OpacityRampEffect.TopToBottom
-       }
+        OpacityRampEffect {
+            sourceItem: summary
+            slope: 0.6
+            offset: 0
+            direction: OpacityRampEffect.TopToBottom
+        }
 
         Rectangle {
             id: colortag

@@ -51,33 +51,29 @@ function randomColor() {
     return availableColors[Math.floor(Math.random() * availableColors.length)]
 }
 
-function newNote(model, pagenr) {
+function newNote(pagenr, color) {
     var db = openDb()
-    var color = randomColor()
-
     db.transaction(function (tx) {
         tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr >= ?',
                       [pagenr])
         tx.executeSql('INSERT INTO notes (pagenr, color, body) VALUES (?, ?, ?)',
                       [pagenr, color, ''])
     })
-
-    var i
-    for (i = model.count - 1; i >= 0; i--) {
-        var row = model.get(i)
-        if (row.pagenr >= pagenr)
-            model.setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
-        else
-            break;
-    }
-    model.insert(i + 1, { "pagenr": pagenr, "text": '', "color": color })
 }
 
-function deleteNote(model, seq) {
+function updateNote(pagenr, text) {
+    var db = openDb()
+    db.transaction(function (tx) {
+        tx.executeSql('UPDATE notes SET body = ? WHERE pagenr = ?',
+                      [text, pagenr])
+    })
+}
+
+function deleteNote(pagenr) {
     var db = openDb();
     db.transaction(function (tx) {
-        tx.executeSql('DELETE FROM notes WHERE seq = ?', [seq])
-        tx.executeSql('UPDATE notes SET seq = seq - 1 WHERE seq > ?', [seq])
+        tx.executeSql('DELETE FROM notes WHERE pagenr = ?', [pagenr])
+        tx.executeSql('UPDATE notes SET pagenr = pagenr - 1 WHERE pagenr > ?',
+                      [pagenr])
     })
-    model.remove(seq)
 }
