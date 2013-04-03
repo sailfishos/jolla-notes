@@ -2,13 +2,13 @@
 TARGET = jolla-notes
 
 # C++ sources
-SOURCES += main.cpp
+SOURCES += notes.cpp
 
 # C++ headers
 HEADERS +=
 
 # QML files and folders
-qml.files = main.qml qml
+qml.files = notes.qml qml
 
 # The .desktop file
 desktop.files = jolla-notes.desktop
