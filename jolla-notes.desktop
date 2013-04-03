@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=jolla-notes
-Icon=icon-launcher-gallery
+Icon=icons-Applications-notes
 Exec=invoker --type=j -s /opt/sdk/bin/jolla-notes
 Comment=Sailfish UI application
 
