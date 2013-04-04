@@ -8,6 +8,8 @@ Page {
     property alias editMode: textArea.focus
     property alias text: textArea.text
 
+    backNavigation: false
+
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
             var item = notesModel.get(currentIndex)
