@@ -1,8 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=jolla-notes
+Name=Notes
 Icon=icons-Applications-notes
 Exec=invoker --type=j -s /usr/bin/jolla-notes
 Comment=Sailfish UI application
-
-
