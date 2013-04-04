@@ -30,8 +30,7 @@ MouseArea {
     }
 
     Item {
-        anchors.fill: parent
-        anchors.margins: theme.paddingLarge
+        anchors { fill: parent; margins: theme.paddingLarge }
 
         NoteSummary {
             id: summary

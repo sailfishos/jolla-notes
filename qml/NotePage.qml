@@ -2,10 +2,11 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 
 Page {
-    id: notePage
+    id: notepage
 
     property int currentIndex: -1
     property alias editMode: textArea.focus
+    property alias text: textArea.text
 
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
@@ -49,8 +50,8 @@ Page {
                     ScriptAction {
                         script: {
                             notesModel.newNote(noteview.pageNumber + 1)
-                            notePage.currentIndex = notePage.currentIndex + 1
-                            notePage.editMode = true
+                            notepage.currentIndex = notepage.currentIndex + 1
+                            notepage.editMode = true
                             noteview.opacity = 1.0
                         }
                     }

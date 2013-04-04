@@ -2,12 +2,17 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 
 Page {
-    id: page
+    id: overviewpage
+
+    function openNewNote() {
+        notesModel.newNote(1)
+        pageStack.push(notePage, {currentIndex: 0, editMode: true})
+    }
 
     SilicaGridView {
         id: view
 
-        anchors.fill: page
+        anchors.fill: overviewpage
         delegate: NoteItem {
             text: model.text
             color: model.color
@@ -17,7 +22,7 @@ Page {
             onClicked: pageStack.push(notePage, {currentIndex: model.index})
         }
         model: notesModel
-        cellHeight: Math.min(page.height, page.width) / 2
+        cellHeight: Math.min(overviewpage.height, overviewpage.width) / 2
         cellWidth: cellHeight
 
         function debugdump() {
@@ -32,19 +37,13 @@ Page {
         flickableChildren: MouseArea {
             id: viewbackground
             anchors.fill: parent
-            onClicked: {
-                notesModel.newNote(1)
-                pageStack.push(notePage, {currentIndex: 0, editMode: true})
-            }
+            onClicked: openNewNote()
         }
 
         PullDownMenu {
             MenuItem {
                 text: "New note"
-                onClicked: {
-                    notesModel.newNote(1)
-                    pageStack.push(notePage, {currentIndex: 0, editMode: true})
-                }
+                onClicked: openNewNote()
             }
         }
     }

@@ -4,8 +4,7 @@ import "qml"
 
 ApplicationWindow
 {
-    initialPage: OverviewPage { }
+    id: app
+    initialPage: OverviewPage { id: overviewpage }
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
 }
-
-
