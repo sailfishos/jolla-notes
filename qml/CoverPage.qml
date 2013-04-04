@@ -11,8 +11,6 @@ Rectangle {
         NoteSummary {
             text: app.pageStack.depth > 1 && app.pageStack.currentPage.text ?
                       app.pageStack.currentPage.text : "Notes"
-
-            onTextChanged: { console.log("cover text: " + text) }
         }
     }
     
