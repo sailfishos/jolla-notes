@@ -2,7 +2,7 @@
 Type=Application
 Name=jolla-notes
 Icon=icons-Applications-notes
-Exec=invoker --type=j -s /opt/sdk/bin/jolla-notes
+Exec=invoker --type=j -s /usr/bin/jolla-notes
 Comment=Sailfish UI application
 
 
