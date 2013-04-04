@@ -36,7 +36,7 @@ Page {
         // Capture clicks that don't hit any delegate
         flickableChildren: MouseArea {
             id: viewbackground
-            anchors.fill: parent
+            anchors.fill: view
             onClicked: openNewNote()
         }
 
@@ -46,6 +46,12 @@ Page {
                 onClicked: openNewNote()
             }
         }
+    }
+
+    Label {
+        anchors.centerIn: parent
+        visible: view.count == 0
+        text: "Tap to write a note"
     }
 
     NotesModel {
