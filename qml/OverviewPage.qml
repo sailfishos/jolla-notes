@@ -9,6 +9,14 @@ Page {
         pageStack.push(notePage, {currentIndex: 0, editMode: true})
     }
 
+    // Capture clicks that don't hit any delegate
+    MouseArea {
+        id: viewbackground
+        height: Math.max(parent.height, view.height)
+        width: parent.width
+        onClicked: openNewNote()
+    }
+
     SilicaGridView {
         id: view
 
@@ -33,19 +41,14 @@ Page {
             }
         }
 
-        // Capture clicks that don't hit any delegate
-        flickableChildren: MouseArea {
-            id: viewbackground
-            anchors.fill: view
-            onClicked: openNewNote()
-        }
-
         PullDownMenu {
             MenuItem {
                 text: "New note"
                 onClicked: openNewNote()
             }
         }
+
+        Component.onCompleted: viewbackground.parent = view.contentItem
     }
 
     Label {
