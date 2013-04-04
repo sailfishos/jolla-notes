@@ -4,12 +4,14 @@ SOURCES += $$PWD/sailfishapplication.cpp
 HEADERS += $$PWD/sailfishapplication.h
 INCLUDEPATH += $$PWD
 
-TARGETPATH = /opt/sdk/bin
+isEmpty(PREFIX):PREFIX=/opt/sdk
+
+TARGETPATH = $$PREFIX/bin
 target.path = $$TARGETPATH
 
-DEPLOYMENT_PATH = /opt/sdk/share/$$TARGET
+DEPLOYMENT_PATH = $$PREFIX/share/$$TARGET
 qml.path = $$DEPLOYMENT_PATH
-desktop.path = /opt/sdk/share/applications
+desktop.path = $$PREFIX/share/applications
 
 contains(CONFIG, desktop) {
     DEFINES *= DESKTOP

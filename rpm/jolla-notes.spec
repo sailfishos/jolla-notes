@@ -24,7 +24,7 @@ Note-taking application using Sailfish Silica components
 %setup -q -n %{name}-%{version}
 
 %build
-%qmake %{name}.pro DEPLOYMENT_PATH=%{_datadir}/jolla-notes TARGETPATH=/usr/bin
+%qmake %{name}.pro PREFIX=/usr
 make %{?jobs:-j%jobs}
 
 %install
