@@ -32,4 +32,16 @@ ListModel {
         NoteScript.updateNote(row.pagenr, text)
         setProperty(idx, "text", text)
     }
+
+    function moveToTop(idx) {
+        var row = get(idx)
+        NoteScript.moveToTop(row.pagenr)
+
+        setProperty(idx, "pagenr", 1)
+        for (var i = idx - 1; i >= 0; i--) {
+            var row = get(i)
+            setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
+        }
+        move(idx, 0, 1) // move 1 item to position 0
+    }
 }

@@ -33,7 +33,10 @@ Page {
             id: itemcontainer
 
             // Adjust the height to make space for the context menu if needed
-            height: view.contextMenu != null && view.contextMenu.parent === itemcontainer ? view.cellHeight + view.contextMenu.height : view.cellHeight
+            height: view.contextMenu != null
+                      && view.contextMenu.parent === itemcontainer
+                    ? view.cellHeight + view.contextMenu.height
+                    : view.cellHeight
             width: view.cellWidth
 
             // Fade out the item under the context menu.
@@ -95,8 +98,16 @@ Page {
     Component {
         id: contextmenucomponent
         ContextMenu {
+            id: contextmenu
             MenuItem {
                 text: "Move to top"
+                onClicked: {
+                    // If the item will move, then close the menu instantly.
+                    // The closing animation looks bad after such a jump.
+                    if (contextmenu.parent.index > 0)
+                        contextmenu.height = 0
+                    notesModel.moveToTop(contextmenu.parent.index)
+                }
             }
             MenuItem {
                 text: "Delete"

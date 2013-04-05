@@ -69,6 +69,16 @@ function updateNote(pagenr, text) {
     })
 }
 
+function moveToTop(pagenr) {
+    var db = openDb()
+    db.transaction(function (tx) {
+        // Use modulo-pagenr arithmetic to rotate the page numbers: add 1 to
+        // all of them except pagenr itself, which goes to 1.
+        tx.executeSql('UPDATE notes SET pagenr = (pagenr % ?) + 1 WHERE pagenr <= ?',
+                      [pagenr, pagenr])
+    })
+}
+
 function deleteNote(pagenr) {
     var db = openDb();
     db.transaction(function (tx) {
