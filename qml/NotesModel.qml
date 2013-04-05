@@ -32,12 +32,4 @@ ListModel {
         NoteScript.updateNote(row.pagenr, text)
         setProperty(idx, "text", text)
     }
-
-    function debugdump() {
-        console.log("Model!")
-        for (var i = 0; i < count; i++) {
-            var item = get(i)
-            console.log( "Note " + i + " page " + item.pagenr + " " + item.color + " " + item.text)
-        }
-    }
 }

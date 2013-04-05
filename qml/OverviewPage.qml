@@ -67,14 +67,6 @@ Page {
             contextMenu.show(item)
         }
 
-        function debugdump() {
-            console.log("Debug dump")
-            for (var i = 0; i < contentItem.children.length; i++) {
-                var item = contentItem.children[i]
-                console.log("Note " + i + " page " + item.pageNumber + " color " + item.color + " text " + item.text)
-            }
-        }
-
         PullDownMenu {
             MenuItem {
                 text: "New note"
