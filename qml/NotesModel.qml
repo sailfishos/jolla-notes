@@ -44,4 +44,15 @@ ListModel {
         }
         move(idx, 0, 1) // move 1 item to position 0
     }
+
+    function deleteNote(idx) {
+        var row = get(idx)
+        console.log("Deleting " + idx + " page " + row.pagenr)
+        NoteScript.deleteNote(row.pagenr)
+        for (var i = count - 1; i > idx; i--) {
+            var row = get(i)
+            setProperty(i, "pagenr", parseInt(row.pagenr, 10) - 1)
+        }
+        remove(idx)
+    }
 }

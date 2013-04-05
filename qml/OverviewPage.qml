@@ -51,7 +51,14 @@ Page {
             // make model.index accessible to other delegates
             property int index: model.index
 
+            function deleteNote() {
+                remorse.execute(noteitem, "Deleting",
+                    function() { notesModel.deleteNote(index) })
+            }
+
             NoteItem {
+                id: noteitem
+
                 text: model.text
                 color: model.color
                 pageNumber: model.pagenr
@@ -60,6 +67,9 @@ Page {
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
                 onPressAndHold: view.showContextMenu(itemcontainer)
+
+
+                RemorseItem { id: remorse }
             }
         }
 
@@ -111,6 +121,7 @@ Page {
             }
             MenuItem {
                 text: "Delete"
+                onClicked: contextmenu.parent.deleteNote()
             }
         }
     }
