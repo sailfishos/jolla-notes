@@ -2,7 +2,7 @@ Name:       jolla-notes
 Summary:    Note-taking application
 Version:    0.5
 Release:    1
-Group:      System/Applications
+Group:      Applications/Editors
 License:    TBD
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
