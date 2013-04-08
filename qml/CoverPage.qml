@@ -9,8 +9,11 @@ Rectangle {
         anchors { fill: parent; margins: theme.paddingLarge }
 
         NoteSummary {
-            text: app.pageStack.depth > 1 && app.pageStack.currentPage.text ?
-                      app.pageStack.currentPage.text : "Notes"
+            //: Coverpage text when no note is selected
+            //% "Notes"
+            property string baseText: qsTrId("notes-ap-cover")
+            text: app.pageStack.depth > 1 && app.pageStack.currentPage.text
+                      ? app.pageStack.currentPage.text : baseText
         }
     }
     

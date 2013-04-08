@@ -52,7 +52,9 @@ Page {
             property int index: model.index
 
             function deleteNote() {
-                remorse.execute(noteitem, "Deleting",
+                //: Remorse item text, will delete note when timer expires
+                //% "Deleting"
+                remorse.execute(noteitem, qsTrId("notes-la-deleting"),
                     function() { notesModel.deleteNote(index) })
             }
 
@@ -82,7 +84,9 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                text: "New note"
+                //: Create a new note ready for editing
+                //% "New note"
+                text: qsTrId("notes-me-new-note")
                 onClicked: openNewNote()
             }
         }
@@ -110,7 +114,9 @@ Page {
         ContextMenu {
             id: contextmenu
             MenuItem {
-                text: "Move to top"
+                //: Move this note to be first in the list
+                //% "Move to top"
+                text: qsTrId("notes-la-move-to-top")
                 onClicked: {
                     // If the item will move, then close the menu instantly.
                     // The closing animation looks bad after such a jump.
@@ -120,7 +126,9 @@ Page {
                 }
             }
             MenuItem {
-                text: "Delete"
+                //: Delete this note from overview
+                //% "Delete"
+                text: qsTrId("notes-la-delete")
                 onClicked: contextmenu.parent.deleteNote()
             }
         }

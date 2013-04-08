@@ -38,7 +38,9 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                text: "New note"
+                //: Create a new note ready for editing
+                //% "New note"
+                text: qsTrId("notes-me-new-note")
                 onClicked: newNoteAnimation.restart()
                 SequentialAnimation {
                     id: newNoteAnimation
@@ -60,7 +62,9 @@ Page {
                 }
             }
             MenuItem {
-                text: "Overview"
+                //: Jump back to overview page
+                //% "Overview"
+                text: qsTrId("notes-me-overview")
                 onClicked: pageStack.pop()
             }
         }

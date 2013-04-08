@@ -47,7 +47,6 @@ ListModel {
 
     function deleteNote(idx) {
         var row = get(idx)
-        console.log("Deleting " + idx + " page " + row.pagenr)
         NoteScript.deleteNote(row.pagenr)
         for (var i = count - 1; i > idx; i--) {
             var row = get(i)

@@ -20,6 +20,12 @@ Requires:  mapplauncherd-booster-jolla
 %description
 Note-taking application using Sailfish Silica components
 
+%package ts-devel
+Summary: Translation source for %{name}
+
+%description ts-devel
+Translation source for %{name}
+
 %prep
 %setup -q -n %{name}-%{version}
 
@@ -40,3 +46,8 @@ desktop-file-install --delete-original       \
 %{_datadir}/applications/*.desktop
 %{_datadir}/jolla-notes/*
 %{_bindir}/jolla-notes
+%{_datadir}/translations/notes_eng_en.qm
+
+%files ts-devel
+%defattr(-,root,root,-)
+%{_datadir}/translations/source/notes.ts
