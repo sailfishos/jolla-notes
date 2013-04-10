@@ -3,7 +3,8 @@ import Sailfish.Silica 1.0
 
 import "colors.js" as ColorUtil
 
-MouseArea {
+// BackgroundItem is also a MouseArea
+BackgroundItem {
     id: noteitem
 
     property int pageNumber
