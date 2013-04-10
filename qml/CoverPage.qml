@@ -22,7 +22,7 @@ Rectangle {
             iconSource: "image://theme/icon-cover-new"
             onTriggered: {
                 app.pageStack.pop(null, true)
-                overviewpage.openNewNote()
+                app.pageStack.currentPage.openNewNote()
                 app.activate()
             }
         }
