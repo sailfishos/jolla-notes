@@ -74,6 +74,10 @@ Page {
             font { family: theme.fontFamily; pixelSize: theme.fontSizeMedium }
             width: noteview.width
             height: Math.max(noteview.height, implicitHeight)
+            //: Placeholder text for new notes. At this point there's
+            //: nothing else on the screen.
+            //% "Write a note..."
+            placeholderText: qsTrId("notes-ph-empty-note")
 
             onTextChanged: {
                 if (text != noteview.savedText)
