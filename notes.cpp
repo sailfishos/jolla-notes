@@ -16,7 +16,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     app->installTranslator(engineeringEnglish.data());
     app->installTranslator(translator.data());
 
-    QScopedPointer<QDeclarativeView> view(Sailfish::createView("notes.qml"));
+    QScopedPointer<QDeclarativeView> view(Sailfish::createView("Notes.qml"));
     Sailfish::showView(view.data());
     
     int result = app->exec();
