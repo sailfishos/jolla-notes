@@ -97,7 +97,9 @@ Page {
     Label {
         anchors.centerIn: parent
         visible: view.count == 0
-        text: "Tap to write a note"
+        //: Comforting text when overview is empty
+        //% "Tap to write a note"
+        text: "notes-la-tap-to-write"
     }
 
     NotesModel {
