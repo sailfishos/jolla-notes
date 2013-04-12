@@ -6,11 +6,12 @@ SOURCES += notes.cpp
 
 HEADERS +=
 
-qml.files = notes.qml qml
+qml.files = Notes.qml qml
 
 desktop.files = jolla-notes.desktop
 
 include(sailfishapplication/sailfishapplication.pri)
 include(translations.pri)
+include(tests.pri)
 
 OTHER_FILES = rpm/jolla-notes.spec

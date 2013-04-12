@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testdefinition version="1.0">
+   <suite name="jolla-notes-tests" domain="ui">
+       <description>Jolla Notes automatic tests</description>
+       <set name="feature-tests" feature="Jolla Notes">
+           <description>Collection of Jolla Notes tests</description>
+           <case manual="false" name="qmltestrunner">
+               <step>cd /opt/tests/jolla-notes/ &amp;&amp; DISPLAY=:0 qmltestrunner</step>
+           </case>
+       </set>
+   </suite>
+</testdefinition>

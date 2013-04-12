@@ -26,6 +26,15 @@ Summary: Translation source for %{name}
 %description ts-devel
 Translation source for %{name}
 
+%package tests
+Summary: Automated tests for Jolla Notes
+Requires: %{name} = %{version}-%{release}
+Requires: qtest-qml
+
+%description tests
+This package installs automated test scripts for jolla-notes,
+and a test definition XML file for testrunner-lite.
+
 %prep
 %setup -q -n %{name}-%{version}
 
@@ -51,3 +60,7 @@ desktop-file-install --delete-original       \
 %files ts-devel
 %defattr(-,root,root,-)
 %{_datadir}/translations/source/notes.ts
+
+%files tests
+%defattr(-,root,root,-)
+/opt/tests/jolla-notes/*
