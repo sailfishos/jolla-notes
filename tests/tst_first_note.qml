@@ -5,19 +5,18 @@ import QtQuickTest 1.0
 import QtQuick 1.1
 import Sailfish.Silica 1.0
 import "/usr/share/jolla-notes"
-import "driver.js" as T
+import "."
 
 Notes {
     id: main
 
-    TestCase {
+    NotesTestCase {
         name: "FirstNote"
         when: windowShown
 
         function test_comforter() {
-            var comforter = T.find(main, { "text": "notes-la-tap-to-write" })
-            verify(T.displayed(comforter),
-                   "Tap-to-write text is displayed on empty overview")
+            var comforter = find(main, { "text": "notes-la-tap-to-write" })
+            verify_displayed(comforter, "Tap-to-write text on empty overview")
         }
     }
 }
