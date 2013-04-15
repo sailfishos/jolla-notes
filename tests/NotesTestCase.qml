@@ -47,6 +47,13 @@ TestCase {
         }
     }
 
+    function click_center(item) {
+        var cx = item.x + item.width/2
+        var cy = item.x + item.height/2
+        var pos = main.mapFromItem(item, cx, cy)
+        mouseClick(main, pos.x, pos.y)
+    }
+
     // True iff the item is fully in the screen bounds
     function onscreen(item) {
         var corners = [

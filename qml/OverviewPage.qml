@@ -102,10 +102,6 @@ Page {
         text: "notes-la-tap-to-write"
     }
 
-    NotesModel {
-        id: notesModel
-    }
-
     Component {
         id: notePage
         NotePage { }

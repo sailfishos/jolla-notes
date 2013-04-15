@@ -7,4 +7,6 @@ ApplicationWindow
     id: app
     initialPage: Component { OverviewPage { id: overviewpage } }
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
+
+    property NotesModel notesModel: NotesModel { id: notesModel }
 }
