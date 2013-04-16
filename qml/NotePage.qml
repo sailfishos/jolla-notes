@@ -34,7 +34,10 @@ Page {
         property string savedText
 
         anchors.fill: parent
-        contentHeight: childrenRect.height
+        // The PullDownMenu doesn't work if contentHeight is left implicit.
+        // It also doesn't work if contentHeight ends up equal to the
+        // page height, so add some padding.
+        contentHeight: textArea.height + 2 * theme.paddingLarge
 
         PullDownMenu {
             MenuItem {
@@ -71,9 +74,11 @@ Page {
 
         TextArea {
             id: textArea
+            y: theme.paddingLarge
             font { family: theme.fontFamily; pixelSize: theme.fontSizeMedium }
             width: noteview.width
-            height: Math.max(noteview.height, implicitHeight)
+            height: Math.max(noteview.height - theme.paddingLarge,
+                             implicitHeight)
             //: Placeholder text for new notes. At this point there's
             //: nothing else on the screen.
             //% "Write a note..."
