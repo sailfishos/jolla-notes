@@ -51,6 +51,9 @@ TestCase {
         if (matches(item, props))
             return item
 
+        if (item.children === undefined)
+            return
+
         for (var i = 0; i < item.children.length; i++) {
             var child = find(item.children[i], props)
             if (child !== undefined)
