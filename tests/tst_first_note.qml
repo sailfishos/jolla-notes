@@ -28,13 +28,13 @@ Notes {
         name: "FirstNote"
         when: windowShown
 
-        function test_comforter() {
+        function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
             var comforter = find(main, { "text": "notes-la-tap-to-write" })
             verify_displayed(comforter, "Tap-to-write text on empty overview")
         }
 
-        function test_tap_to_write() {
+        function test_2_tap_to_write() {
             // use page height as a proxy to detect if the keyboard is open
             var old_height = pageStack.currentPage.height
 
@@ -49,6 +49,30 @@ Notes {
                 heightspy.wait()
             verify(pageStack.currentPage.height < old_height,
                    "virtual keyboard is open")
+        }
+
+        function test_3_write_note() {
+            keyClick(Qt.Key_H)
+            keyClick(Qt.Key_E)
+            keyClick(Qt.Key_L)
+            keyClick(Qt.Key_L)
+            keyClick(Qt.Key_O)
+            compare(pageStack.currentPage.text, "hello",
+                    "typed text went into note")
+        }
+
+        function test_4_back() {
+            pagestackspy.clear()
+            select_pull_down("notes-me-overview")
+            pagestackspy.wait()
+            compare(pageStack.depth, 1, "note page closed")
+        }
+
+        function test_5_no_comforter() {
+            var comforter = find(main,
+                      { "text": "notes-la-tap-to-write", "visible": true })
+            compare(comforter, undefined,
+                   "No tap-to-write text when note has been written")
         }
 
         function cleanupTestCase() {

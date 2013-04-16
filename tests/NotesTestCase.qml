@@ -4,6 +4,10 @@
 import QtQuickTest 1.0
 
 TestCase {
+    SignalSpy {
+        id: spy
+    }
+
     function clear_db() {
         var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
         db.transaction(function (tx) {
@@ -104,5 +108,29 @@ TestCase {
         verify(visible(item), name + " is visible")
         verify(!faded(item), name + " is opaque")
         verify(onscreen(item), name + " is in screen bounds")
+    }
+
+    function select_pull_down(option) {
+        var item = find(main, { "text": option })
+        verify(item, "Menu item " + option + " found")
+        var drag_x = main.width / 2
+        var drag_y = main.height * 0.20
+        var drag_end = main.height * 0.80
+        mousePress(main, drag_x, drag_y)
+        while (drag_y < drag_end) {
+            drag_y += 10
+            mouseMove(main, drag_x, drag_y, undefined, Qt.LeftButton)
+            wait(1)
+            var highlight = find(main, { "highlightedItem": item })
+            if (highlight !== undefined) {
+                spy.signalName = "clicked"
+                spy.target = item
+                mouseRelease(main, drag_x, drag_y)
+                spy.wait()
+                return
+            }
+        }
+        mouseRelease(main, drag_x, drag_y)
+        fail("Could not activate pull-down option " + option)
     }
 }
