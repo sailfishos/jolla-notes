@@ -9,3 +9,6 @@ definition.files = tests/tests.xml
 definition.path = /opt/tests/$$TARGET/test-definition
 
 INSTALLS += tests definition
+
+# For some reason the SDK doesn't upload NotesTestCase.qml without this
+OTHER_FILES += tests/*.qml
