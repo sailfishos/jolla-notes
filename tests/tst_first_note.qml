@@ -50,5 +50,9 @@ Notes {
             verify(pageStack.currentPage.height < old_height,
                    "virtual keyboard is open")
         }
+
+        function cleanupTestCase() {
+            clear_db()
+        }
     }
 }

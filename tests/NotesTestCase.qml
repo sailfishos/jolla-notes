@@ -4,6 +4,13 @@
 import QtQuickTest 1.0
 
 TestCase {
+    function clear_db() {
+        var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
+        db.transaction(function (tx) {
+            tx.executeSql('DELETE FROM notes');
+        })
+    }
+
     function dump_item(item, name) {
         var dump = ""
         for (var key in item) {

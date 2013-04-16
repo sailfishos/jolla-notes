@@ -6,7 +6,7 @@
            <description>Collection of Jolla Notes tests</description>
            <case manual="false" name="qmltestrunner">
                <step>sleep 60</step>
-               <step>cd /opt/tests/jolla-notes/ &amp;&amp; DISPLAY=:0 qmltestrunner</step>
+               <step>cd /opt/tests/jolla-notes/ &amp;&amp; XDG_DATA_HOME=/tmp/testdata DISPLAY=:0 qmltestrunner</step>
            </case>
        </set>
    </suite>
