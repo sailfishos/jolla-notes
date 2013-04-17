@@ -116,24 +116,32 @@ TestCase {
     function select_pull_down(option) {
         var item = find(main, { "text": option })
         verify(item, "Menu item " + option + " found")
-        var drag_x = main.width / 2
-        var drag_y = main.height * 0.20
-        var drag_end = main.height * 0.80
-        mousePress(main, drag_x, drag_y)
+
+        // Refer to page instead of main, because main might
+        // be rotated due to screen orientation. The coordinate
+        // transformation can then be handled by mapFromItem.
+        var page = main.pageStack.currentPage
+
+        var drag_x = page.width / 2
+        var drag_y = page.height * 0.20
+        var drag_end = page.height * 0.80
+        var pos = main.mapFromItem(page, drag_x, drag_y)
+        mousePress(main, pos.x, pos.y)
         while (drag_y < drag_end) {
             drag_y += 10
-            mouseMove(main, drag_x, drag_y, undefined, Qt.LeftButton)
+            pos = main.mapFromItem(page, drag_x, drag_y)
+            mouseMove(main, pos.x, pos.y, undefined, Qt.LeftButton)
             wait(1)
             var highlight = find(main, { "highlightedItem": item })
             if (highlight !== undefined) {
                 spy.signalName = "clicked"
                 spy.target = item
-                mouseRelease(main, drag_x, drag_y)
+                mouseRelease(main, pos.x, pos.y)
                 spy.wait()
                 return
             }
         }
-        mouseRelease(main, drag_x, drag_y)
+        mouseRelease(main, pos.x, pos.y)
         fail("Could not activate pull-down option " + option)
     }
 }
