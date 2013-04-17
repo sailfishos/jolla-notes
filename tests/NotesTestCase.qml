@@ -5,7 +5,8 @@ import QtQuickTest 1.0
 
 TestCase {
     SignalSpy {
-        id: spy
+        id: clickspy
+        signalName: "clicked"
     }
 
     function clear_db() {
@@ -39,7 +40,7 @@ TestCase {
                 continue
             if (!item.hasOwnProperty(key))
                 return false
-            if (item[key] !== props[key])
+            if (("" + item[key]) !== ("" + props[key]))
                 return false
         }
         return true
@@ -72,9 +73,9 @@ TestCase {
     function onscreen(item) {
         var corners = [
           main.mapFromItem(item, 0, 0),
-          main.mapFromItem(item, 0, item.height),
-          main.mapFromItem(item, item.width, 0),
-          main.mapFromItem(item, item.width, item.height)
+          main.mapFromItem(item, 0, item.height - 1),
+          main.mapFromItem(item, item.width - 1, 0),
+          main.mapFromItem(item, item.width - 1, item.height - 1)
         ]
         for (var i = 0; i < corners.length; i++) {
             var pos = corners[i]
@@ -97,30 +98,31 @@ TestCase {
         return true
     }
 
-    // Return true iff the combined opacity of the item and its parents < 0.5
+    // Return true iff the combined opacity of the item and its parents < 0.3
     function faded(item) {
         var opacity = 1.0
         while (item) {
             opacity = opacity * item.opacity
             item = item.parent
         }
-        return opacity < 0.5
+        return opacity < 0.3
     }
 
     function verify_displayed(item, name) {
+        verify(item, name + " found")
         verify(visible(item), name + " is visible")
         verify(!faded(item), name + " is opaque")
         verify(onscreen(item), name + " is in screen bounds")
     }
 
     function select_pull_down(option) {
-        var item = find(main, { "text": option })
-        verify(item, "Menu item " + option + " found")
-
         // Refer to page instead of main, because main might
         // be rotated due to screen orientation. The coordinate
         // transformation can then be handled by mapFromItem.
         var page = main.pageStack.currentPage
+
+        var item = find(page, { "text": option })
+        verify(item, "Menu item " + option + " found")
 
         var drag_x = page.width / 2
         var drag_y = page.height * 0.20
@@ -134,14 +136,33 @@ TestCase {
             wait(1)
             var highlight = find(main, { "highlightedItem": item })
             if (highlight !== undefined) {
-                spy.signalName = "clicked"
-                spy.target = item
+                clickspy.target = item
                 mouseRelease(main, pos.x, pos.y)
-                spy.wait()
+                clickspy.wait()
+                clickspy.target = undefined
                 return
             }
         }
         mouseRelease(main, pos.x, pos.y)
         fail("Could not activate pull-down option " + option)
+    }
+
+    // Create some notes to use for other tests.
+    // Ends at the last created note's page.
+    function make_notes_fixture(notes) {
+        for (var i = 0; i < notes.length; i++) {
+            select_pull_down('notes-me-new-note')
+            while (pageStack.busy)
+                wait(10)
+            // Wait for an empty note page
+            while (!find(main, { "text": "", "placeholderText":
+                                 "notes-ph-empty-note" }))
+                wait(50)
+            compare(pageStack.currentPage.text, '')
+            pageStack.currentPage.text = notes[i]
+            // Without this wait, the virtual keyboard messes up the test.
+            // @todo: find a signal or property to wait for instead
+            wait(1000)
+        }
     }
 }
