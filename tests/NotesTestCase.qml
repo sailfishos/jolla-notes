@@ -16,19 +16,30 @@ TestCase {
         })
     }
 
-    function dump_item(item, name) {
+    function debug_item(item) {
         var dump = ""
         for (var key in item) {
             if (!item.hasOwnProperty(key))
                 continue
             if (dump != "")
                 dump += ", "
-            dump += key + ": " + item[key] + " "
+            var value = item[key]
+            dump += key + ": " + value
         }
-        dump = "{ " + dump + "}"
+        return "{ " + dump + " }"
+    }
+
+    function dump_item(item, name, recurse) {
+        var dump = "" + item + " " + debug_item(item)
         if (name)
             dump = name + ": " + dump
+        if (recurse)
+            dump = "" + recurse + ". " + dump
         console.log(dump)
+
+        if (recurse && item.children)
+            for (var i = 0; i < item.children.length; i++)
+                dump_item(item.children[i], name, recurse + 1)
     }
 
     // Return true iff item has all the specified properties with
