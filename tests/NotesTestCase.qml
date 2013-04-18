@@ -45,7 +45,14 @@ TestCase {
     // Return true iff item has all the specified properties with
     // corresponding values.
     // Example: matches(button, { text: "button-text" })
-    function matches(item, props) {
+    function matches(item, props, itemtype) {
+        if (itemtype) {
+            var itype = "" + item
+            itype.replace(/^QDeclarative/, '')
+            itype.replace(/_QMLTYPE_.*/, '')
+            if (itype != itemtype)
+                return false
+        }
         for (var key in props) {
             if (!props.hasOwnProperty(key))
                 continue
@@ -59,8 +66,8 @@ TestCase {
 
     // Find an item in item's tree that has all the specified properties
     // with corresponding values.
-    function find(item, props) {
-        if (matches(item, props))
+    function find(item, props, itemtype) {
+        if (matches(item, props, itemtype))
             return item
 
         if (item.children === undefined)
