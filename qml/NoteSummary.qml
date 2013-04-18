@@ -3,8 +3,8 @@ import Sailfish.Silica 1.0
 
 Text {
     anchors {
-        baseline: parent.top
-        baselineOffset: font.pixelSize * 3/4
+        top: parent.top
+        topMargin: - (font.pixelSize / 4)
         left: parent.left
         right: parent.right
     }
