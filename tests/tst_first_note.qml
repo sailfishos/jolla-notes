@@ -75,8 +75,6 @@ Notes {
                    "No tap-to-write text when note has been written")
         }
 
-        function cleanupTestCase() {
-            clear_db()
-        }
+        // The note is left for the tst_note_saved.qml test
     }
 }
