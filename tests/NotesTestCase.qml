@@ -82,17 +82,22 @@ TestCase {
 
     // True iff the item is fully in the screen bounds
     function onscreen(item) {
+        // Some of these corners should have -1, since (width, height)
+        // is one *past* the edge. However, it's hard to tell which corners
+        // should be affected after the points are rotated to the
+        // main window's coordinate system. So just use ">" in the checks
+        // instead of ">=".
         var corners = [
           main.mapFromItem(item, 0, 0),
-          main.mapFromItem(item, 0, item.height - 1),
-          main.mapFromItem(item, item.width - 1, 0),
-          main.mapFromItem(item, item.width - 1, item.height - 1)
+          main.mapFromItem(item, 0, item.height),
+          main.mapFromItem(item, item.width, 0),
+          main.mapFromItem(item, item.width, item.height)
         ]
         for (var i = 0; i < corners.length; i++) {
             var pos = corners[i]
-            if (pos.x < 0 || pos.x >= main.width)
+            if (pos.x < 0 || pos.x > main.width)
                 return false
-            if (pos.y < 0 || pos.y >= main.height)
+            if (pos.y < 0 || pos.y > main.height)
                 return false
         }
         return true
