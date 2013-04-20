@@ -10,11 +10,22 @@ TestCase {
     }
 
     SignalSpy {
+        id: imsizespy
         signalName: "imSizeChanged"
         target: pageStack
 
         onCountChanged: {
             console.log("imSize " + pageStack.imSize + " count " + count)
+        }
+    }
+
+    SignalSpy {
+        id: panelsizespy
+        signalName: "panelSizeChanged"
+        target: pageStack
+
+        onCountChanged: {
+            console.log("panelSize " + pageStack.panelSize + " count " + count)
         }
     }
 
