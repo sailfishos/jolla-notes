@@ -176,16 +176,38 @@ TestCase {
         for (var i = 0; i < notes.length; i++) {
             select_pull_down('notes-me-new-note')
             while (pageStack.busy)
-                wait(10)
+                wait(50)
             // Wait for an empty note page
             while (!find(main, { "text": "", "placeholderText":
                                  "notes-ph-empty-note" }))
                 wait(50)
             compare(pageStack.currentPage.text, '')
             pageStack.currentPage.text = notes[i]
-            // Without this wait, the virtual keyboard messes up the test.
-            // @todo: find a signal or property to wait for instead
+            wait_inputpanel_open()
+            // Without this wait, the next select_pull_down sometimes
+            // fails in VM testing.
+            // @todo: find out what we're waiting for
             wait(1000)
         }
+    }
+
+    function wait_inputpanel_open(timeout) {
+        if (timeout === undefined)
+            timeout = 5000
+
+        var delay = 0
+        // Wait for underlying inputmethodpanel size to be positive
+        while (pageStack.imSize == 0 && delay < timeout) {
+            wait(50)
+            delay += 50
+        }
+        verify(delay < timeout, "input panel opened")
+
+        // Wait for panel animation to complete
+        while (pageStack.panelSize != pageStack.imSize && delay < timeout) {
+            wait(50)
+            delay += 50
+        }
+        verify(delay < timeout, "input panel animation completed")
     }
 }

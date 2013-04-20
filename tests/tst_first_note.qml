@@ -17,13 +17,6 @@ Notes {
         signalName: "depthChanged"
     }
 
-    SignalSpy {
-        id: heightspy
-
-        target: pageStack.currentPage
-        signalName: "heightChanged"
-    }
-
     NotesTestCase {
         name: "FirstNote"
         when: windowShown
@@ -44,11 +37,7 @@ Notes {
             compare(pageStack.depth, 2, "note page opened")
             compare(pageStack.currentPage.text, '', "new note page is empty")
 
-            heightspy.clear()
-            if (pageStack.currentPage.height == old_height)
-                heightspy.wait()
-            verify(pageStack.currentPage.height < old_height,
-                   "virtual keyboard is open")
+            wait_inputpanel_open()
         }
 
         function test_3_write_note() {
