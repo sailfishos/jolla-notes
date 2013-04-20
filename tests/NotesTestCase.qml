@@ -231,4 +231,24 @@ TestCase {
         }
         verify(delay < timeout, "input panel animation completed")
     }
+
+    function wait_inputpanel_closed(timeout) {
+        if (timeout === undefined)
+            timeout = 5000
+
+        var delay = 0
+        // Wait for underlying inputmethodpanel size to be 0
+        while (pageStack.imSize != 0 && delay < timeout) {
+            wait(50)
+            delay += 50
+        }
+        verify(delay < timeout, "input panel closed")
+
+        // Wait for panel animation to complete
+        while (pageStack.panelSize != pageStack.imSize && delay < timeout) {
+            wait(50)
+            delay += 50
+        }
+        verify(delay < timeout, "input panel animation completed")
+    }
 }

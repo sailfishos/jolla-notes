@@ -30,6 +30,7 @@ Notes {
             pagestackspy.clear()
             select_pull_down("notes-me-overview")
             pagestackspy.wait()
+            wait_inputpanel_closed()
 
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)
