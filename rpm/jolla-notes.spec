@@ -30,6 +30,7 @@ Translation source for %{name}
 Summary: Automated tests for Jolla Notes
 Requires: %{name} = %{version}-%{release}
 Requires: qtest-qml
+Requires: mce-tools
 
 %description tests
 This package installs automated test scripts for jolla-notes,
