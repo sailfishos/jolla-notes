@@ -9,6 +9,15 @@ TestCase {
         signalName: "clicked"
     }
 
+    SignalSpy {
+        signalName: "imSizeChanged"
+        target: pageStack
+
+        onCountChanged: {
+            console.log("imSize " + pageStack.imSize + " count " + count)
+        }
+    }
+
     function clear_db() {
         var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
         db.transaction(function (tx) {
