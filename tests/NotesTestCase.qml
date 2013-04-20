@@ -68,8 +68,9 @@ TestCase {
     function matches(item, props, itemtype) {
         if (itemtype) {
             var itype = "" + item
-            itype.replace(/^QDeclarative/, '')
-            itype.replace(/_QMLTYPE_.*/, '')
+            itype = itype.replace(/^QDeclarative/, '')
+            itype = itype.replace(/_QMLTYPE_.*/, '')
+            itype = itype.replace(/\(0x[a-z0-9]*\)/, '')
             if (itype != itemtype)
                 return false
         }
@@ -94,7 +95,7 @@ TestCase {
             return
 
         for (var i = 0; i < item.children.length; i++) {
-            var child = find(item.children[i], props)
+            var child = find(item.children[i], props, itemtype)
             if (child !== undefined)
                 return child
         }
