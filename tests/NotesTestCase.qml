@@ -4,6 +4,8 @@
 import QtQuickTest 1.0
 
 TestCase {
+    property int timeout: 5000
+
     SignalSpy {
         id: clickspy
         signalName: "clicked"
@@ -212,10 +214,7 @@ TestCase {
         }
     }
 
-    function wait_inputpanel_open(timeout) {
-        if (timeout === undefined)
-            timeout = 5000
-
+    function wait_inputpanel_open() {
         var delay = 0
         // Wait for underlying inputmethodpanel size to be positive
         while (pageStack.imSize == 0 && delay < timeout) {
@@ -232,10 +231,7 @@ TestCase {
         verify(delay < timeout, "input panel animation completed")
     }
 
-    function wait_inputpanel_closed(timeout) {
-        if (timeout === undefined)
-            timeout = 5000
-
+    function wait_inputpanel_closed() {
         var delay = 0
         // Wait for underlying inputmethodpanel size to be 0
         while (pageStack.imSize != 0 && delay < timeout) {
