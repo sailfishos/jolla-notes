@@ -34,8 +34,9 @@ Notes {
             pagestackspy.clear()
             select_pull_down("notes-me-overview")
             pagestackspy.wait()
-            while (pageStack.busy)
-                wait(50)
+            wait_for("page animation complete", function() {
+                return !pageStack.busy
+            })
             compare(pageStack.depth, 1, "note page closed")
 
             var old_item = find(main, { "text": "hello" })

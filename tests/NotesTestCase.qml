@@ -103,6 +103,27 @@ TestCase {
         }
     }
 
+    function wait_for(description, func) {
+        var result = func()
+        if (result)
+            return result
+
+        for (var delay = 0; delay < timeout; delay += 50) {
+            wait(50)
+            result = func()
+            if (result)
+                return result
+        }
+
+        fail(description)
+    }
+
+    function wait_find(description, item, props, itemtype) {
+        return wait_for(description, function() {
+            return find(item, props, itemtype)
+        })
+    }
+
     function click_center(item) {
         var cx = item.x + item.width/2
         var cy = item.x + item.height/2
@@ -198,12 +219,12 @@ TestCase {
     function make_notes_fixture(notes) {
         for (var i = 0; i < notes.length; i++) {
             select_pull_down('notes-me-new-note')
-            while (pageStack.busy)
-                wait(50)
+            wait_for("page animation completed", function() {
+                return !pageStack.busy
+            })
             // Wait for an empty note page
-            while (!find(main, { "text": "", "placeholderText":
-                                 "notes-ph-empty-note" }))
-                wait(50)
+            wait_find("empty note page", main,
+                  { "text": "", "placeholderText": "notes-ph-empty-note" })
             compare(pageStack.currentPage.text, '')
             pageStack.currentPage.text = notes[i]
             wait_inputpanel_open()
@@ -215,36 +236,20 @@ TestCase {
     }
 
     function wait_inputpanel_open() {
-        var delay = 0
-        // Wait for underlying inputmethodpanel size to be positive
-        while (pageStack.imSize == 0 && delay < timeout) {
-            wait(50)
-            delay += 50
-        }
-        verify(delay < timeout, "input panel opened")
-
-        // Wait for panel animation to complete
-        while (pageStack.panelSize != pageStack.imSize && delay < timeout) {
-            wait(50)
-            delay += 50
-        }
-        verify(delay < timeout, "input panel animation completed")
+        wait_for("input panel opened", function() {
+            return pageStack.imSize > 0
+        })
+        wait_for("input panel animation completed", function() {
+            return pageStack.panelSize == pageStack.imSize
+        })
     }
 
     function wait_inputpanel_closed() {
-        var delay = 0
-        // Wait for underlying inputmethodpanel size to be 0
-        while (pageStack.imSize != 0 && delay < timeout) {
-            wait(50)
-            delay += 50
-        }
-        verify(delay < timeout, "input panel closed")
-
-        // Wait for panel animation to complete
-        while (pageStack.panelSize != pageStack.imSize && delay < timeout) {
-            wait(50)
-            delay += 50
-        }
-        verify(delay < timeout, "input panel animation completed")
+        wait_for("input panel closed", function() {
+            return pageStack.imSize == 0
+        })
+        wait_for("input panel animation completed", function() {
+            return pageStack.panelSize == pageStack.imSize
+        })
     }
 }
