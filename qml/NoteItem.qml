@@ -1,8 +1,6 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
 
-import "colors.js" as ColorUtil
-
 // BackgroundItem is also a MouseArea
 BackgroundItem {
     id: noteitem
@@ -31,8 +29,8 @@ BackgroundItem {
             x: parent.width - width
 
             gradient: Gradient {
-                GradientStop { position: 0.0; color: ColorUtil.set_alpha(theme.primaryColor, 0) }
-                GradientStop { position: 1.0; color: ColorUtil.set_alpha(theme.primaryColor, 0.1) }
+                GradientStop { position: 0.0; color: theme.rgba(theme.primaryColor, 0) }
+                GradientStop { position: 1.0; color: theme.rgba(theme.primaryColor, 0.1) }
             }
         }
     }
