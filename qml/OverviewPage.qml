@@ -4,17 +4,12 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    function openNewNote() {
-        notesModel.newNote(1)
-        pageStack.push(notePage, {currentIndex: 0, editMode: true})
-    }
-
     // Capture clicks that don't hit any delegate
     MouseArea {
         id: viewbackground
         height: Math.max(parent.height, view.height)
         width: parent.width
-        onClicked: openNewNote()
+        onClicked: app.openNewNote()
     }
 
     SilicaGridView {
@@ -87,7 +82,7 @@ Page {
                 //: Create a new note ready for editing
                 //% "New note"
                 text: qsTrId("notes-me-new-note")
-                onClicked: openNewNote()
+                onClicked: app.openNewNote()
             }
         }
 
@@ -100,11 +95,6 @@ Page {
         //: Comforting text when overview is empty
         //% "Tap to write a note"
         text: "notes-la-tap-to-write"
-    }
-
-    Component {
-        id: notePage
-        NotePage { }
     }
 
     Component {

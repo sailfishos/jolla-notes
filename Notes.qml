@@ -9,4 +9,14 @@ ApplicationWindow
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
 
     property NotesModel notesModel: NotesModel { id: notesModel }
+
+    function openNewNote() {
+        notesModel.newNote(1)
+        pageStack.push(notePage, {currentIndex: 0, editMode: true})
+    }
+
+    Component {
+        id: notePage
+        NotePage { }
+    }
 }
