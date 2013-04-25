@@ -9,14 +9,6 @@ import "."
 Notes {
     id: main
 
-    SignalSpy {
-        id: pagestackspy
-
-        target: main.pageStack
-        signalName: "depthChanged"
-    }
-
-
     NotesTestCase {
         name: "FirstNoteSaved"
         when: windowShown
@@ -31,13 +23,8 @@ Notes {
             // had their text displayed too far down in the note items.
             make_notes_fixture(["bye"])
 
-            pagestackspy.clear()
             select_pull_down("notes-me-overview")
-            pagestackspy.wait()
-            wait_for("page animation complete", function() {
-                return !pageStack.busy
-            })
-            compare(pageStack.depth, 1, "note page closed")
+            wait_pagestack("note page closed", 1)
 
             var old_item = find(main, { "text": "hello" })
             var new_item = find(main, { "text": "bye" })

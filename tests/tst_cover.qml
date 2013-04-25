@@ -19,7 +19,6 @@ Notes {
 
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
-            compare(notesModel.count, notes.length)
 
             // leave the app at the Beta notepage
         }

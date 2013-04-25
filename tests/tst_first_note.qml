@@ -10,13 +10,6 @@ import "."
 Notes {
     id: main
 
-    SignalSpy {
-        id: pagestackspy
-
-        target: main.pageStack
-        signalName: "depthChanged"
-    }
-
     NotesTestCase {
         name: "FirstNote"
         when: windowShown
@@ -31,10 +24,8 @@ Notes {
             // use page height as a proxy to detect if the keyboard is open
             var old_height = pageStack.currentPage.height
 
-            pagestackspy.clear()
             click_center(pageStack.currentPage)
-            pagestackspy.wait()
-            compare(pageStack.depth, 2, "note page opened")
+            wait_pagestack("new note page opened", 2)
             compare(pageStack.currentPage.text, '', "new note page is empty")
 
             wait_inputpanel_open()
@@ -51,10 +42,8 @@ Notes {
         }
 
         function test_4_back() {
-            pagestackspy.clear()
             select_pull_down("notes-me-overview")
-            pagestackspy.wait()
-            compare(pageStack.depth, 1, "note page closed")
+            wait_pagestack("note page closed", 1)
         }
 
         function test_5_no_comforter() {

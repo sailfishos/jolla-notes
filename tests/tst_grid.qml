@@ -10,13 +10,6 @@ import "."
 Notes {
     id: main
 
-    SignalSpy {
-        id: pagestackspy
-
-        target: main.pageStack
-        signalName: "depthChanged"
-    }
-
     NotesTestCase {
         name: "NoteGrid"
         when: windowShown
@@ -25,11 +18,9 @@ Notes {
             var notes = ["Foo", "Bar", "Gnu", "Xyzzy"]
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
-            compare(notesModel.count, notes.length)
 
-            pagestackspy.clear()
             select_pull_down("notes-me-overview")
-            pagestackspy.wait()
+            wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
 
             for (var i = 0; i < notes.length; i++) {

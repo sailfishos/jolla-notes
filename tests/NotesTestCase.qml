@@ -217,11 +217,10 @@ TestCase {
     // Create some notes to use for other tests.
     // Ends at the last created note's page.
     function make_notes_fixture(notes) {
+        var oldCount = notesModel.count
         for (var i = 0; i < notes.length; i++) {
             select_pull_down('notes-me-new-note')
-            wait_for("page animation completed", function() {
-                return !pageStack.busy
-            })
+            wait_pagestack()
             // Wait for an empty note page
             wait_find("empty note page", main,
                   { "text": "", "placeholderText": "notes-ph-empty-note" })
@@ -233,6 +232,8 @@ TestCase {
             // @todo: find out what we're waiting for
             wait(1000)
         }
+        compare(notesModel.count, oldCount + notes.length,
+                "" + notes.length + " notes created")
     }
 
     function wait_inputpanel_open() {
@@ -250,6 +251,17 @@ TestCase {
         })
         wait_for("input panel animation completed", function() {
             return pageStack.panelSize == pageStack.imSize
+        })
+    }
+
+    function wait_pagestack(desc, depth) {
+        if (depth !== undefined) {
+            wait_for(desc, function() {
+                return pageStack.depth == depth
+            })
+        }
+        wait_for("page animation completed", function() {
+            return !pageStack.busy
         })
     }
 }
