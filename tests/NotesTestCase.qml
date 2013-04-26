@@ -72,6 +72,7 @@ TestCase {
             var itype = "" + item
             itype = itype.replace(/^QDeclarative/, '')
             itype = itype.replace(/_QMLTYPE_.*/, '')
+            itype = itype.replace(/_QML_.*/, '')
             itype = itype.replace(/\(0x[a-z0-9]*\)/, '')
             if (itype != itemtype)
                 return false
@@ -103,6 +104,12 @@ TestCase {
         }
     }
 
+    function verify_find(item, props, itemtype) {
+        var foundItem = find(item, props, itemtype)
+        verify(foundItem, itemtype ? itemtype + " found" : "item found")
+        return foundItem
+    }
+
     function wait_for(description, func) {
         var result = func()
         if (result)
@@ -129,6 +136,16 @@ TestCase {
         var cy = item.x + item.height/2
         var pos = main.mapFromItem(item, cx, cy)
         mouseClick(main, pos.x, pos.y)
+    }
+
+    function longclick_center(item) {
+        var cx = item.x + item.width/2
+        var cy = item.x + item.height/2
+        var pos = main.mapFromItem(item, cx, cy)
+        mousePress(main, pos.x, pos.y)
+        wait(1100)  // a bit longer than 1 second
+        mouseRelease(main, pos.x, pos.y)
+        wait(1)
     }
 
     // True iff the item is fully in the screen bounds
@@ -263,5 +280,40 @@ TestCase {
         wait_for("page animation completed", function() {
             return !pageStack.busy
         })
+    }
+
+    // Check if any of the items in the items array overlap each other
+    // when mapped to the 'canvas' item's coordinates.
+    // Comparisons are made using bounding boxes, so there may be false
+    // positives with items rotated at non-right angles.
+    function overlap(canvas, items) {
+        var rects = []
+        var overlaps = []
+        for (var i = 0; i < items.length; i++) {
+            // Figure out the item's bounding box
+            var corn = [
+                canvas.mapFromItem(items[i], 0, 0),
+                canvas.mapFromItem(items[i], 0, items[i].height - 1),
+                canvas.mapFromItem(items[i], items[i].width - 1, 0),
+                canvas.mapFromItem(items[i], items[i].width - 1,
+                                             items[i].height - 1)
+            ]
+            var rect = {}
+            rect.top = Math.min(corn[0].y, corn[1].y, corn[2].y, corn[3].y)
+            rect.bot = Math.max(corn[0].y, corn[1].y, corn[2].y, corn[3].y)
+            rect.lft = Math.min(corn[0].x, corn[1].x, corn[2].x, corn[3].x)
+            rect.rht = Math.max(corn[0].x, corn[1].x, corn[2].x, corn[3].x)
+            for (var j = 0; j < rects.length; j++) {
+                // This expression enumerates all the ways two rectangles
+                // can be non-overlapping, and then takes the negation.
+                if (!(rect.lft > rects[j].rht || rect.rht < rects[j].lft
+                    || rect.top > rects[j].bot || rect.bot < rects[j].top)) {
+                    overlaps.push(j)
+                    overlaps.push(i)
+                }
+            }
+            rects.push(rect)
+        }
+        return overlaps
     }
 }

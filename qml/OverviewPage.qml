@@ -19,7 +19,17 @@ Page {
         model: notesModel
         cellHeight: Math.min(overviewpage.height, overviewpage.width) / 2
         cellWidth: cellHeight
+        property int columnCount: Math.floor(overviewpage.width / cellWidth)
+
         property Item contextMenu
+        property Item contextMenuOn: contextMenu ? contextMenu.parent : null
+        // Figure out which delegates need to be moved down to make room
+        // for the context menu when it's open.
+        property int minOffsetIndex:
+            contextMenuOn ? contextMenuOn.index
+                            - (contextMenuOn.index % columnCount) + columnCount
+                          : 0
+        property int yOffset: contextMenu ? contextMenu.height : 0
 
         delegate: Item {
             // The NoteItem is wrapped in an Item in order to allow the
@@ -28,20 +38,10 @@ Page {
             id: itemcontainer
 
             // Adjust the height to make space for the context menu if needed
-            height: view.contextMenu != null
-                      && view.contextMenu.parent === itemcontainer
+            height: view.contextMenuOn === itemcontainer
                     ? view.cellHeight + view.contextMenu.height
                     : view.cellHeight
             width: view.cellWidth
-
-            // Fade out the item under the context menu.
-            // underMenu is a separate property to avoid recalculating opacity
-            // for non-affected items during the menu's opening animation
-            property bool underMenu: view.contextMenu != null
-                    && view.contextMenu.parent != null
-                    && view.contextMenu.parent.index == index - 2
-            opacity: underMenu ? 1.0 - view.contextMenu.height / view.cellHeight
-                               : 1.0
 
             // make model.index accessible to other delegates
             property int index: model.index
@@ -61,6 +61,11 @@ Page {
                 pageNumber: model.pagenr
                 height: view.cellHeight
                 width: view.cellWidth
+                y: index >= view.minOffsetIndex ? view.yOffset : 0
+                // When the context menu is open, disable all other delegates
+                enabled: !(view.contextMenu && view.contextMenu.visible &&
+                           view.contextMenuOn !== itemcontainer)
+                highlighted: down || view.contextMenuOn === itemcontainer
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
                 onPressAndHold: view.showContextMenu(itemcontainer)
@@ -72,8 +77,7 @@ Page {
 
         function showContextMenu(item) {
             if (!contextMenu)
-                contextMenu = contextmenucomponent.createObject(view,
-                                     { width: item.width })
+                contextMenu = contextmenucomponent.createObject(view)
             contextMenu.show(item)
         }
 
@@ -101,6 +105,11 @@ Page {
         id: contextmenucomponent
         ContextMenu {
             id: contextmenu
+
+            // The menu extends across the whole gridview horizontally
+            width: view.width
+            x: parent ? -parent.x : 0
+
             MenuItem {
                 //: Move this note to be first in the list
                 //% "Move to top"
@@ -108,9 +117,20 @@ Page {
                 onClicked: {
                     // If the item will move, then close the menu instantly.
                     // The closing animation looks bad after such a jump.
-                    if (contextmenu.parent.index > 0)
+                    var index = contextmenu.parent.index
+                    if (index > 0) {
+                        // There were several options for closing it
+                        // immediately, but most of them caused the
+                        // menu to open in the wrong place when reopened.
+                        // The current approach avoids that problem
+                        // at the cost of reconstructing the menu later.
+                        contextmenu.hide()
                         contextmenu.height = 0
-                    notesModel.moveToTop(contextmenu.parent.index)
+                        contextmenu.parent = null
+                        view.contextMenu = null
+                        contextmenu.destroy()
+                    }
+                    notesModel.moveToTop(index)
                 }
             }
             MenuItem {
