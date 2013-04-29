@@ -21,16 +21,6 @@ TestCase {
         }
     }
 
-    SignalSpy {
-        id: panelsizespy
-        signalName: "panelSizeChanged"
-        target: pageStack
-
-        onCountChanged: {
-            console.log("panelSize " + pageStack.panelSize + " count " + count)
-        }
-    }
-
     function clear_db() {
         var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
         db.transaction(function (tx) {
@@ -172,10 +162,10 @@ TestCase {
     }
 
     // Return true iff the item and all its parents have the
-    // 'visible' property true
+    // 'visible' property true and opacity > 0
     function visible(item) {
         while (item) {
-            if (!item.visible)
+            if (!item.visible || item.opacity == 0.0)
                 return false
             item = item.parent
         }

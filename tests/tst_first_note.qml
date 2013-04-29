@@ -1,5 +1,5 @@
 // Test that app is empty on startup, has comforter text on the overview,
-// and allows tapping to write a new note.
+// and it's possible to write a note
 
 import QtQuickTest 1.0
 import QtQuick 1.1
@@ -16,15 +16,12 @@ Notes {
 
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
-            var comforter = find(main, { "text": "notes-la-tap-to-write" })
-            verify_displayed(comforter, "Tap-to-write text on empty overview")
+            var comforter = find(main, { "text": "notes-la-write-note" })
+            verify_displayed(comforter, "Write-note text on empty overview")
         }
 
         function test_2_tap_to_write() {
-            // use page height as a proxy to detect if the keyboard is open
-            var old_height = pageStack.currentPage.height
-
-            click_center(pageStack.currentPage)
+            select_pull_down("notes-me-new-note")
             wait_pagestack("new note page opened", 2)
             compare(pageStack.currentPage.text, '', "new note page is empty")
 
@@ -47,10 +44,19 @@ Notes {
         }
 
         function test_5_no_comforter() {
-            var comforter = find(main,
-                      { "text": "notes-la-tap-to-write", "visible": true })
-            compare(comforter, undefined,
-                   "No tap-to-write text when note has been written")
+            var comforter = find(main, { "text": "notes-la-write-note" })
+            verify(!comforter || !visible(comforter),
+                   "No write-note text when note has been written")
+        }
+
+        function test_6_no_tap_to_write() {
+            click_center(pageStack.currentPage)
+            // This is a bit arbitrary... how long should we wait
+            // to check that something didn't happen?
+            // (spying the "clicked" signal would work but that's
+            // implementation-dependent.)
+            wait(200)
+            compare(pageStack.depth, 1, "tap-to-write was ignored")
         }
 
         // The note is left for the tst_note_saved.qml test

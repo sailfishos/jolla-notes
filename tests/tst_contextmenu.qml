@@ -14,6 +14,7 @@ Notes {
         when: windowShown
 
         property variant notes
+        property variant itemlocs
 
         function initTestCase() {
             notes = ["Frame", "Note1", "Note2", "Sentinel"]
@@ -23,6 +24,16 @@ Notes {
             select_pull_down("notes-me-overview")
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
+
+            // Remember the starting positions of the items
+            var locs = []
+            for (var i = 0; i < notes.length; i++) {
+                var item = verify_find(main, { "text": notes[i] })
+                locs.push(main.mapFromItem(item, 0, 0))
+            }
+            // first build the array and then assign to the property.
+            // pushing elements to the property directly doesn't work.
+            itemlocs = locs
         }
 
         function test_menu() {
@@ -96,10 +107,11 @@ Notes {
             }
             for (var i = 0; i < notes.length; i++) {
                 var item = find(main, { "text": notes[i] })
-                compare(item.index, notemap[i],
-                        "note '" + notes[i] + "' moved to index " + i)
+                var pos = main.mapFromItem(item, 0, 0)
+                compare(pos, itemlocs[notemap[i]],
+                        "note '" + notes[i] + "' moved to index " + notemap[i])
                 compare(notesModel.get(notemap[i]).text, notes[i],
-                        "note '" + notes[i] + "' at index " + i + " in database")
+                        "note '" + notes[i] + "' at index " + notemap[i] + " in database")
             }
         }
 
