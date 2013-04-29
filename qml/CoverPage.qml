@@ -4,15 +4,57 @@ import Sailfish.Silica 1.0
 CoverBackground {
     objectName: "coverpage" // used by the tests
 
+    CoverPlaceholder {
+        //: Coverpage text when no note is selected
+        //% "Write a note"
+        text: qsTrId("notes-la-write_note")
+        icon.source: "image://theme/icon-launcher-notes"
+        visible: !notesModel.count
+    }
     Item {
+        visible: notesModel.count > 0
         anchors { fill: parent; margins: theme.paddingLarge }
+        ListView {
+            id: listView
 
-        NoteSummary {
-            //: Coverpage text when no note is selected
-            //% "Notes"
-            property string baseText: qsTrId("notes-ap-cover")
-            text: pageStack.depth > 1 && pageStack.currentPage.text
-                      ? pageStack.currentPage.text : baseText
+            property real itemHeight: 74
+
+            clip: true
+            model: notesModel
+            interactive: false
+            width: parent.width
+            visible: pageStack.depth === 1
+            height: 3 *itemHeight
+
+            delegate: CoverLabel {
+                text: model.text
+                color: model.color
+                maximumLineCount: 2
+                width: listView.width
+                pageNumber: model.pagenr
+                height: listView.itemHeight
+            }
+        }
+        CoverLabel {
+            id: noteLabel
+
+            property variant model
+
+            visible: false
+            maximumLineCount: 7
+            width: parent.width
+            height: listView.height + theme.paddingSmall
+            text: model ? model.text : ""
+            color: model ? model.color :  theme.primaryColor
+            pageNumber: model ? model.pagenr : 0
+            states: State {
+                when: notesModel.count > 0 && pageStack.depth > 1
+                PropertyChanges {
+                    target: noteLabel
+                    visible: true
+                    model: notesModel.get(pageStack.currentPage.currentIndex)
+                }
+            }
         }
     }
 
@@ -23,34 +65,6 @@ CoverBackground {
                 pageStack.pop(null, true)
                 openNewNote()
                 activate()
-            }
-        }
-
-        CoverAction {
-            // There's a visual glitch: when the cover text changes,
-            // the old text shows through. This only happens the first
-            // time the app is minimized. Work around it by reloading
-            // the cover the first time the text changes. Don't know
-            // why the workaround works.
-            property bool bugworkaround
-
-            iconSource: "image://theme/icon-cover-next"
-            onTriggered: {
-                if (notesModel.count == 0)
-                    return;
-
-                if (pageStack.depth == 1) {
-                    pageStack.push(notePage, { currentIndex: 0 }, true)
-                } else {
-                    var index = pageStack.currentPage.currentIndex + 1
-                    if (index == notesModel.count)
-                        index = 0
-                    pageStack.currentPage.currentIndex = index
-                }
-                if (!bugworkaround) {
-                    _loadCover()
-                    bugworkaround = true
-                }
             }
         }
     }
