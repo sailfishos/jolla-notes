@@ -4,14 +4,6 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    // Capture clicks that don't hit any delegate
-    MouseArea {
-        id: viewbackground
-        height: Math.max(parent.height, view.height)
-        width: parent.width
-        onClicked: app.openNewNote()
-    }
-
     SilicaGridView {
         id: view
 
@@ -31,6 +23,12 @@ Page {
                           : 0
         property int yOffset: contextMenu ? contextMenu.height : 0
 
+        ViewPlaceholder {
+            //: Comforting text when overview is empty
+            //% "Write a note"
+            text: qsTrId("notes-la-write-note")
+            enabled: view.count == 0
+        }
         delegate: Item {
             // The NoteItem is wrapped in an Item in order to allow the
             // delegate to resize for the contextMenu without affecting
@@ -89,16 +87,6 @@ Page {
                 onClicked: app.openNewNote()
             }
         }
-
-        Component.onCompleted: viewbackground.parent = view.contentItem
-    }
-
-    Label {
-        anchors.centerIn: parent
-        visible: view.count == 0
-        //: Comforting text when overview is empty
-        //% "Tap to write a note"
-        text: "notes-la-tap-to-write"
     }
 
     Component {
