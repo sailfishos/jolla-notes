@@ -5,9 +5,9 @@ CoverBackground {
     objectName: "coverpage" // used by the tests
 
     CoverPlaceholder {
-        //: Coverpage text when no note is selected
+        //: Coverpage text when there are no notes
         //% "Write a note"
-        text: qsTrId("notes-la-write_note")
+        text: qsTrId("notes-la-write-note")
         icon.source: "image://theme/icon-launcher-notes"
         visible: !notesModel.count
     }
