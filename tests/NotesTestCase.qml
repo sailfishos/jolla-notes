@@ -129,7 +129,8 @@ TestCase {
 
     function find_context_menu(item) {
         return find(item, function (it) {
-            return match_type(it, "ContextMenu")
+            return it.hasOwnProperty("closeOnActivation")
+                && it.hasOwnProperty("_parentMouseArea")
         })
     }
 

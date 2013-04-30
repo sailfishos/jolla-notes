@@ -85,18 +85,16 @@ Notes {
                     fail("overlap between notes " + ov[0] + " and " + ov[1])
             }
 
-            // Leave context menu open for next test
-        }
-
-        function test_menu_click() {
-            var menu = find_context_menu(main)
-            verify(menu, "context menu found")
             var action = find_text(menu, "notes-la-move-to-top")
             verify(action, "move-to-top action found")
+
             click_center(action)
 
-            wait(1)
-            verify(!menu || !menu.visible, "menu closed immediately")
+            var old_pos = main.mapFromItem(items[1], 0, 0)
+            wait_for("note moved", function() {
+                var new_pos = main.mapFromItem(items[1], 0, 0)
+                return old_pos.x != new_pos.x || old_pos.y != new_pos.y
+            })
 
             // Check that notes 0 and 1 changed places
             var notemap = {}
@@ -106,7 +104,6 @@ Notes {
                 notemap[i] = i
             }
 
-            var items = find_text_items(main, notes)
             for (var i = 0; i < notes.length; i++) {
                 var pos = main.mapFromItem(items[i], 0, 0)
                 compare(pos, itemlocs[notemap[i]],

@@ -98,29 +98,45 @@ Page {
             width: view.width
             x: parent ? -parent.x : 0
 
+            property Item moveToTopItem
+
+            onClosed: {
+                if (moveToTopItem) {
+                    moveToTopAnim.start()
+                }
+            }
+
+            SequentialAnimation {
+                id: moveToTopAnim
+                objectName: "moveToTopAnim" // used by tests
+
+                NumberAnimation {
+                    target: moveToTopItem
+                    properties: "opacity"
+                    duration: 10
+                    to: 0.5
+                }
+                ScriptAction {
+                    script: notesModel.moveToTop(moveToTopItem.index)
+                }
+                NumberAnimation {
+                    target: moveToTopItem
+                    properties: "opacity"
+                    duration: 10
+                    to: 1.0
+                }
+            }
+
             MenuItem {
                 //: Move this note to be first in the list
                 //% "Move to top"
                 text: qsTrId("notes-la-move-to-top")
                 onClicked: {
-                    // If the item will move, then close the menu instantly.
-                    // The closing animation looks bad after such a jump.
-                    var index = contextmenu.parent.index
-                    if (index > 0) {
-                        // There were several options for closing it
-                        // immediately, but most of them caused the
-                        // menu to open in the wrong place when reopened.
-                        // The current approach avoids that problem
-                        // at the cost of reconstructing the menu later.
-                        contextmenu.hide()
-                        contextmenu.height = 0
-                        contextmenu.parent = null
-                        view.contextMenu = null
-                        contextmenu.destroy()
-                    }
-                    notesModel.moveToTop(index)
+                    if (contextmenu.parent.index > 0)
+                        moveToTopItem = contextmenu.parent
                 }
             }
+
             MenuItem {
                 //: Delete this note from overview
                 //% "Delete"
