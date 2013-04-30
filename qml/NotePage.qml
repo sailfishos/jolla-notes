@@ -41,6 +41,30 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                //: Delete this note from note page
+                //% "Delete note"
+                text: qsTrId("notes-me-delete-note")
+                onClicked: deleteNoteAnimation.restart()
+                SequentialAnimation {
+                    id: deleteNoteAnimation
+                    NumberAnimation {
+                        target: noteview
+                        property: "opacity"
+                        duration: 200
+                        easing.type: Easing.InOutQuad
+                        to: 0.0
+                    }
+                    ScriptAction {
+                        script: {
+                            var overview = pageStack.previousPage()
+                            overview.showDeleteNote(notepage.currentIndex)
+                            pageStack.pop(null, true)
+                            noteview.opacity = 1.0
+                        }
+                    }
+                }
+            }
+            MenuItem {
                 //: Create a new note ready for editing
                 //% "New note"
                 text: qsTrId("notes-me-new-note")

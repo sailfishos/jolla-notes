@@ -4,6 +4,16 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
+    function showDeleteNote(index) {
+        // This is needed both for UI (the user should see the remorse item)
+        // and to make sure the delegate exists.
+        view.positionViewAtIndex(index, GridView.Contain)
+        // Set currentIndex in order to find the corresponding currentItem.
+        // Is this really the only way to look up a delegate by index?
+        view.currentIndex = index
+        view.currentItem.deleteNote()
+    }
+
     SilicaGridView {
         id: view
 
