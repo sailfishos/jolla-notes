@@ -13,14 +13,20 @@ function upgradeSchema(db) {
     if (db.version == '') {
         db.changeVersion('', '1', function (tx) {
             tx.executeSql(
-                'CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT)');
+                'CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT)')
+        })
+    }
+    if (db.version == '1') {
+        db.changeVersion('1', '2', function (tx) {
+            tx.executeSql('CREATE TABLE next_color_index (value INTEGER)')
+            tx.executeSql('INSERT INTO next_color_index VALUES (0)')
         })
     }
 }
 
 function openDb() {
     var db = openDatabaseSync('silicanotes', '', 'Notes', 10000, upgradeSchema)
-    if (db.version != '1')
+    if (db.version != '2')
         upgradeSchema(db);
     return db;
 }
@@ -47,8 +53,17 @@ var availableColors = [
     '#0000ff', '#8000ff', '#aa00ff', '#ff00aa'
 ]
 
-function randomColor() {
-    return availableColors[Math.floor(Math.random() * availableColors.length)]
+function nextColor() {
+    var index
+    var db = openDb()
+    db.transaction(function (tx) {
+        var r = tx.executeSql('SELECT value FROM next_color_index LIMIT 1')
+        index = parseInt(r.rows.item(0).value, 10)
+        if (index >= availableColors.length)
+            index = 0
+        tx.executeSql('UPDATE next_color_index SET value = ?', [index + 1])
+    })
+    return availableColors[index]
 }
 
 function newNote(pagenr, color) {

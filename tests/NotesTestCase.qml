@@ -26,7 +26,8 @@ TestCase {
     function clear_db() {
         var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
         db.transaction(function (tx) {
-            tx.executeSql('DELETE FROM notes');
+            tx.executeSql('DELETE FROM notes')
+            tx.executeSql('UPDATE next_color_index SET value = 0')
         })
     }
 

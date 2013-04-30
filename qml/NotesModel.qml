@@ -13,7 +13,7 @@ ListModel {
     }
 
     function newNote(pagenr) {
-        var color = NoteScript.randomColor()
+        var color = NoteScript.nextColor()
         NoteScript.newNote(pagenr, color)
 
         var i

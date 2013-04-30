@@ -16,6 +16,7 @@ Notes {
 
         function test_noteitems() {
             var notes = ["Foo", "Bar", "Gnu", "Xyzzy"]
+
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
 
@@ -23,15 +24,19 @@ Notes {
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
 
+            // from availableColors in notes.js
+            var colors = ['#ff0000', '#ff8000', '#ffff00', '#73e600']
+
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)
                 var item = find_text(main, notes[i])
                 verify_displayed(item, "noteitem " + pgnr)
                 verify_displayed(find_text(item, pgnr), "page number " + pgnr)
                 var colorbar = find(item, function(it) {
-                    return it.width == 64 && it.color == item.color
+                    return it.width == 64 && ("" + it.color) == colors[i]
                 })
                 verify_displayed(colorbar, "color bar " + pgnr)
+                compare(colorbar.color, colors[i], "note " + pgnr + " color")
                 // @todo: verify tint
             }
         }
