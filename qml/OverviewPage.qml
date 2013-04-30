@@ -113,17 +113,14 @@ Page {
                 NumberAnimation {
                     target: moveToTopItem
                     properties: "opacity"
-                    duration: 10
+                    duration: 200
                     to: 0.5
                 }
                 ScriptAction {
-                    script: notesModel.moveToTop(moveToTopItem.index)
-                }
-                NumberAnimation {
-                    target: moveToTopItem
-                    properties: "opacity"
-                    duration: 10
-                    to: 1.0
+                    script: {
+                        moveToTopItem.opacity = 1.0
+                        notesModel.moveToTop(moveToTopItem.index)
+                    }
                 }
             }
 
