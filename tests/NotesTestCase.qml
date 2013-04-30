@@ -155,7 +155,7 @@ TestCase {
     // Shorthand to combine wait() and find() so that the caller
     // does not have to write nested anonymous functions.
     function wait_find(description, item, func) {
-        wait_for(description, function() {
+        return wait_for(description, function() {
             return find(item, func)
         })
     }
@@ -348,5 +348,18 @@ TestCase {
             rects.push(rect)
         }
         return overlaps
+    }
+
+    // To speed up testing, skip the 5-second delay of a remorse item
+    // and trigger its action immediately.
+    function fastforward_remorseitem(remorseitem) {
+        verify(remorseitem.hasOwnProperty("_msRemaining"),
+               "item really is a RemorseItem")
+        if (remorseitem._msRemaining > 0) {
+            var old_timeout = remorseitem._timeout
+            remorseitem._timeout = 1
+            wait(2)
+            remorseitem._timeout = old_timeout
+        }
     }
 }
