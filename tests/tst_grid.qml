@@ -25,13 +25,13 @@ Notes {
 
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)
-                var item = find(main, { "text": notes[i] })
+                var item = find_text(main, notes[i])
                 verify_displayed(item, "noteitem " + pgnr)
-                verify_displayed(find(item, { "text": pgnr }),
-                                 "page number " + pgnr)
-                verify_displayed(find(item,
-                                   { "width": 64 , "color": item.color }),
-                                "color bar " + pgnr)
+                verify_displayed(find_text(item, pgnr), "page number " + pgnr)
+                var colorbar = find(item, function(it) {
+                    return it.width == 64 && it.color == item.color
+                })
+                verify_displayed(colorbar, "color bar " + pgnr)
                 // @todo: verify tint
             }
         }

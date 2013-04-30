@@ -16,7 +16,7 @@ Notes {
 
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
-            var comforter = find(main, { "text": "notes-la-write-note" })
+            var comforter = find_text(main, "notes-la-write-note")
             verify_displayed(comforter, "Write-note text on empty overview")
         }
 
@@ -44,7 +44,7 @@ Notes {
         }
 
         function test_5_no_comforter() {
-            var comforter = find(main, { "text": "notes-la-write-note" })
+            var comforter = find_text(main, "notes-la-write-note")
             verify(!comforter || !visible(comforter),
                    "No write-note text when note has been written")
         }

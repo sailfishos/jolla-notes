@@ -14,7 +14,7 @@ Notes {
         when: windowShown
 
         function test_note_saved() {
-            var item = find(main, { "text": "hello" })
+            var item = find_text(main, "hello")
             verify_displayed(item, "saved note")
         }
 
@@ -26,13 +26,13 @@ Notes {
             select_pull_down("notes-me-overview")
             wait_pagestack("note page closed", 1)
 
-            var old_item = find(main, { "text": "hello" })
-            var new_item = find(main, { "text": "bye" })
+            var old_item = find_text(main, "hello")
+            var new_item = find_text(main, "bye")
             verify(old_item, "saved item found")
             verify(new_item, "newly written item found")
 
-            var old_text = find(old_item, { "text": "hello" }, "Text")
-            var new_text = find(new_item, { "text": "bye" }, "Text")
+            var old_text = find_real_text(old_item, "hello")
+            var new_text = find_real_text(new_item, "bye")
             verify(old_text, "saved item text found")
             verify(new_text, "newly written item text found")
 

@@ -11,6 +11,8 @@ TestCase {
         signalName: "clicked"
     }
 
+    // This is temporary -- some debug logging until the keyboard related
+    // tests are stable in the VM.
     SignalSpy {
         id: imsizespy
         signalName: "imSizeChanged"
@@ -41,6 +43,7 @@ TestCase {
         return "{ " + dump + " }"
     }
 
+    // Print an item's attributes to the console
     function dump_item(item, name, recurse) {
         var dump = "" + item + " " + debug_item(item)
         if (name)
@@ -54,52 +57,84 @@ TestCase {
                 dump_item(item.children[i], name, recurse + 1)
     }
 
-    // Return true iff item has all the specified properties with
-    // corresponding values.
-    // Example: matches(button, { text: "button-text" })
-    function matches(item, props, itemtype) {
-        if (itemtype) {
-            var itype = "" + item
-            itype = itype.replace(/^QDeclarative/, '')
-            itype = itype.replace(/_QMLTYPE_.*/, '')
-            itype = itype.replace(/_QML_.*/, '')
-            itype = itype.replace(/\(0x[a-z0-9]*\)/, '')
-            if (itype != itemtype)
-                return false
-        }
-        for (var key in props) {
-            if (!props.hasOwnProperty(key))
-                continue
-            if (!item.hasOwnProperty(key))
-                return false
-            if (("" + item[key]) !== ("" + props[key]))
-                return false
-        }
-        return true
-    }
-
-    // Find an item in item's tree that has all the specified properties
-    // with corresponding values.
-    function find(item, props, itemtype) {
-        if (matches(item, props, itemtype))
+    // Find a visual item in item's tree that matches the predicate func
+    function find(item, func) {
+        if (func(item))
             return item
 
         if (item.children === undefined)
             return
 
         for (var i = 0; i < item.children.length; i++) {
-            var child = find(item.children[i], props, itemtype)
+            var child = find(item.children[i], func)
             if (child !== undefined)
                 return child
         }
     }
 
-    function verify_find(item, props, itemtype) {
-        var foundItem = find(item, props, itemtype)
-        verify(foundItem, itemtype ? itemtype + " found" : "item found")
-        return foundItem
+    // Shorthand for the most common find() operation
+    function find_text(item, text) {
+        return find(item, function(it) { return it.text == text })
     }
 
+    // Find an item with text that is also a Text item
+    function find_real_text(item, text) {
+        return find(item, function(it) {
+            return it.text == text && match_type(it, "Text")
+        })
+    }
+
+    // Find an item by objectName
+    function find_by_name(item, name) {
+        return find(item, function(it) { return it.objectName == name })
+    }
+
+    // Helper functions for find() funcs
+
+    // True iff the item's component type matches typename.
+    // Unfortunately the function has to rely on heuristics; it's not reliable.
+    // (It does give consistent answers as long as the app doesn't change)
+    function match_type(item, typename) {
+        var itype = "" + item
+        itype = itype.replace(/^QDeclarative/, '')
+        itype = itype.replace(/_QMLTYPE_.*/, '')
+        itype = itype.replace(/_QML_.*/, '')
+        itype = itype.replace(/\(0x[a-z0-9]*\)/, '')
+        return itype == typename
+    }
+
+    // Find items for all texts in the texts array, and verify that
+    // they were all found.
+    function find_text_items(item, texts) {
+        var items = []
+        for (var i = 0; i < texts.length; i++) {
+            var found = find_text(item, texts[i])
+            verify(found, "found '" + texts[i] + "'")
+            items.push(found)
+        }
+        return items
+    }
+
+    // A couple of dedicated find functions that encapsulate knowledge
+    // about the sailfish components.
+
+    function find_flickable_parent(item) {
+        var parentItem = item.parent
+        while (parentItem) {
+            if (parentItem.hasOwnProperty("maximumFlickVelocity"))
+                return parentItem
+            parentItem = parentItem.parent
+        }
+    }
+
+    function find_context_menu(item) {
+        return find(item, function (it) {
+            return match_type(it, "ContextMenu")
+        })
+    }
+
+    // Wait until func is true or there's a timeout.
+    // Return the final value from func.
     function wait_for(description, func) {
         var result = func()
         if (result)
@@ -115,9 +150,11 @@ TestCase {
         fail(description)
     }
 
-    function wait_find(description, item, props, itemtype) {
-        return wait_for(description, function() {
-            return find(item, props, itemtype)
+    // Shorthand to combine wait() and find() so that the caller
+    // does not have to write nested anonymous functions.
+    function wait_find(description, item, func) {
+        wait_for(description, function() {
+            return find(item, func)
         })
     }
 
@@ -161,8 +198,8 @@ TestCase {
         return true
     }
 
-    // Return true iff the item and all its parents have the
-    // 'visible' property true and opacity > 0
+    // True iff the item and all its parents have the 'visible'
+    // property true and opacity > 0
     function visible(item) {
         while (item) {
             if (!item.visible || item.opacity == 0.0)
@@ -172,7 +209,7 @@ TestCase {
         return true
     }
 
-    // Return true iff the combined opacity of the item and its parents < 0.3
+    // True iff the combined opacity of the item and its parents < 0.3
     function faded(item) {
         var opacity = 1.0
         while (item) {
@@ -195,7 +232,7 @@ TestCase {
         // transformation can then be handled by mapFromItem.
         var page = main.pageStack.currentPage
 
-        var item = find(page, { "text": option })
+        var item = find_text(page, option)
         verify(item, "Menu item " + option + " found")
 
         var drag_x = page.width / 2
@@ -208,7 +245,9 @@ TestCase {
             pos = main.mapFromItem(page, drag_x, drag_y)
             mouseMove(main, pos.x, pos.y, undefined, Qt.LeftButton)
             wait(1)
-            var highlight = find(main, { "highlightedItem": item })
+            var highlight = find(main, function(it) {
+                return it.highlightedItem == item
+            })
             if (highlight !== undefined) {
                 clickspy.target = item
                 mouseRelease(main, pos.x, pos.y)
@@ -229,8 +268,10 @@ TestCase {
             select_pull_down('notes-me-new-note')
             wait_pagestack()
             // Wait for an empty note page
-            wait_find("empty note page", main,
-                  { "text": "", "placeholderText": "notes-ph-empty-note" })
+            wait_find("empty note page", main, function(it) {
+                return it.text == ""
+                       && it.placeholderText == "notes-ph-empty-note"
+            })
             compare(pageStack.currentPage.text, '')
             pageStack.currentPage.text = notes[i]
             wait_inputpanel_open()

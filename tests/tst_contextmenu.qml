@@ -26,10 +26,10 @@ Notes {
             wait_inputpanel_closed()
 
             // Remember the starting positions of the items
+            var items = find_text_items(main, notes)
             var locs = []
-            for (var i = 0; i < notes.length; i++) {
-                var item = verify_find(main, { "text": notes[i] })
-                locs.push(main.mapFromItem(item, 0, 0))
+            for (var i = 0; i < items.length; i++) {
+                locs.push(main.mapFromItem(items[i], 0, 0))
             }
             // first build the array and then assign to the property.
             // pushing elements to the property directly doesn't work.
@@ -37,11 +37,7 @@ Notes {
         }
 
         function test_menu() {
-            var items = []
-            for (var i = 0; i < notes.length; i++) {
-                var item = verify_find(main, { "text": notes[i] })
-                items.push(item)
-            }
+            var items = find_text_items(main, notes)
 
             var old_height = items[1].height
             verify_displayed(items[1])
@@ -54,28 +50,30 @@ Notes {
                     verify(items[i].highlighted, "selected item is highlighted")
                     verify_displayed(items[i], "selected item")
                 } else {
-                    verify(!item.enabled, " non-selected item disabled")
-                    verify(!item.highlighted, " non-selected item not highlighted")
+                    verify(!items[i].enabled, " non-selected item disabled")
+                    verify(!items[i].highlighted,
+                            " non-selected item not highlighted")
                 }
             }
 
             // 2. the context menu spans the width of the grid view
-            var grid = verify_find(main, {}, "SilicaGridView")
-            var menu = verify_find(main, {}, "ContextMenu")
-            var menux = grid.mapFromItem(menu.parent, menu.x, menu.y).x
+            var menu = find_context_menu(main)
+            verify(menu, "context menu found")
+            var grid = find_flickable_parent(menu)
+            var menux = grid.mapFromItem(menu, 0, 0).x
             compare(menux, 0, "contextmenu spans grid view")
             compare(menu.width, grid.width, "contextmenu spans grid view")
 
             // 3. delegates under the first row have moved down to make
             //    room for the context menu
-            verify_displayed(menu)
             // Try not to get too involved in implementation details.
             // Pick out the actual text elements and make sure none of
             // them overlap the context menu or each other.
             var checkitems = []
+            verify_displayed(menu)
             checkitems.push(menu)
             for (var i = 0; i < notes.length; i++) {
-                var checkitem = find(items[i], { "text": notes[i] }, "Text")
+                var checkitem = find_real_text(items[i], notes[i])
                 verify_displayed(checkitem)
                 checkitems.push(checkitem)
             }
@@ -91,8 +89,10 @@ Notes {
         }
 
         function test_menu_click() {
-            var menu = verify_find(main, {}, "ContextMenu")
-            var action = verify_find(menu, { "text": "notes-la-move-to-top" })
+            var menu = find_context_menu(main)
+            verify(menu, "context menu found")
+            var action = find_text(menu, "notes-la-move-to-top")
+            verify(action, "move-to-top action found")
             click_center(action)
 
             wait(1)
@@ -105,9 +105,10 @@ Notes {
             for (var i = 2; i < notes.length; i++) {
                 notemap[i] = i
             }
+
+            var items = find_text_items(main, notes)
             for (var i = 0; i < notes.length; i++) {
-                var item = find(main, { "text": notes[i] })
-                var pos = main.mapFromItem(item, 0, 0)
+                var pos = main.mapFromItem(items[i], 0, 0)
                 compare(pos, itemlocs[notemap[i]],
                         "note '" + notes[i] + "' moved to index " + notemap[i])
                 compare(notesModel.get(notemap[i]).text, notes[i],
@@ -118,12 +119,12 @@ Notes {
         function test_menu_try_again() {
             // Regression test for a bug where the context menu would open on
             // an incorrect item when reopened after "move to top"
-            var item = find(main, { "text": notes[3] })
+            var item = find_text(main, notes[3])
             verify_displayed(item)
 
             longclick_center(item)
 
-            var menu = find(main, {}, "ContextMenu")
+            var menu = find_context_menu(main)
             if (!menu)
                 fail("context menu did not open on second use")
             if (!item.highlighted)

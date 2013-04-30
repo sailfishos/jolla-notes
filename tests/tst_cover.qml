@@ -25,9 +25,13 @@ Notes {
 
         function test_cover_text() {
             main.deactivate()
-            var cover = wait_find("cover page", main, { "objectName": "coverpage" })
-            wait_for("application cover visible", function() { return cover.visible })
-            var text = find(cover, { "text": "Beta" })
+            var cover = wait_for("cover page created", function() {
+                return find_by_name(main, "coverpage")
+            })
+            wait_for("application cover visible", function() {
+                return cover.visible
+            })
+            var text = find_text(cover, "Beta")
             verify(text, "cover shows current note text")
         }
 
