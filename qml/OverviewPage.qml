@@ -120,6 +120,7 @@ Page {
                     script: {
                         moveToTopItem.opacity = 1.0
                         notesModel.moveToTop(moveToTopItem.index)
+                        moveToTopItem = null
                     }
                 }
             }
