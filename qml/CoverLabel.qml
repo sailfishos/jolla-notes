@@ -32,11 +32,17 @@ Item {
     Label {
         id: pageNumberLabel
         color: label.color
-        font.pixelSize: theme.fontSizeExtraLarge
+
+        property int number: parseInt(text)
+
         anchors {
             right: parent.right
             bottom: labelColumn.bottom
             bottomMargin: -4
         }
+        font.pixelSize: number < 10 ? theme.fontSizeExtraLarge
+                                    : number < 100 ? theme.fontSizeLarge
+                                                   : number < 1000 ? theme.fontSizeMedium
+                                                                   : theme.fontSizeSmall
     }
 }
