@@ -31,6 +31,34 @@ TestCase {
         })
     }
 
+    function dump_tree(item, indent) {
+        if (indent === undefined)
+            indent = ""
+        var desc = indent
+        if (item.hasOwnProperty("x") && item.hasOwnProperty("y")) {
+            desc += "* " + item + " " + item.x + "," + item.y
+        } else {
+            desc += "- " + item
+        }
+        if (item.hasOwnProperty("objectName") && item.objectName.length > 0) {
+            desc += " '" + item.objectName + "'"
+        }
+        if (item.hasOwnProperty("text")) {
+            if (item.text.length > 10) {
+                desc += " text: '" + item.text.substr(0, 7) + "...'"
+            } else {
+                desc += " text: '" + item.text + "'"
+            }
+        }
+        console.log(desc)
+        indent = indent + " "
+        if (item.children) {
+            for (var i = 0; i < item.children.length; i++) {
+                dump_resource_tree(item.children[i], indent)
+            }
+        }
+    }
+
     function debug_item(item) {
         var dump = ""
         for (var key in item) {

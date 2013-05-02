@@ -34,6 +34,7 @@ Notes {
                        && it.visible && it.opacity == 1.0
             })
             fastforward_remorseitem(remorse)
+            wait(1)
 
             // Check that the note has been deleted
             wait_for("note item gone from overview", function () {
@@ -57,9 +58,6 @@ Notes {
             wait_pagestack("note page closed", 1)
 
             check_deletion(old_count, notes[2])
-            // @todo: without this delay the next testcase deletes the wrong note
-            // Figure out what we really need to wait for
-            wait(1000)
         }
 
         function test_delete_from_overview() {
