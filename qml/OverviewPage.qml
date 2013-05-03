@@ -55,10 +55,14 @@ Page {
             property int index: model.index
 
             function deleteNote() {
+                var remorse = remorsecomponent.createObject(view)
                 //: Remorse item text, will delete note when timer expires
                 //% "Deleting"
                 remorse.execute(noteitem, qsTrId("notes-la-deleting"),
-                    function() { notesModel.deleteNote(index) })
+                                function() {
+                    notesModel.deleteNote(index)
+                    remorse.destroy(1)
+                })
             }
 
             NoteItem {
@@ -77,9 +81,6 @@ Page {
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
                 onPressAndHold: view.showContextMenu(itemcontainer)
-
-
-                RemorseItem { id: remorse }
             }
         }
 
@@ -152,5 +153,10 @@ Page {
                 onClicked: contextmenu.parent.deleteNote()
             }
         }
+    }
+
+    Component {
+        id: remorsecomponent
+        RemorseItem { }
     }
 }
