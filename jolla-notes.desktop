@@ -3,4 +3,5 @@ Type=Application
 Name=Notes
 Icon=icon-launcher-notes
 Exec=invoker --type=j -s /usr/bin/jolla-notes
-Comment=Sailfish UI application
+X-MeeGo-Logical-Id=notes-de-name
+X-MeeGo-Translation-Catalog=notes
