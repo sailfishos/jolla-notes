@@ -361,4 +361,11 @@ TestCase {
             wait(1)
         }
     }
+
+    // To speed up testing, speed up the pagestack transition animations
+    // from now on. It's not the default because some apps may rely on
+    // the transitions taking longer than their own animations.
+    function fastforward_page_transitions() {
+        pageStack._transitionDuration = 10
+    }
 }

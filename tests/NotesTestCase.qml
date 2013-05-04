@@ -5,6 +5,11 @@
 import QtQuickTest 1.0
 
 SilicaTestCase {
+
+    // Notes doesn't rely on the pagestack transition speed,
+    // so speed it up for faster tests.
+    onRunningChanged: if (running) fastforward_page_transitions()
+
     // This is temporary -- some debug logging until the keyboard related
     // tests are stable in the VM.
     SignalSpy {
