@@ -80,6 +80,22 @@ TestCase {
                 dump_item(item.children[i], name, recurse + 1)
     }
 
+    function _list_item_tree(item, result) {
+        result.push(item)
+        if (item.children === undefined)
+            return
+
+        for (var i = 0; i < item.children.length; i++) {
+            _list_item_tree(item.children[i], result)
+        }
+    }
+
+    function list_item_tree(item) {
+        var result = []
+        _list_item_tree(item, result)
+        return result
+    }
+
     // Find a visual item in item's tree that matches the predicate func
     function find(item, func) {
         if (func(item))
@@ -180,6 +196,34 @@ TestCase {
         return wait_for(description, function() {
             return find(item, func)
         })
+    }
+
+    // Monitor an item and its tree of children and wait for their
+    // properties to stop changing.
+    //
+    // Since the animation objects themselves are usually not children
+    // (they are under "resources"), this function is not suitable for
+    // animations that are just timers. If there's no gradual change to
+    // some visual item then the animation will not be detected.
+    function wait_animation_stop(item) {
+        var prevstate = ""
+        var itemstate = ""
+
+        wait_for("wait_animation_stop", function() {
+            prevstate = itemstate
+            itemstate = item_tree_state(item)
+            return prevstate == itemstate
+        })
+    }
+
+    // Return a summary of the state of the properties of
+    // an item and its tree of children.
+    function item_tree_state(item) {
+        var items = list_item_tree(item)
+        for (var i = 0; i < items.length; i++) {
+            items[i] = debug_item(items[i])
+        }
+        return items.join("\n\n")
     }
 
     function click_center(item) {

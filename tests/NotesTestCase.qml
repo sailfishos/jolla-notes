@@ -45,10 +45,7 @@ SilicaTestCase {
             compare(pageStack.currentPage.text, '')
             pageStack.currentPage.text = notes[i]
             wait_inputpanel_open()
-            // Without this wait, the next select_pull_down sometimes
-            // fails in VM testing.
-            // @todo: find out what we're waiting for
-            wait(1000)
+            wait_animation_stop(pageStack.currentPage)
         }
         compare(notesModel.count, oldCount + notes.length,
                 "" + notes.length + " notes created")
