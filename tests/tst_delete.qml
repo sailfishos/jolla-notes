@@ -34,7 +34,6 @@ Notes {
                        && it.visible && it.opacity == 1.0
             })
             fastforward_remorseitem(remorse)
-            wait(1)
 
             // Check that the note has been deleted
             wait_for("note item gone from overview", function () {

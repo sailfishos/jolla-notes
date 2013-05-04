@@ -26,7 +26,7 @@ Notes {
             wait_inputpanel_closed()
 
             // Remember the starting positions of the items
-            var items = find_text_items(main, notes)
+            var items = verify_find_text_items(main, notes)
             var locs = []
             for (var i = 0; i < items.length; i++) {
                 locs.push(main.mapFromItem(items[i], 0, 0))
@@ -37,7 +37,7 @@ Notes {
         }
 
         function test_menu() {
-            var items = find_text_items(main, notes)
+            var items = verify_find_text_items(main, notes)
 
             var old_height = items[1].height
             verify_displayed(items[1])

@@ -128,7 +128,7 @@ TestCase {
 
     // Find items for all texts in the texts array, and verify that
     // they were all found.
-    function find_text_items(item, texts) {
+    function verify_find_text_items(item, texts) {
         var items = []
         for (var i = 0; i < texts.length; i++) {
             var found = find_text(item, texts[i])
@@ -233,20 +233,20 @@ TestCase {
         return true
     }
 
-    // True iff the combined opacity of the item and its parents < 0.3
-    function faded(item) {
+    // True iff the combined opacity of the item and its parents under limit
+    function faded(item, limit) {
         var opacity = 1.0
         while (item) {
             opacity = opacity * item.opacity
             item = item.parent
         }
-        return opacity < 0.3
+        return opacity < limit
     }
 
     function verify_displayed(item, name) {
         verify(item, name + " found")
         verify(visible(item), name + " is visible")
-        verify(!faded(item), name + " is opaque")
+        verify(!faded(item, 0.3), name + " is opaque")
         verify(onscreen(item), name + " is in screen bounds")
     }
 
@@ -358,6 +358,7 @@ TestCase {
             remorseitem._timeout = 1
             wait(2)
             remorseitem._timeout = old_timeout
+            wait(1)
         }
     }
 }
