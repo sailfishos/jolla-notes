@@ -12,9 +12,9 @@ ListModel {
         NoteScript.populateNotes(listmodel)
     }
 
-    function newNote(pagenr) {
+    function newNote(pagenr, initialtext) {
         var color = NoteScript.nextColor()
-        NoteScript.newNote(pagenr, color)
+        NoteScript.newNote(pagenr, color, initialtext)
 
         var i
         for (i = count - 1; i >= 0; i--) {
@@ -24,7 +24,8 @@ ListModel {
             else
                 break;
         }
-        insert(i + 1, { "pagenr": pagenr, "text": '', "color": color })
+        insert(i + 1, { "pagenr": pagenr, "text": initialtext, "color": color })
+        return i + 1
     }
 
     function updateNote(idx, text) {

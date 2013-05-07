@@ -23,7 +23,7 @@ CoverBackground {
             model: notesModel
             interactive: false
             width: parent.width
-            visible: pageStack.depth === 1
+            visible: pageStack.depth === 1 || pageStack.currentPage.potentialPage
             height: 3 *itemHeight
 
             delegate: CoverLabel {
@@ -49,6 +49,7 @@ CoverBackground {
             pageNumber: model ? model.pagenr : 0
             states: State {
                 when: notesModel.count > 0 && pageStack.depth > 1
+                      && pageStack.currentPage.currentIndex >= 0
                 PropertyChanges {
                     target: noteLabel
                     visible: true

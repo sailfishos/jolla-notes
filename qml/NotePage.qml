@@ -4,7 +4,10 @@ import Sailfish.Silica 1.0
 Page {
     id: notepage
 
+    // currentIndex is for allocated notes.
+    // potentialPage is for empty notes that haven't been added to the db yet.
     property int currentIndex: -1
+    property int potentialPage
     property alias editMode: textArea.focus
     property alias text: textArea.text
 
@@ -12,12 +15,18 @@ Page {
 
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
+            potentialPage = 0
             var item = notesModel.get(currentIndex)
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
             noteview.pageNumber = item.pagenr
-        } else {
+        }
+    }
+
+    onPotentialPageChanged: {
+        if (potentialPage) {
+            currentIndex = -1
             noteview.savedText = ''
             noteview.text = ''
             noteview.color = "white"
@@ -28,7 +37,7 @@ Page {
     SilicaFlickable {
         id: noteview
 
-        property color color
+        property color color: "white"
         property alias text: textArea.text
         property int pageNumber
         property string savedText
@@ -56,8 +65,10 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            var overview = pageStack.previousPage()
-                            overview.showDeleteNote(notepage.currentIndex)
+                            if (notepage.currentIndex >= 0) {
+                                var overview = pageStack.previousPage()
+                                overview.showDeleteNote(notepage.currentIndex)
+                            }
                             pageStack.pop(null, true)
                             noteview.opacity = 1.0
                         }
@@ -80,8 +91,10 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            notesModel.newNote(noteview.pageNumber + 1)
-                            notepage.currentIndex = notepage.currentIndex + 1
+                            if (!potentialPage)
+                                potentialPage = noteview.pageNumber + 1
+                            else
+                                text = ''
                             notepage.editMode = true
                             noteview.opacity = 1.0
                         }
@@ -92,7 +105,13 @@ Page {
                 //: Jump back to overview page
                 //% "Overview"
                 text: qsTrId("notes-me-overview")
-                onClicked: pageStack.pop()
+                onClicked: {
+                    if (currentIndex >= 0 && noteview.text.trim() == '') {
+                        notesModel.deleteNote(currentIndex)
+                        currentIndex = -1
+                    }
+                    pageStack.pop()
+                }
             }
         }
 
@@ -109,9 +128,16 @@ Page {
             placeholderText: qsTrId("notes-ph-empty-note")
 
             onTextChanged: {
-                if (text != noteview.savedText)
-                    notesModel.updateNote(currentIndex, text)
-                noteview.savedText = text
+                if (text != noteview.savedText) {
+                    noteview.savedText = text
+                    if (potentialPage) {
+                        if (text.trim() != '') {
+                            currentIndex = notesModel.newNote(potentialPage, text)
+                        }
+                    } else {
+                        notesModel.updateNote(currentIndex, text)
+                    }
+                }
             }
         }
     }    

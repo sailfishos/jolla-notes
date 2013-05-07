@@ -66,13 +66,13 @@ function nextColor() {
     return availableColors[index]
 }
 
-function newNote(pagenr, color) {
+function newNote(pagenr, color, initialtext) {
     var db = openDb()
     db.transaction(function (tx) {
         tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr >= ?',
                       [pagenr])
         tx.executeSql('INSERT INTO notes (pagenr, color, body) VALUES (?, ?, ?)',
-                      [pagenr, color, ''])
+                      [pagenr, color, initialtext])
     })
 }
 

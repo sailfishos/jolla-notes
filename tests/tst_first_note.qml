@@ -36,6 +36,8 @@ Notes {
             keyClick(Qt.Key_O)
             compare(pageStack.currentPage.text, "hello",
                     "typed text went into note")
+            compare(notesModel.count, 1,
+                    "note saved after text was typed")
         }
 
         function test_4_back() {

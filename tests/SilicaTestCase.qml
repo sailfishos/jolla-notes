@@ -227,16 +227,12 @@ TestCase {
     }
 
     function click_center(item) {
-        var cx = item.x + item.width/2
-        var cy = item.x + item.height/2
-        var pos = main.mapFromItem(item, cx, cy)
+        var pos = main.mapFromItem(item, item.width/2, item.height/2)
         mouseClick(main, pos.x, pos.y)
     }
 
     function longclick_center(item) {
-        var cx = item.x + item.width/2
-        var cy = item.x + item.height/2
-        var pos = main.mapFromItem(item, cx, cy)
+        var pos = main.mapFromItem(item, item.width/2, item.height/2)
         mousePress(main, pos.x, pos.y)
         wait(1100)  // a bit longer than 1 second
         mouseRelease(main, pos.x, pos.y)

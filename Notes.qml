@@ -11,8 +11,7 @@ ApplicationWindow
     property NotesModel notesModel: NotesModel { id: notesModel }
 
     function openNewNote() {
-        notesModel.newNote(1)
-        pageStack.push(notePage, {currentIndex: 0, editMode: true})
+        pageStack.push(notePage, {potentialPage: 1, editMode: true})
     }
 
     Component {

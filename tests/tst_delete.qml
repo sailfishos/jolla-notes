@@ -50,6 +50,7 @@ Notes {
             var old_count = notesModel.count
 
             var item = find_text(main, notes[2])
+            verify(item, "Note '" + notes[2] + "' found")
             click_center(item)
             wait_pagestack("note page opened", 2)
 
@@ -63,6 +64,7 @@ Notes {
             var old_count = notesModel.count
 
             var item = find_text(main, notes[3])
+            verify(item, "Note '" + notes[3] + "' found")
             longclick_center(item)
 
             // Context menu should now be open
@@ -72,6 +74,33 @@ Notes {
             click_center(action)
 
             check_deletion(old_count, notes[3])
+        }
+
+        function test_delete_by_emptying() {
+            var old_count = notesModel.count
+
+            var item = find_text(main, notes[1])
+            verify(item, "Note '" + notes[1] + "' found")
+            click_center(item)
+            wait_pagestack("note page opened", 2)
+
+            click_center(pageStack.currentPage)
+            wait_inputpanel_open()
+
+            for (var i = notes[1].length; i > 0; i--)
+                keyPress(Qt.Key_Backspace)
+            compare(item.text, '', "message empty")
+
+            select_pull_down("notes-me-overview")
+            wait_pagestack("back to overview", 1)
+
+            verify(!find_text(pageStack.currentPage, notes[1]),
+                   "note item gone from overview")
+            compare(notesModel.count, old_count-1, "note has been deleted")
+            for (var i = 0; i < notesModel.count; i++) {
+                if (notesModel.get(i).text == notes[1])
+                    fail("note deleted from model")
+            }
         }
 
         function cleanupTestCase() {
