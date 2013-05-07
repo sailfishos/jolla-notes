@@ -17,7 +17,7 @@ CoverBackground {
         ListView {
             id: listView
 
-            property real itemHeight: 74
+            property real itemHeight: 74/327 * theme.coverSizeLarge.height
 
             clip: true
             model: notesModel
