@@ -40,7 +40,7 @@ Item {
             bottom: labelColumn.bottom
             bottomMargin: -4
         }
-        font.pixelSize: number < 10 ? theme.fontSizeExtraLarge
+        font.pixelSize: number < 10 ? theme.fontSizeHuge
                                     : number < 100 ? theme.fontSizeLarge
                                                    : number < 1000 ? theme.fontSizeMedium
                                                                    : theme.fontSizeSmall
