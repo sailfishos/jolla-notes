@@ -54,9 +54,9 @@ BackgroundItem {
 
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            width: 64
-            height: 8
-            radius: 2
+            width: theme.iconSizeMedium
+            height: theme.paddingSmall
+            radius: Math.round(theme.paddingSmall/3)
             color: noteitem.color
         }
     }
