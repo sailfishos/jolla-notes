@@ -31,6 +31,9 @@ Summary: Automated tests for Jolla Notes
 Requires: %{name} = %{version}-%{release}
 Requires: qtest-qml
 Requires: mce-tools
+# workaround for a bug in qtchooser.
+# when the tests run without this, it can be dropped
+Requires: qt-qmake
 
 %description tests
 This package installs automated test scripts for jolla-notes,
