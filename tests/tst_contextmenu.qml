@@ -40,7 +40,7 @@ Notes {
             var items = verify_find_text_items(main, notes)
 
             var old_height = items[1].height
-            verify_displayed(items[1])
+            verify_displayed(items[1], "note '" + notes[1] + "'")
             longclick_center(items[1])
             // Context menu should now have opened. Check that:
             // 1. all other delegates are faded and disabled
@@ -70,11 +70,11 @@ Notes {
             // Pick out the actual text elements and make sure none of
             // them overlap the context menu or each other.
             var checkitems = []
-            verify_displayed(menu)
+            verify_displayed(menu, "context menu")
             checkitems.push(menu)
             for (var i = 0; i < notes.length; i++) {
                 var checkitem = find_real_text(items[i], notes[i])
-                verify_displayed(checkitem)
+                verify_displayed(checkitem, "note '" + notes[i] + "'")
                 checkitems.push(checkitem)
             }
             var ov = overlap(grid.contentItem, checkitems)
@@ -117,7 +117,7 @@ Notes {
             // Regression test for a bug where the context menu would open on
             // an incorrect item when reopened after "move to top"
             var item = find_text(main, notes[3])
-            verify_displayed(item)
+            verify_displayed(item, "note '" + notes[3] + "'")
 
             longclick_center(item)
 
