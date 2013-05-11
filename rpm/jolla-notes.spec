@@ -34,6 +34,7 @@ Requires: mce-tools
 # workaround for a bug in qtchooser.
 # when the tests run without this, it can be dropped
 Requires: qt-qmake
+Requires: meegotouch-compositor-tools
 
 %description tests
 This package installs automated test scripts for jolla-notes,
