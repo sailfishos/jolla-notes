@@ -15,10 +15,13 @@
 //  - Tests run both in virtual machines and on the device.
 // Of course not all of these are fully achievable. It's a balance.
 
+import QtQuick 1.1
 import QtQuickTest 1.0
 
 TestCase {
     property int timeout: 5000
+    // convenience binding for test cases
+    property Item currentPage: pageStack.currentPage
 
     SignalSpy {
         id: clickspy
@@ -294,7 +297,7 @@ TestCase {
         // Refer to page instead of main, because main might
         // be rotated due to screen orientation. The coordinate
         // transformation can then be handled by mapFromItem.
-        var page = main.pageStack.currentPage
+        var page = currentPage
 
         var item = find_text(page, option)
         verify(item, "Menu item " + option + " found")

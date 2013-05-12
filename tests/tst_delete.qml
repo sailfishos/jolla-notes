@@ -28,7 +28,7 @@ Notes {
         }
 
         function check_deletion(old_count, notetext) {
-            var remorse = wait_find("remorse item started", main,
+            var remorse = wait_find("remorse item started", currentPage,
                                     function (it) {
                 return it.text == "notes-la-deleting"
                        && it.visible && it.opacity == 1.0
@@ -37,7 +37,7 @@ Notes {
 
             // Check that the note has been deleted
             wait_for("note item gone from overview", function () {
-                return !find_text(main, notetext)
+                return !find_text(currentPage, notetext)
             })
             compare(notesModel.count, old_count-1, "a note has been deleted")
             for (var i = 0; i < notesModel.count; i++) {
@@ -49,7 +49,7 @@ Notes {
         function test_delete_from_notepage() {
             var old_count = notesModel.count
 
-            var item = find_text(main, notes[2])
+            var item = find_text(currentPage, notes[2])
             verify(item, "Note '" + notes[2] + "' found")
             click_center(item)
             wait_pagestack("note page opened", 2)
@@ -63,13 +63,13 @@ Notes {
         function test_delete_from_overview() {
             var old_count = notesModel.count
 
-            var item = find_text(main, notes[3])
+            var item = find_text(currentPage, notes[3])
             verify(item, "Note '" + notes[3] + "' found")
             longclick_center(item)
 
             // Context menu should now be open
 
-            var action = find_text(main, "notes-la-delete")
+            var action = find_text(currentPage, "notes-la-delete")
             verify_displayed(action, "context menu delete note action")
             click_center(action)
 
@@ -79,12 +79,12 @@ Notes {
         function test_delete_by_emptying() {
             var old_count = notesModel.count
 
-            var item = find_text(main, notes[1])
+            var item = find_text(currentPage, notes[1])
             verify(item, "Note '" + notes[1] + "' found")
             click_center(item)
             wait_pagestack("note page opened", 2)
 
-            click_center(pageStack.currentPage)
+            click_center(currentPage)
             wait_inputpanel_open()
 
             for (var i = notes[1].length; i > 0; i--)
@@ -94,7 +94,7 @@ Notes {
             select_pull_down("notes-me-overview")
             wait_pagestack("back to overview", 1)
 
-            verify(!find_text(pageStack.currentPage, notes[1]),
+            verify(!find_text(currentPage, notes[1]),
                    "note item gone from overview")
             compare(notesModel.count, old_count-1, "note has been deleted")
             for (var i = 0; i < notesModel.count; i++) {

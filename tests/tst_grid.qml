@@ -29,7 +29,7 @@ Notes {
 
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)
-                var item = find_text(main, notes[i])
+                var item = find_text(currentPage, notes[i])
                 verify_displayed(item, "noteitem " + pgnr)
                 verify_displayed(find_text(item, pgnr), "page number " + pgnr)
                 var colorbar = find(item, function(it) {

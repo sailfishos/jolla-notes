@@ -56,7 +56,7 @@ Notes {
             wait_pagestack("back to overview", 1)
             wait_inputpanel_closed()
 
-            var item = find_text(pageStack.currentPage, "new")
+            var item = find_text(currentPage, "new")
             verify_displayed(item, "new note item")
         }
 
@@ -68,7 +68,7 @@ Notes {
             wait_inputpanel_open()
 
             keyPress(Qt.Key_Space)
-            verify(find_text(pageStack.currentPage, " "),
+            verify(find_text(currentPage, " "),
                    "space char went into note")
 
             select_pull_down("notes-me-overview")

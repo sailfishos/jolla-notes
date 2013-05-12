@@ -16,14 +16,14 @@ Notes {
 
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
-            var comforter = find_text(main, "notes-la-write-note")
+            var comforter = find_text(currentPage, "notes-la-write-note")
             verify_displayed(comforter, "Write-note text on empty overview")
         }
 
         function test_2_tap_to_write() {
             select_pull_down("notes-me-new-note")
             wait_pagestack("new note page opened", 2)
-            compare(pageStack.currentPage.text, '', "new note page is empty")
+            compare(currentPage.text, '', "new note page is empty")
 
             wait_inputpanel_open()
         }
@@ -34,7 +34,7 @@ Notes {
             keyClick(Qt.Key_L)
             keyClick(Qt.Key_L)
             keyClick(Qt.Key_O)
-            compare(pageStack.currentPage.text, "hello",
+            compare(currentPage.text, "hello",
                     "typed text went into note")
             compare(notesModel.count, 1,
                     "note saved after text was typed")
@@ -46,13 +46,13 @@ Notes {
         }
 
         function test_5_no_comforter() {
-            var comforter = find_text(main, "notes-la-write-note")
+            var comforter = find_text(currentPage, "notes-la-write-note")
             verify(!comforter || !visible(comforter),
                    "No write-note text when note has been written")
         }
 
         function test_6_no_tap_to_write() {
-            click_center(pageStack.currentPage)
+            click_center(currentPage)
             // This is a bit arbitrary... how long should we wait
             // to check that something didn't happen?
             // (spying the "clicked" signal would work but that's

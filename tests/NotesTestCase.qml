@@ -42,10 +42,10 @@ SilicaTestCase {
                 return it.text == ""
                        && it.placeholderText == "notes-ph-empty-note"
             })
-            compare(pageStack.currentPage.text, '')
-            pageStack.currentPage.text = notes[i]
+            compare(currentPage.text, '')
+            currentPage.text = notes[i]
             wait_inputpanel_open()
-            wait_animation_stop(pageStack.currentPage)
+            wait_animation_stop(currentPage)
         }
         compare(notesModel.count, oldCount + notes.length,
                 "" + notes.length + " notes created")

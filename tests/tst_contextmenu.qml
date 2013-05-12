@@ -26,7 +26,7 @@ Notes {
             wait_inputpanel_closed()
 
             // Remember the starting positions of the items
-            var items = verify_find_text_items(main, notes)
+            var items = verify_find_text_items(currentPage, notes)
             var locs = []
             for (var i = 0; i < items.length; i++) {
                 locs.push(main.mapFromItem(items[i], 0, 0))
@@ -37,7 +37,7 @@ Notes {
         }
 
         function test_menu() {
-            var items = verify_find_text_items(main, notes)
+            var items = verify_find_text_items(currentPage, notes)
 
             var old_height = items[1].height
             verify_displayed(items[1], "note '" + notes[1] + "'")
@@ -57,7 +57,7 @@ Notes {
             }
 
             // 2. the context menu spans the width of the grid view
-            var menu = find_context_menu(main)
+            var menu = find_context_menu(currentPage)
             verify(menu, "context menu found")
             var grid = find_flickable_parent(menu)
             var menux = grid.mapFromItem(menu, 0, 0).x
@@ -116,12 +116,12 @@ Notes {
         function test_menu_try_again() {
             // Regression test for a bug where the context menu would open on
             // an incorrect item when reopened after "move to top"
-            var item = find_text(main, notes[3])
+            var item = find_text(currentPage, notes[3])
             verify_displayed(item, "note '" + notes[3] + "'")
 
             longclick_center(item)
 
-            var menu = find_context_menu(main)
+            var menu = find_context_menu(currentPage)
             if (!menu)
                 fail("context menu did not open on second use")
             if (!item.highlighted)
