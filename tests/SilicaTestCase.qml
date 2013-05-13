@@ -298,13 +298,15 @@ TestCase {
         // be rotated due to screen orientation. The coordinate
         // transformation can then be handled by mapFromItem.
         var page = currentPage
+        wait_animation_stop(page)
 
         var item = find_text(page, option)
         verify(item, "Menu item " + option + " found")
 
+        var real_height = page.height + pageStack.panelSize
         var drag_x = page.width / 2
-        var drag_y = page.height * 0.20
-        var drag_end = page.height * 0.80
+        var drag_y = real_height * 0.20
+        var drag_end = real_height * 0.80
         var pos = main.mapFromItem(page, drag_x, drag_y)
         mousePress(main, pos.x, pos.y)
         while (drag_y < drag_end) {

@@ -48,9 +48,9 @@ Notes {
             select_pull_down("notes-me-new-note")
             wait_animation_stop(pageStack)
 
-            keyPress(Qt.Key_N)
-            keyPress(Qt.Key_E)
-            keyPress(Qt.Key_W)
+            keyClick(Qt.Key_N)
+            keyClick(Qt.Key_E)
+            keyClick(Qt.Key_W)
 
             select_pull_down("notes-me-overview")
             wait_pagestack("back to overview", 1)

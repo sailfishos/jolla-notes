@@ -34,6 +34,7 @@ Notes {
             keyClick(Qt.Key_L)
             keyClick(Qt.Key_L)
             keyClick(Qt.Key_O)
+
             compare(currentPage.text, "hello",
                     "typed text went into note")
             compare(notesModel.count, 1,
