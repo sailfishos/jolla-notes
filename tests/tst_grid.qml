@@ -32,11 +32,9 @@ Notes {
                 var item = find_text(currentPage, notes[i])
                 verify_displayed(item, "noteitem " + pgnr)
                 verify_displayed(find_text(item, pgnr), "page number " + pgnr)
-                var colorbar = find(item, function(it) {
-                    return it.width == 64 && ("" + it.color) == colors[i]
-                })
-                verify_displayed(colorbar, "color bar " + pgnr)
+                var colorbar = find_by_name(item, "colortag")
                 compare(colorbar.color, colors[i], "note " + pgnr + " color")
+                verify_displayed(colorbar, "color bar " + pgnr)
                 // @todo: verify tint
             }
         }

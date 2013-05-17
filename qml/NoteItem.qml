@@ -51,6 +51,7 @@ BackgroundItem {
 
         Rectangle {
             id: colortag
+            objectName: "colortag" // used by the tests
 
             anchors.bottom: parent.bottom
             anchors.left: parent.left
