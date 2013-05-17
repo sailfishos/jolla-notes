@@ -5,11 +5,7 @@
        <set name="feature-tests" feature="Jolla Notes">
            <description>Collection of Jolla Notes tests</description>
            <case manual="false" name="qmltestrunner">
-               <step>sleep 60</step>
-               <step>/usr/sbin/mcetool -D on</step>
-               <step>windowctl L `windowstack | grep "'Events'" | cut -f1 -d' '` `windowstack | grep "'Lipstick'" | cut -f1 -d' '`</step>
                <step>cd /opt/tests/jolla-notes/ &amp;&amp; XDG_DATA_HOME=/tmp/testdata DISPLAY=:0 qmltestrunner</step>
-               <step>/usr/sbin/mcetool -D off</step>
            </case>
        </set>
    </suite>
