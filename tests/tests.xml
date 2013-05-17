@@ -4,7 +4,7 @@
        <description>Jolla Notes automatic tests</description>
        <set name="feature-tests" feature="Jolla Notes">
            <description>Collection of Jolla Notes tests</description>
-           <case manual="false" name="qmltestrunner">
+           <case manual="false" name="qmltestrunner" timeout="180">
                <step>cd /opt/tests/jolla-notes/ &amp;&amp; XDG_DATA_HOME=/tmp/testdata DISPLAY=:0 qmltestrunner</step>
            </case>
        </set>
