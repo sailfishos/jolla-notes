@@ -119,7 +119,6 @@ Page {
 
             SequentialAnimation {
                 id: moveToTopAnim
-                objectName: "moveToTopAnim" // used by tests
 
                 NumberAnimation {
                     target: moveToTopItem

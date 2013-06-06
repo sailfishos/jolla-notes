@@ -2,7 +2,7 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    objectName: "coverpage" // used by the tests
+    property string testName: "coverpage"
 
     CoverPlaceholder {
         //: Coverpage text when there are no notes

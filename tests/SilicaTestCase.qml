@@ -37,7 +37,9 @@ TestCase {
         } else {
             desc += "- " + item
         }
-        if (item.hasOwnProperty("objectName") && item.objectName.length > 0) {
+        if (item.hasOwnProperty("testName") && item.testName.length > 0) {
+            desc += " '" + item.testName + "'"
+        } else if (item.hasOwnProperty("objectName") && item.objectName.length > 0) {
             desc += " '" + item.objectName + "'"
         }
         if (item.hasOwnProperty("text")) {
@@ -126,9 +128,10 @@ TestCase {
         })
     }
 
-    // Find an item by objectName
-    function find_by_name(item, name) {
-        return find(item, function(it) { return it.objectName == name })
+    function find_by_testname(item, name) {
+        return find(item, function(it) {
+            return it.hasOwnProperty("testName") && it.testName == name
+        })
     }
 
     // Helper functions for find() funcs

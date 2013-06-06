@@ -26,7 +26,7 @@ Notes {
         function test_cover_text() {
             main.deactivate()
             var cover = wait_for("cover page created", function() {
-                return find_by_name(main, "coverpage")
+                return find_by_testname(main, "coverpage")
             })
             wait_for("application cover visible", function() {
                 return cover.visible
