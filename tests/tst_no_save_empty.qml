@@ -1,17 +1,22 @@
 // Test that empty notes are not saved
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
         name: "NoSaveEmpty"
         when: windowShown
+
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
 
         function test_empty_not_saved() {
             select_pull_down("notes-me-new-note")

@@ -3,14 +3,15 @@
 #define SAILFISHAPPLICATION_H
 
 class QString;
-class QApplication;
-class QDeclarativeView;
+class QGuiApplication;
+class QQuickView;
 
 namespace Sailfish {
 
-QApplication *createApplication(int &argc, char **argv);
-QDeclarativeView *createView(const QString &);
-void showView(QDeclarativeView* view);
+QGuiApplication *createApplication(int &argc, char **argv);
+QQuickView *createView(const QString & = QString::null);
+void setSource(QQuickView *view, const QString &file);
+void showView(QQuickView* view);
 
 }
 

@@ -1,5 +1,6 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Silica.theme 1.0
 
 CoverBackground {
     property string testName: "coverpage"
@@ -13,11 +14,11 @@ CoverBackground {
     }
     Item {
         visible: notesModel.count > 0
-        anchors { fill: parent; margins: theme.paddingLarge }
+        anchors { fill: parent; margins: Theme.paddingLarge }
         ListView {
             id: listView
 
-            property real itemHeight: 74/327 * theme.coverSizeLarge.height
+            property real itemHeight: 74/327 * Theme.coverSizeLarge.height
 
             clip: true
             model: notesModel
@@ -43,9 +44,9 @@ CoverBackground {
             visible: false
             maximumLineCount: 7
             width: parent.width
-            height: listView.height + theme.paddingSmall
+            height: listView.height + Theme.paddingSmall
             text: model ? model.text : ""
-            color: model ? model.color :  theme.primaryColor
+            color: model ? model.color :  Theme.primaryColor
             pageNumber: model ? model.pagenr : 0
             states: State {
                 when: notesModel.count > 0 && pageStack.depth > 1

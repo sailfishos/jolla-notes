@@ -1,5 +1,8 @@
-#include <QApplication>
-#include <QDeclarativeView>
+#include <QGuiApplication>
+#include <QQuickView>
+#include <QQmlEngine>
+#include <QStandardPaths>
+#include <QDir>
 #include <QLocale>
 #include <QTranslator>
 
@@ -12,11 +15,18 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QScopedPointer<QTranslator> translator(new QTranslator);
     translator->load(QLocale(), "notes", "-", TRANSLATIONS_PATH);
 
-    QScopedPointer<QApplication> app(Sailfish::createApplication(argc, argv));
+    QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
+    app->setApplicationName("jolla-notes");
     app->installTranslator(engineeringEnglish.data());
     app->installTranslator(translator.data());
 
-    QScopedPointer<QDeclarativeView> view(Sailfish::createView("Notes.qml"));
+    QScopedPointer<QQuickView> view(Sailfish::createView());
+    // Set the offlineStoragePath explicitly in case we are boosted
+    QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    dataLocation += QDir::separator() + QLatin1String("QML")
+                    + QDir::separator() + QLatin1String("OfflineStorage");
+    view->engine()->setOfflineStoragePath(dataLocation);
+    Sailfish::setSource(view.data(), "Notes.qml");
     Sailfish::showView(view.data());
     
     int result = app->exec();

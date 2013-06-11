@@ -1,18 +1,23 @@
 // Test that note items are visible in the overview,
 // with tint, page number and color tag.
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
         name: "NoteGrid"
         when: windowShown
+
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
 
         function test_noteitems() {
             var notes = ["Foo", "Bar", "Gnu", "Xyzzy"]

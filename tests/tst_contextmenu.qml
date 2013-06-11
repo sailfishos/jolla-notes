@@ -1,12 +1,12 @@
 // Test opening and closing of the context menu
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
@@ -16,7 +16,15 @@ Notes {
         property variant notes
         property variant itemlocs
 
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
+
         function initTestCase() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+
             notes = ["Frame", "Note1", "Note2", "Sentinel"]
             compare(notesModel.count, 0)
             make_notes_fixture(notes)

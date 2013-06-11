@@ -6,16 +6,20 @@ Group:      Applications/Editors
 License:    TBD
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
-BuildRequires:  pkgconfig(QtCore) >= 4.8.0
-BuildRequires:  pkgconfig(QtDeclarative)
-BuildRequires:  pkgconfig(QtGui)
-BuildRequires:  pkgconfig(QtOpenGL)
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Qml)
+BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  desktop-file-utils
-BuildRequires:  pkgconfig(qdeclarative-boostable)
+BuildRequires:  pkgconfig(qdeclarative5-boostable)
+BuildRequires:  qt5-qttools
+BuildRequires:  qt5-qttools-linguist
 
 Requires:  ambient-icons-closed
-Requires:  sailfishsilica >= 0.8.33
-Requires:  mapplauncherd-booster-jolla
+Requires:  sailfishsilica-qt5
+Requires:  qt5-qtdeclarative-import-localstorageplugin
+Requires:  mapplauncherd-booster-silica-qt5
+Requires:  qt5-plugin-sqldriver-sqlite
 
 %description
 Note-taking application using Sailfish Silica components
@@ -29,12 +33,8 @@ Translation source for %{name}
 %package tests
 Summary: Automated tests for Jolla Notes
 Requires: %{name} = %{version}-%{release}
-Requires: qtest-qml
+Requires: qt5-qtdeclarative-import-qttest
 Requires: mce-tools
-# workaround for a bug in qtchooser.
-# when the tests run without this, it can be dropped
-Requires: qt-qmake
-Requires: meegotouch-compositor-tools
 
 %description tests
 This package installs automated test scripts for jolla-notes,
@@ -44,12 +44,12 @@ and a test definition XML file for testrunner-lite.
 %setup -q -n %{name}-%{version}
 
 %build
-%qmake %{name}.pro PREFIX=/usr
+%qmake5
 make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
-%qmake_install
+%qmake5_install
 
 desktop-file-install --delete-original       \
   --dir %{buildroot}%{_datadir}/applications             \

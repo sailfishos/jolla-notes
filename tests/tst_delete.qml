@@ -1,12 +1,12 @@
 // Test that notes can be deleted from the overview or the note page
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
@@ -15,7 +15,15 @@ Notes {
 
         property variant notes
 
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
+
         function initTestCase() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+
             notes = ["Fear", "Surprise", "Ruthless efficiency",
                          "Fanatical devotion", "Nice red uniforms"]
             compare(notesModel.count, 0)

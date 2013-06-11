@@ -15,18 +15,20 @@
 //  - Tests run both in virtual machines and on the device.
 // Of course not all of these are fully achievable. It's a balance.
 
-import QtQuick 1.1
-import QtQuickTest 1.0
+import QtQuick 2.0
+import QtTest 1.0
 
 TestCase {
     property int timeout: 5000
     // convenience binding for test cases
-    property Item currentPage: pageStack.currentPage
+    property Item currentPage: main.pageStack.currentPage
 
     SignalSpy {
         id: clickspy
         signalName: "clicked"
     }
+
+    TestEvent { id: testEvent }
 
     function dump_tree(item, indent) {
         if (indent === undefined)
@@ -141,7 +143,7 @@ TestCase {
     // (It does give consistent answers as long as the app doesn't change)
     function match_type(item, typename) {
         var itype = "" + item
-        itype = itype.replace(/^QDeclarative/, '')
+        itype = itype.replace(/^QQuick/, '')
         itype = itype.replace(/_QMLTYPE_.*/, '')
         itype = itype.replace(/_QML_.*/, '')
         itype = itype.replace(/\(0x[a-z0-9]*\)/, '')
@@ -234,14 +236,14 @@ TestCase {
 
     function click_center(item) {
         var pos = main.mapFromItem(item, item.width/2, item.height/2)
-        mouseClick(main, pos.x, pos.y)
+        testEvent.mouseClick(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
     }
 
     function longclick_center(item) {
         var pos = main.mapFromItem(item, item.width/2, item.height/2)
-        mousePress(main, pos.x, pos.y)
-        wait(1100)  // a bit longer than 1 second
-        mouseRelease(main, pos.x, pos.y)
+        testEvent.mousePress(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
+        wait(2100)  // a lot longer than 1 second
+        testEvent.mouseRelease(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
         wait(1)
     }
 
@@ -306,58 +308,58 @@ TestCase {
         var item = find_text(page, option)
         verify(item, "Menu item " + option + " found")
 
-        var real_height = page.height + pageStack.panelSize
+        var real_height = page.height + main.pageStack.panelSize
         var drag_x = page.width / 2
         var drag_y = real_height * 0.20
         var drag_end = real_height * 0.80
         var pos = main.mapFromItem(page, drag_x, drag_y)
-        mousePress(main, pos.x, pos.y)
+        testEvent.mousePress(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
         while (drag_y < drag_end) {
             drag_y += 10
             pos = main.mapFromItem(page, drag_x, drag_y)
-            mouseMove(main, pos.x, pos.y, undefined, Qt.LeftButton)
+            testEvent.mouseMove(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
             wait(1)
             var highlight = find(main, function(it) {
                 return it.highlightedItem == item
             })
             if (highlight !== undefined) {
                 clickspy.target = item
-                mouseRelease(main, pos.x, pos.y)
+                testEvent.mouseRelease(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
                 clickspy.wait()
                 clickspy.target = undefined
                 return
             }
         }
-        mouseRelease(main, pos.x, pos.y)
+        testEvent.mouseRelease(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
         fail("Could not activate pull-down option " + option)
     }
 
     function wait_inputpanel_open() {
         wait_for("input panel opened", function() {
-            return pageStack.imSize > 0
+            return main.pageStack.imSize > 0
         })
         wait_for("input panel animation completed", function() {
-            return pageStack.panelSize == pageStack.imSize
+            return main.pageStack.panelSize == main.pageStack.imSize
         })
     }
 
     function wait_inputpanel_closed() {
         wait_for("input panel closed", function() {
-            return pageStack.imSize == 0
+            return main.pageStack.imSize == 0
         })
         wait_for("input panel animation completed", function() {
-            return pageStack.panelSize == pageStack.imSize
+            return main.pageStack.panelSize == main.pageStack.imSize
         })
     }
 
     function wait_pagestack(desc, depth) {
         if (depth !== undefined) {
             wait_for(desc, function() {
-                return pageStack.depth == depth
+                return main.pageStack.depth == depth
             })
         }
         wait_for("page animation completed", function() {
-            return !pageStack.busy
+            return !main.pageStack.busy
         })
     }
 
@@ -414,6 +416,6 @@ TestCase {
     // from now on. It's not the default because some apps may rely on
     // the transitions taking longer than their own animations.
     function fastforward_page_transitions() {
-        pageStack._transitionDuration = 10
+        main.pageStack._transitionDuration = 10
     }
 }

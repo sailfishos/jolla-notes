@@ -1,5 +1,6 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Silica.theme 1.0
 
 // BackgroundItem is also a MouseArea
 BackgroundItem {
@@ -29,14 +30,14 @@ BackgroundItem {
             x: parent.width - width
 
             gradient: Gradient {
-                GradientStop { position: 0.0; color: theme.rgba(theme.primaryColor, 0) }
-                GradientStop { position: 1.0; color: theme.rgba(theme.primaryColor, 0.1) }
+                GradientStop { position: 0.0; color: Theme.rgba(Theme.primaryColor, 0) }
+                GradientStop { position: 1.0; color: Theme.rgba(Theme.primaryColor, 0.1) }
             }
         }
     }
 
     Item {
-        anchors { fill: parent; margins: theme.paddingLarge }
+        anchors { fill: parent; margins: Theme.paddingLarge }
 
         NoteSummary {
             id: summary
@@ -46,7 +47,7 @@ BackgroundItem {
             sourceItem: summary
             slope: 0.6
             offset: 0
-            direction: OpacityRampEffect.TopToBottom
+            direction: OpacityRamp.TopToBottom
         }
 
         Rectangle {
@@ -55,9 +56,9 @@ BackgroundItem {
 
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            width: theme.iconSizeMedium
+            width: Theme.iconSizeMedium
             height: width/8
-            radius: Math.round(theme.paddingSmall/3)
+            radius: Math.round(Theme.paddingSmall/3)
             color: noteitem.color
         }
     }
@@ -66,12 +67,12 @@ BackgroundItem {
         id: pagenumber
 
         anchors.baseline: parent.bottom
-        anchors.baselineOffset: -theme.paddingMedium
+        anchors.baselineOffset: -Theme.paddingMedium
         anchors.right: parent.right
-        anchors.rightMargin: theme.paddingMedium
+        anchors.rightMargin: Theme.paddingMedium
         opacity: 0.4
-        color: theme.primaryColor
-        font { family: theme.fontFamily; pixelSize: theme.fontSizeLarge }
+        color: Theme.primaryColor
+        font { family: Theme.fontFamily; pixelSize: Theme.fontSizeLarge }
         horizontalAlignment: Text.AlignRight
         text: noteitem.pageNumber
     }
