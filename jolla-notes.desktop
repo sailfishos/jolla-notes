@@ -2,6 +2,6 @@
 Type=Application
 Name=Notes
 Icon=icon-launcher-notes
-Exec=invoker --type=j -s /usr/bin/jolla-notes
+Exec=invoker --type=silica-qt5 -s /usr/bin/jolla-notes
 X-MeeGo-Logical-Id=notes-de-name
 X-MeeGo-Translation-Catalog=notes

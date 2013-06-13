@@ -1,18 +1,23 @@
 // Test that app is empty on startup, has comforter text on the overview,
 // and it's possible to write a note
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
         name: "FirstNote"
         when: windowShown
+
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
 
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
@@ -35,8 +40,7 @@ Notes {
             keyClick(Qt.Key_L)
             keyClick(Qt.Key_O)
 
-            compare(currentPage.text, "hello",
-                    "typed text went into note")
+            tryCompare(currentPage, 'text', "hello")
             compare(notesModel.count, 1,
                     "note saved after text was typed")
         }

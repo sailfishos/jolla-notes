@@ -1,17 +1,22 @@
 // Test that the note written in tst_first_note was saved and is still there
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
         name: "FirstNoteSaved"
         when: windowShown
+
+        function init() {
+            activate()
+            tryCompare(main, 'applicationActive', true)
+        }
 
         function test_note_saved() {
             var item = find_text(currentPage, "hello")

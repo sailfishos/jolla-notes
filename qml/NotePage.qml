@@ -1,5 +1,6 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Silica.theme 1.0
 
 Page {
     id: notepage
@@ -46,7 +47,7 @@ Page {
         // The PullDownMenu doesn't work if contentHeight is left implicit.
         // It also doesn't work if contentHeight ends up equal to the
         // page height, so add some padding.
-        contentHeight: textArea.height + 2 * theme.paddingLarge
+        contentHeight: textArea.height + 2 * Theme.paddingLarge
 
         PullDownMenu {
             MenuItem {
@@ -117,10 +118,10 @@ Page {
 
         TextArea {
             id: textArea
-            y: theme.paddingLarge
-            font { family: theme.fontFamily; pixelSize: theme.fontSizeMedium }
+            y: Theme.paddingLarge
+            font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
             width: noteview.width
-            height: Math.max(noteview.height - theme.paddingLarge,
+            height: Math.max(noteview.height - Theme.paddingLarge,
                              implicitHeight)
             //: Placeholder text for new notes. At this point there's
             //: nothing else on the screen.

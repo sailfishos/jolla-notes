@@ -1,13 +1,13 @@
 // Test the app cover
 // The cover actions will be tested with the robot for now.
 
-import QtQuickTest 1.0
-import QtQuick 1.1
+import QtTest 1.0
+import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "/usr/share/jolla-notes"
+import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
-Notes {
+JollaNotes.Notes {
     id: main
 
     NotesTestCase {
@@ -15,6 +15,11 @@ Notes {
         when: windowShown
 
         function initTestCase() {
+            clear_db()
+
+            activate()
+            tryCompare(main, 'applicationActive', true)
+
             var notes = ["Alpha", "Beta"]
 
             compare(notesModel.count, 0)
@@ -26,7 +31,7 @@ Notes {
         function test_cover_text() {
             main.deactivate()
             var cover = wait_for("cover page created", function() {
-                return find_by_testname(main, "coverpage")
+                return main._coverObject
             })
             wait_for("application cover visible", function() {
                 return cover.visible

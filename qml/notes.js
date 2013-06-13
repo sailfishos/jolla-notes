@@ -7,7 +7,9 @@
 
 // The details depend on Qt's openDatabaseSync implementation, but
 // the data will probably be stored in an sqlite file under
-//   $HOME/.local/share/data/QML/OfflineStorage/Databases/ somewhere
+//   $HOME/.local/share/jolla-notes/QML/OfflineStorage/Databases/
+
+.import QtQuick.LocalStorage 2.0 as Sql
 
 function upgradeSchema(db) {
     if (db.version == '') {
@@ -25,7 +27,7 @@ function upgradeSchema(db) {
 }
 
 function openDb() {
-    var db = openDatabaseSync('silicanotes', '', 'Notes', 10000, upgradeSchema)
+    var db = Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000, upgradeSchema)
     if (db.version != '2')
         upgradeSchema(db);
     return db;

@@ -2,7 +2,8 @@
 // on top of SilicaTestCase which has the general helpers.
 // Assumption: the application window has id 'main'
 
-import QtQuickTest 1.0
+import QtTest 1.0
+import QtQuick.LocalStorage 2.0 as Sql
 
 SilicaTestCase {
 
@@ -15,15 +16,15 @@ SilicaTestCase {
     SignalSpy {
         id: imsizespy
         signalName: "imSizeChanged"
-        target: pageStack
+        target: main.pageStack
 
         onCountChanged: {
-            console.log("imSize " + pageStack.imSize + " count " + count)
+            console.log("imSize " + main.pageStack.imSize + " count " + count)
         }
     }
 
     function clear_db() {
-        var db = openDatabaseSync('silicanotes', '', 'Notes', 10000)
+        var db = Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000)
         db.transaction(function (tx) {
             tx.executeSql('DELETE FROM notes')
             tx.executeSql('UPDATE next_color_index SET value = 0')
@@ -47,7 +48,6 @@ SilicaTestCase {
             wait_inputpanel_open()
             wait_animation_stop(currentPage)
         }
-        compare(notesModel.count, oldCount + notes.length,
-                "" + notes.length + " notes created")
+        compare(notesModel.count, oldCount + notes.length)
     }
 }
