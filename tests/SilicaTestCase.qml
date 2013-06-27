@@ -334,6 +334,13 @@ TestCase {
         fail("Could not activate pull-down option " + option)
     }
 
+    function go_back() {
+        // Refer to page instead of main, because main might
+        // be rotated due to screen orientation. The coordinate
+        // transformation can then be handled by mapFromItem.
+
+        click_center(main.pageStack._pageStackIndicator)
+    }
     function wait_inputpanel_open() {
         wait_for("input panel opened", function() {
             return main.pageStack.imSize > 0

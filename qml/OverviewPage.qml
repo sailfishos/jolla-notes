@@ -95,7 +95,7 @@ Page {
                 //: Create a new note ready for editing
                 //% "New note"
                 text: qsTrId("notes-me-new-note")
-                onClicked: app.openNewNote()
+                onClicked: app.openNewNote(PageStackAction.Animated)
             }
         }
     }

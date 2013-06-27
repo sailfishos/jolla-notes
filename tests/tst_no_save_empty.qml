@@ -3,6 +3,7 @@
 import QtTest 1.0
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+
 import "../../../usr/share/jolla-notes" as JollaNotes
 import "."
 
@@ -23,7 +24,7 @@ JollaNotes.Notes {
             wait_pagestack("new note page", 2)
             wait_inputpanel_open()
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("back to overview", 1)
 
             compare(notesModel.count, 0,
@@ -38,7 +39,7 @@ JollaNotes.Notes {
             select_pull_down("notes-me-new-note")
             wait_animation_stop(pageStack)
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("back to overview", 1)
 
             compare(notesModel.count, 0,
@@ -57,7 +58,7 @@ JollaNotes.Notes {
             keyClick(Qt.Key_E)
             keyClick(Qt.Key_W)
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("back to overview", 1)
             wait_inputpanel_closed()
 
@@ -76,7 +77,7 @@ JollaNotes.Notes {
             verify(find_text(currentPage, " "),
                    "space char went into note")
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("back to overview", 1)
 
             compare(notesModel.count, oldcount,

@@ -28,7 +28,7 @@ JollaNotes.Notes {
             // had their text displayed too far down in the note items.
             make_notes_fixture(["bye"])
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("note page closed", 1)
 
             var old_item = find_text(currentPage, "hello")

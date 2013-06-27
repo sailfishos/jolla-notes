@@ -29,7 +29,7 @@ JollaNotes.Notes {
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
 

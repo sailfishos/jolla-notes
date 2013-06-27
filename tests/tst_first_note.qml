@@ -46,7 +46,7 @@ JollaNotes.Notes {
         }
 
         function test_4_back() {
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("note page closed", 1)
         }
 

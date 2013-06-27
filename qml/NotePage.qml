@@ -12,8 +12,6 @@ Page {
     property alias editMode: textArea.focus
     property alias text: textArea.text
 
-    backNavigation: false
-
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
             potentialPage = 0
@@ -24,15 +22,30 @@ Page {
             noteview.pageNumber = item.pagenr
         }
     }
+    onStatusChanged: {
+        if (status == PageStatus.Deactivating
+         && currentIndex >= 0 && noteview.text.trim() == '') {
+            notesModel.deleteNote(currentIndex)
+            currentIndex = -1
+        }
+    }
 
     onPotentialPageChanged: {
         if (potentialPage) {
             currentIndex = -1
             noteview.savedText = ''
             noteview.text = ''
-            noteview.color = "white"
-            noteview.pageNumber = 0
+            noteview.color = notesModel.nextColor()
+            noteview.pageNumber = potentialPage
         }
+    }
+
+    function openColorPicker() {
+        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog")
+        dialog.accepted.connect(function() {
+            noteview.color = dialog.color
+            notesModel.updateColor(currentIndex, dialog.color)
+        })
     }
 
     SilicaFlickable {
@@ -47,9 +60,14 @@ Page {
         // The PullDownMenu doesn't work if contentHeight is left implicit.
         // It also doesn't work if contentHeight ends up equal to the
         // page height, so add some padding.
-        contentHeight: textArea.height + 2 * Theme.paddingLarge
+        contentHeight: column.height
 
         PullDownMenu {
+            MenuItem {
+                //% "Note color"
+                text: qsTrId("notes-me-note-color")
+                onClicked: openColorPicker()
+            }
             MenuItem {
                 //: Delete this note from note page
                 //% "Delete note"
@@ -93,7 +111,7 @@ Page {
                     ScriptAction {
                         script: {
                             if (!potentialPage)
-                                potentialPage = noteview.pageNumber + 1
+                                potentialPage = 1
                             else
                                 text = ''
                             notepage.editMode = true
@@ -102,44 +120,42 @@ Page {
                     }
                 }
             }
-            MenuItem {
-                //: Jump back to overview page
-                //% "Overview"
-                text: qsTrId("notes-me-overview")
-                onClicked: {
-                    if (currentIndex >= 0 && noteview.text.trim() == '') {
-                        notesModel.deleteNote(currentIndex)
-                        currentIndex = -1
-                    }
-                    pageStack.pop()
+        }
+        Column {
+            id: column
+            Item {
+                id: headerItem
+                width: parent.width
+                height: Theme.itemSizeLarge
+                ColorItem {
+                    color: noteview.color
+                    pageNumber: noteview.pageNumber
+                    onClicked: openColorPicker()
                 }
             }
-        }
+            TextArea {
+                id: textArea
+                font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
+                width: noteview.width
+                height: Math.max(noteview.height-headerItem.height, implicitHeight)
+                //: Placeholder text for new notes. At this point there's
+                //: nothing else on the screen.
+                //% "Write a note..."
+                placeholderText: qsTrId("notes-ph-empty-note")
 
-        TextArea {
-            id: textArea
-            y: Theme.paddingLarge
-            font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
-            width: noteview.width
-            height: Math.max(noteview.height - Theme.paddingLarge,
-                             implicitHeight)
-            //: Placeholder text for new notes. At this point there's
-            //: nothing else on the screen.
-            //% "Write a note..."
-            placeholderText: qsTrId("notes-ph-empty-note")
-
-            onTextChanged: {
-                if (text != noteview.savedText) {
-                    noteview.savedText = text
-                    if (potentialPage) {
-                        if (text.trim() != '') {
-                            currentIndex = notesModel.newNote(potentialPage, text)
+                onTextChanged: {
+                    if (text != noteview.savedText) {
+                        noteview.savedText = text
+                        if (potentialPage) {
+                            if (text.trim() != '') {
+                                currentIndex = notesModel.newNote(potentialPage, text, noteview.color)
+                            }
+                        } else {
+                            notesModel.updateNote(currentIndex, text)
                         }
-                    } else {
-                        notesModel.updateNote(currentIndex, text)
                     }
                 }
             }
         }
-    }    
+    }
 }
