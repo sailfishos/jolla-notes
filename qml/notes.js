@@ -86,6 +86,14 @@ function updateNote(pagenr, text) {
     })
 }
 
+function updateColor(pagenr, color) {
+    var db = openDb()
+    db.transaction(function (tx) {
+        tx.executeSql('UPDATE notes SET color = ? WHERE pagenr = ?',
+                      [color, pagenr])
+    })
+}
+
 function moveToTop(pagenr) {
     var db = openDb()
     db.transaction(function (tx) {

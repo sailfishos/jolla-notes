@@ -25,12 +25,12 @@ JollaNotes.Notes {
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
 
             // from availableColors in notes.js
-            var colors = ['#ff0000', '#ff8000', '#ffff00', '#73e600']
+            var colors = ['#73e600', '#ffff00', '#ff8000', '#ff0000',]
 
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)

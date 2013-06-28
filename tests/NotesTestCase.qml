@@ -35,7 +35,7 @@ SilicaTestCase {
     // Ends at the last created note's page.
     function make_notes_fixture(notes) {
         var oldCount = notesModel.count
-        for (var i = 0; i < notes.length; i++) {
+        for (var i = notes.length-1; i >= 0; i--) {
             select_pull_down('notes-me-new-note')
             wait_pagestack()
             // Wait for an empty note page

@@ -29,7 +29,7 @@ JollaNotes.Notes {
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
             // Leave app at overview
@@ -99,7 +99,7 @@ JollaNotes.Notes {
                 keyPress(Qt.Key_Backspace)
             compare(item.text, '', "message empty")
 
-            select_pull_down("notes-me-overview")
+            go_back()
             wait_pagestack("back to overview", 1)
 
             verify(!find_text(currentPage, notes[1]),

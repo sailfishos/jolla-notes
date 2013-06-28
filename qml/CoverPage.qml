@@ -24,7 +24,9 @@ CoverBackground {
             model: notesModel
             interactive: false
             width: parent.width
-            visible: pageStack.depth === 1 || pageStack.currentPage.potentialPage
+            visible: pageStack.depth === 1
+                  || pageStack.currentPage && pageStack.currentPage.potentialPage != undefined
+                                           && pageStack.currentPage.potentialPage
             height: 3 *itemHeight
 
             delegate: CoverLabel {
@@ -65,7 +67,7 @@ CoverBackground {
             iconSource: "image://theme/icon-cover-new"
             onTriggered: {
                 pageStack.pop(null, true)
-                openNewNote()
+                openNewNote(PageStackAction.Immediate)
                 activate()
             }
         }

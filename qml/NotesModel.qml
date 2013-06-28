@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-
 import "notes.js" as NoteScript
 
 ListModel {
@@ -12,9 +11,15 @@ ListModel {
         NoteScript.populateNotes(listmodel)
     }
 
-    function newNote(pagenr, initialtext) {
-        var color = NoteScript.nextColor()
-        NoteScript.newNote(pagenr, color, initialtext)
+    function nextColor() {
+        return NoteScript.nextColor()
+    }
+
+    function newNote(pagenr, initialtext, color) {
+
+        // convert to string
+        var _color = color + ""
+        NoteScript.newNote(pagenr, _color, initialtext)
 
         var i
         for (i = count - 1; i >= 0; i--) {
@@ -24,7 +29,7 @@ ListModel {
             else
                 break;
         }
-        insert(i + 1, { "pagenr": pagenr, "text": initialtext, "color": color })
+        insert(i + 1, { "pagenr": pagenr, "text": initialtext, "color": _color })
         return i + 1
     }
 
@@ -34,6 +39,14 @@ ListModel {
         setProperty(idx, "text", text)
     }
 
+    function updateColor(idx, color) {
+        var row = get(idx)
+        // convert to string
+        var _color = color + ""
+
+        NoteScript.updateColor(row.pagenr, _color)
+        setProperty(idx, "color", _color)
+    }
     function moveToTop(idx) {
         var row = get(idx)
         NoteScript.moveToTop(row.pagenr)
