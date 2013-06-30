@@ -16,7 +16,7 @@ BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
 
 Requires:  ambient-icons-closed
-Requires:  sailfishsilica-qt5 >= 0.8.64
+Requires:  sailfishsilica-qt5 >= 0.8.67
 Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
