@@ -56,7 +56,7 @@ BackgroundItem {
 
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            width: Theme.iconSizeMedium
+            width: Theme.itemSizeExtraSmall
             height: width/8
             radius: Math.round(Theme.paddingSmall/3)
             color: noteitem.color
