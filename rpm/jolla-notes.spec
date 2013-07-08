@@ -34,6 +34,7 @@ Translation source for %{name}
 Summary: Automated tests for Jolla Notes
 Requires: %{name} = %{version}-%{release}
 Requires: qt5-qtdeclarative-import-qttest
+Requires: qt5-qtdeclarative-devel-tools
 Requires: mce-tools
 
 %description tests
