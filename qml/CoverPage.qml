@@ -14,28 +14,37 @@ CoverBackground {
     }
     Item {
         visible: notesModel.count > 0
-        anchors { fill: parent; margins: Theme.paddingLarge }
+        anchors {
+            fill: parent
+            margins: Theme.paddingLarge
+            topMargin: Theme.paddingMedium
+        }
         ListView {
             id: listView
 
-            property real itemHeight: 74/327 * Theme.coverSizeLarge.height
+            // we need text dimensions before label delegates get created
+            Label { id: dummyLabel; lineHeight: 0.8 }
+
+            property real lineHeight: dummyLabel.implicitHeight
 
             clip: true
             model: notesModel
             interactive: false
             width: parent.width
+            header: Item { height: Theme.paddingMedium; width: listView.width }
             visible: pageStack.depth === 1
                   || pageStack.currentPage && pageStack.currentPage.potentialPage != undefined
                                            && pageStack.currentPage.potentialPage
-            height: 3 *itemHeight
+            height: Math.min(count, 3) * (2*lineHeight + Theme.paddingMedium)
+            spacing: Theme.paddingMedium
 
             delegate: CoverLabel {
-                text: model.text
+                text: model.text.trim()
                 color: model.color
                 maximumLineCount: 2
                 width: listView.width
                 pageNumber: model.pagenr
-                height: listView.itemHeight
+                lineHeight: listView.lineHeight
             }
         }
         CoverLabel {
@@ -46,8 +55,9 @@ CoverBackground {
             visible: false
             maximumLineCount: 7
             width: parent.width
-            height: listView.height + Theme.paddingSmall
-            text: model ? model.text : ""
+            y: Theme.paddingMedium
+            lineHeight: listView.lineHeight
+            text: model ? model.text.trim() : ""
             color: model ? model.color :  Theme.primaryColor
             pageNumber: model ? model.pagenr : 0
             states: State {

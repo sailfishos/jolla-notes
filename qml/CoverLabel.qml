@@ -7,18 +7,18 @@ Item {
     property alias text: label.text
     property alias pageNumber: pageNumberLabel.text
     property alias maximumLineCount: label.maximumLineCount
+    property real lineHeight
 
-    Text {
+    height: lineHeight * label.maximumLineCount
+
+    Label {
         id: label
         lineHeight: 0.8
-        font.pixelSize: Theme.fontSizeMedium
-        color: Theme.primaryColor
+        height: implicitHeight + Theme.paddingMedium
         anchors {
             left: parent.left
             right: pageNumberLabel.left
-            top: parent.top
             bottom: parent.bottom
-            bottomMargin: Theme.paddingMedium
         }
     }
 
@@ -36,8 +36,8 @@ Item {
 
         anchors {
             right: parent.right
-            bottom: label.bottom
-            bottomMargin: -4
+            baseline: label.baseline
+            baselineOffset: parent.lineHeight * (label.lineCount-1)
         }
         font.pixelSize: number < 10 ? Theme.fontSizeHuge
                                     : number < 100 ? Theme.fontSizeLarge
