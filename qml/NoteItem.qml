@@ -41,6 +41,7 @@ BackgroundItem {
 
         NoteSummary {
             id: summary
+            color: highlighted ? Theme.highlightColor : Theme.primaryColor
         }
 
         OpacityRampEffect {
@@ -71,7 +72,7 @@ BackgroundItem {
         anchors.right: parent.right
         anchors.rightMargin: Theme.paddingMedium
         opacity: 0.4
-        color: Theme.primaryColor
+        color: highlighted ? Theme.highlightColor : Theme.primaryColor
         font { family: Theme.fontFamily; pixelSize: Theme.fontSizeLarge }
         horizontalAlignment: Text.AlignRight
         text: noteitem.pageNumber
