@@ -19,7 +19,7 @@ Page {
 
         anchors.fill: overviewpage
         model: notesModel
-        cellHeight: Math.min(overviewpage.height, overviewpage.width) / 2
+        cellHeight: overviewpage.width/2
         cellWidth: cellHeight
         property int columnCount: Math.floor(overviewpage.width / cellWidth)
 
