@@ -2,6 +2,7 @@ TARGET = jolla-notes
 
 CONFIG += warn_on
 
+HEADERS += vnote.h
 SOURCES += notes.cpp
 
 HEADERS +=

@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
+import Sailfish.TransferEngine 1.0
 
 Page {
     id: notepage
@@ -48,6 +48,28 @@ Page {
         })
     }
 
+    function vNoteName(noteText) {
+        // Return a name for this vnote that can be used as a filename
+
+        // Remove any whitespace
+        var noWhitespace = noteText.replace(/\s/g, '')
+
+        // shorten
+        var shortened = noWhitespace.slice(0, Math.min(8, noWhitespace.length))
+
+        // Convert to 7-bit ASCII
+        var sevenBit = Format.formatText(shortened, Formatter.Ascii7Bit)
+        if (sevenBit.length < shortened.length) {
+            // This note's name is not representable in ASCII
+            //: Placeholder name for note filename
+            //% "note"
+            sevenBit = qsTrId("notes-ph-default-note-name")
+        }
+
+        // Remove any characters that are not part of the portable filename character set
+        return Format.formatText(sevenBit, Formatter.PortableFilename) + '.vnt'
+    }
+
     SilicaFlickable {
         id: noteview
 
@@ -63,6 +85,24 @@ Page {
         contentHeight: column.height
 
         PullDownMenu {
+            id: pulley
+            property bool needsToShowShareMenu
+            onActiveChanged: {
+                // we do this so that the "opening" transition of the
+                // share menu begins after the "closing" transition
+                // of the pulley menu has completed.
+                if (needsToShowShareMenu) {
+                    needsToShowShareMenu = false
+                    var content = {
+                            "data": vnoteConverter.vNote(textArea.text), // root context property
+                            "name": notepage.vNoteName(textArea.text),
+                            "type": "text/x-vnote",
+                            "icon": "icon-launcher-notes"
+                        }
+                    shareMenu.show(content, "text/x-vnote", notepage.height/3, notepage)
+                }
+            }
+
             MenuItem {
                 //% "Note color"
                 text: qsTrId("notes-me-note-color")
@@ -95,6 +135,12 @@ Page {
                 }
             }
             MenuItem {
+                //: This menu option can be used to share the note via Bluetooth
+                //% "Share Note"
+                text: qsTrId("notes-me-share-note")
+                onClicked: pulley.needsToShowShareMenu = true
+            }
+            MenuItem {
                 //: Create a new note ready for editing
                 //% "New note"
                 text: qsTrId("notes-me-new-note")
@@ -121,8 +167,26 @@ Page {
                 }
             }
         }
+
         Column {
             id: column
+            Item {
+                id: spacerItem
+                width: notepage.width
+                height: 0
+                Behavior on height { NumberAnimation { duration: 200 } }
+            }
+            ShareMenu {
+                id: shareMenu
+                width: notepage.width
+                onActiveChanged: {
+                    if (active) {
+                        spacerItem.height = 3 * Theme.paddingLarge // below the page indicator
+                    } else {
+                        spacerItem.height = 0
+                    }
+                }
+            }
             Item {
                 id: headerItem
                 width: parent.width
