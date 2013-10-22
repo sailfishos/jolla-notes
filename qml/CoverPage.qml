@@ -17,14 +17,11 @@ CoverBackground {
         anchors {
             fill: parent
             margins: Theme.paddingLarge
-            topMargin: Theme.paddingMedium
         }
         ListView {
             id: listView
 
-            // we need text dimensions before label delegates get created
-            Label { id: dummyLabel; lineHeight: 0.8 }
-
+            property real itemHeight: 2*lineHeight
             property real lineHeight: dummyLabel.implicitHeight
 
             clip: true
@@ -35,8 +32,8 @@ CoverBackground {
             visible: pageStack.depth === 1
                   || pageStack.currentPage && pageStack.currentPage.potentialPage != undefined
                                            && pageStack.currentPage.potentialPage
-            height: Math.min(count, 3) * (2*lineHeight + Theme.paddingMedium)
-            spacing: Theme.paddingMedium
+            height: Math.min(count, 3) * (itemHeight + spacing)
+            spacing: Theme.paddingLarge
 
             delegate: CoverLabel {
                 text: model.text.trim()
@@ -45,6 +42,13 @@ CoverBackground {
                 width: listView.width
                 pageNumber: model.pagenr
                 lineHeight: listView.lineHeight
+                Component.onCompleted: listView.itemHeight = height
+            }
+            // we need text dimensions before label delegates get created
+            Label {
+                id: dummyLabel
+                lineHeight: 0.8
+                font.pixelSize: Theme.fontSizeSmall
             }
         }
         CoverLabel {
@@ -53,7 +57,7 @@ CoverBackground {
             property variant model
 
             visible: false
-            maximumLineCount: 7
+            maximumLineCount: 8
             width: parent.width
             y: Theme.paddingMedium
             lineHeight: listView.lineHeight
