@@ -50,10 +50,9 @@ function populateNotes(model) {
 }
 
 var availableColors = [
-    '#ff0000', '#ff8000', '#ffff00', '#73e600',
-    '#00f050', '#00ffd4', '#00bfff', '#0080ff',
-    '#0000ff', '#8000ff', '#aa00ff', '#ff00aa'
-]
+    "#cc0000", "#cc7700", "#ccbb00",
+    "#88cc00", "#00b315", "#00bf9f",
+    "#005fcc", "#0016de", "#bb00cc"]
 
 function nextColor() {
     var index
