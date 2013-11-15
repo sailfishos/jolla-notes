@@ -23,10 +23,27 @@ Page {
         }
     }
     onStatusChanged: {
-        if (status == PageStatus.Deactivating
-         && currentIndex >= 0 && noteview.text.trim() == '') {
-            notesModel.deleteNote(currentIndex)
-            currentIndex = -1
+        if (status == PageStatus.Deactivating) {
+            if (currentIndex >= 0 && noteview.text.trim() == '') {
+                notesModel.deleteNote(currentIndex)
+                currentIndex = -1
+            } else {
+                saveNote()
+            }
+        }
+    }
+
+    function saveNote() {
+        var text = textArea.text
+        if (text != noteview.savedText) {
+            noteview.savedText = text
+            if (potentialPage) {
+                if (text.trim() != '') {
+                    currentIndex = notesModel.newNote(potentialPage, text, noteview.color)
+                }
+            } else {
+                notesModel.updateNote(currentIndex, text)
+            }
         }
     }
 
@@ -208,17 +225,15 @@ Page {
                 placeholderText: qsTrId("notes-ph-empty-note")
                 background: null // full-screen text fields don't need bottom border background
 
-                onTextChanged: {
-                    if (text != noteview.savedText) {
-                        noteview.savedText = text
-                        if (potentialPage) {
-                            if (text.trim() != '') {
-                                currentIndex = notesModel.newNote(potentialPage, text, noteview.color)
-                            }
-                        } else {
-                            notesModel.updateNote(currentIndex, text)
-                        }
-                    }
+                onTextChanged: saveTimer.restart()
+                Timer {
+                    id: saveTimer
+                    interval: 5000
+                    onTriggered: notepage.saveNote()
+                }
+                Connections {
+                    target: Qt.application
+                    onActiveChanged: if (!Qt.application.active) notepage.saveNote()
                 }
             }
         }
