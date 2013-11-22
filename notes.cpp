@@ -54,6 +54,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     app->installTranslator(translator.data());
 
     QScopedPointer<QQuickView> view(Sailfish::createView());
+    //: Application name in desktop file
+    //% "Notes"
+    view->setTitle(qtTrId("notes-de-name"));
     // Set the offlineStoragePath explicitly in case we are boosted
     QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     dataLocation += QDir::separator() + QLatin1String("QML")

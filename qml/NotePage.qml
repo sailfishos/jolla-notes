@@ -173,10 +173,11 @@ Page {
                     }
                     ScriptAction {
                         script: {
+                            saveNote()
                             if (!potentialPage)
                                 potentialPage = 1
                             else
-                                text = ''
+                                textArea.text = ''
                             notepage.editMode = true
                             noteview.opacity = 1.0
                         }
