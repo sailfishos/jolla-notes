@@ -66,6 +66,9 @@ JollaNotes.Notes {
         }
 
         function test_6_no_tap_to_write() {
+            // give it time to adjust to losing the keyboard
+            // TODO: some way to wait on "currentPage.height" would be nice
+            wait_animation_stop(currentPage)
             click_center(currentPage)
             // This is a bit arbitrary... how long should we wait
             // to check that something didn't happen?
