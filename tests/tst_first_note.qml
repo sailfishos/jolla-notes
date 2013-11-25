@@ -57,8 +57,12 @@ JollaNotes.Notes {
 
         function test_5_no_comforter() {
             var comforter = find_text(currentPage, "notes-la-write-note")
-            verify(!comforter || !visible(comforter),
-                   "No write-note text when note has been written")
+            if (comforter) {
+                wait_for("write-note text went away when note was written",
+                         function() {
+                    return !visible(comforter)
+                })
+            }
         }
 
         function test_6_no_tap_to_write() {
