@@ -29,8 +29,9 @@ JollaNotes.Notes {
             wait_pagestack("note page closed", 1)
             wait_inputpanel_closed()
 
-            // from availableColors in notes.js
-            var colors = ['#73e600', '#ffff00', '#ff8000', '#ff0000',]
+            // Colors from silica colorpicker
+            var colors = ["#cc0000", "#cc7700", "#ccbb00", "#88cc00"]
+            colors = colors.reverse() // makes_notes_fixture works in reverse
 
             for (var i = 0; i < notes.length; i++) {
                 var pgnr = "" + (i+1)

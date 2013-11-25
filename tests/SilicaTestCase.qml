@@ -55,7 +55,7 @@ TestCase {
         indent = indent + " "
         if (item.children) {
             for (var i = 0; i < item.children.length; i++) {
-                dump_resource_tree(item.children[i], indent)
+                dump_tree(item.children[i], indent)
             }
         }
     }

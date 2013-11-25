@@ -41,6 +41,11 @@ JollaNotes.Notes {
             keyClick(Qt.Key_O)
 
             tryCompare(currentPage, 'text', "hello")
+            // The current implementation is to not save the note until
+            // the user stops typing, for performance reasons.
+            // Make sure it happens eventually.
+            wait(6000) // give timer time to run out
+            wait(100) // then a chance to run
             compare(notesModel.count, 1,
                     "note saved after text was typed")
         }
@@ -52,11 +57,18 @@ JollaNotes.Notes {
 
         function test_5_no_comforter() {
             var comforter = find_text(currentPage, "notes-la-write-note")
-            verify(!comforter || !visible(comforter),
-                   "No write-note text when note has been written")
+            if (comforter) {
+                wait_for("write-note text went away when note was written",
+                         function() {
+                    return !visible(comforter)
+                })
+            }
         }
 
         function test_6_no_tap_to_write() {
+            // give it time to adjust to losing the keyboard
+            // TODO: some way to wait on "currentPage.height" would be nice
+            wait_animation_stop(currentPage)
             click_center(currentPage)
             // This is a bit arbitrary... how long should we wait
             // to check that something didn't happen?

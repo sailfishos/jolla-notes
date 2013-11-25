@@ -32,7 +32,7 @@ SilicaTestCase {
     }
 
     // Create some notes to use for other tests.
-    // Ends at the last created note's page.
+    // Ends at the first listed note's page.
     function make_notes_fixture(notes) {
         var oldCount = notesModel.count
         for (var i = notes.length-1; i >= 0; i--) {
@@ -48,6 +48,9 @@ SilicaTestCase {
             wait_inputpanel_open()
             wait_animation_stop(currentPage)
         }
+        // Skip the delay before the last note is saved.
+        // It's cheating, but it's ok because this is a _fixture function.
+        currentPage.saveNote()
         compare(notesModel.count, oldCount + notes.length)
     }
 }
