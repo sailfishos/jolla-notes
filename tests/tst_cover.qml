@@ -25,7 +25,7 @@ JollaNotes.Notes {
             compare(notesModel.count, 0)
             make_notes_fixture(notes)
 
-            // leave the app at the Beta notepage
+            // leave the app at the Alpha notepage
         }
 
         function test_cover_text() {
@@ -36,7 +36,7 @@ JollaNotes.Notes {
             wait_for("application cover visible", function() {
                 return cover.visible
             })
-            var text = find_text(cover, "Beta")
+            var text = find_text(cover, "Alpha")
             verify(text, "cover shows current note text")
         }
 

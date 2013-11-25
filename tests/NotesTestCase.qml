@@ -32,7 +32,7 @@ SilicaTestCase {
     }
 
     // Create some notes to use for other tests.
-    // Ends at the last created note's page.
+    // Ends at the first listed note's page.
     function make_notes_fixture(notes) {
         var oldCount = notesModel.count
         for (var i = notes.length-1; i >= 0; i--) {
