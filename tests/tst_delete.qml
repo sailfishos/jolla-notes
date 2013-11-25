@@ -97,7 +97,7 @@ JollaNotes.Notes {
 
             for (var i = notes[1].length; i > 0; i--)
                 keyPress(Qt.Key_Backspace)
-            compare(item.text, '', "message empty")
+            compare(currentPage.text, '', "message empty")
 
             go_back()
             wait_pagestack("back to overview", 1)

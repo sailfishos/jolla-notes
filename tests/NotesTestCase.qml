@@ -48,6 +48,9 @@ SilicaTestCase {
             wait_inputpanel_open()
             wait_animation_stop(currentPage)
         }
+        // Skip the delay before the last note is saved.
+        // It's cheating, but it's ok because this is a _fixture function.
+        currentPage.saveNote()
         compare(notesModel.count, oldCount + notes.length)
     }
 }

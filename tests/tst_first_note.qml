@@ -41,6 +41,11 @@ JollaNotes.Notes {
             keyClick(Qt.Key_O)
 
             tryCompare(currentPage, 'text', "hello")
+            // The current implementation is to not save the note until
+            // the user stops typing, for performance reasons.
+            // Make sure it happens eventually.
+            wait(6000) // give timer time to run out
+            wait(100) // then a chance to run
             compare(notesModel.count, 1,
                     "note saved after text was typed")
         }
