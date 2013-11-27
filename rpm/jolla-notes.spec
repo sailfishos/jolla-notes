@@ -21,6 +21,7 @@ Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.0.34
+Requires:  %{name}-all-translations
 
 %description
 Note-taking application using Sailfish Silica components
