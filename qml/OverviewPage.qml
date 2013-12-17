@@ -74,9 +74,6 @@ Page {
                 height: view.cellHeight
                 width: view.cellWidth
                 y: index >= view.minOffsetIndex ? view.yOffset : 0
-                // When the context menu is open, disable all other delegates
-                enabled: !(view.contextMenu && view.contextMenu.visible &&
-                           view.contextMenuOn !== itemcontainer)
                 highlighted: down || view.contextMenuOn === itemcontainer
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
