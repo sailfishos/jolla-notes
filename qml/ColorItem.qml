@@ -4,15 +4,20 @@ import Sailfish.Silica.theme 1.0
 
 Rectangle {
     signal clicked
+    property bool isPortrait
     property alias pageNumber: label.text
 
     height: Theme.itemSizeExtraSmall
     width: Theme.itemSizeExtraSmall
     radius: Theme.paddingSmall/2
     anchors {
-        right: parent.right
+        right: isPortrait ? parent.right : undefined
         rightMargin: Theme.paddingLarge
-        verticalCenter: parent.verticalCenter
+        verticalCenter: isPortrait ? parent.verticalCenter : undefined
+        top: isPortrait ? undefined : parent.top
+        topMargin: Theme.itemSizeLarge
+        left: isPortrait ? undefined : parent.left
+        leftMargin: Theme.paddingLarge
     }
     Label {
         id: label
