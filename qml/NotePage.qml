@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
 Page {
-    id: notepage
+    id: notePage
 
     // currentIndex is for allocated notes.
     // potentialPage is for empty notes that haven't been added to the db yet.
@@ -11,6 +11,8 @@ Page {
     property int potentialPage
     property alias editMode: textArea.focus
     property alias text: textArea.text
+
+    allowedOrientations: Orientation.All
 
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
@@ -96,10 +98,11 @@ Page {
         property string savedText
 
         anchors.fill: parent
+
         // The PullDownMenu doesn't work if contentHeight is left implicit.
         // It also doesn't work if contentHeight ends up equal to the
         // page height, so add some padding.
-        contentHeight: column.height
+        contentHeight: column.y + column.height
 
         PullDownMenu {
             id: pulley
@@ -112,11 +115,11 @@ Page {
                     needsToShowShareMenu = false
                     var content = {
                             "data": vnoteConverter.vNote(textArea.text), // root context property
-                            "name": notepage.vNoteName(textArea.text),
+                            "name": notePage.vNoteName(textArea.text),
                             "type": "text/x-vnote",
                             "icon": "icon-launcher-notes"
                         }
-                    shareMenu.show(content, "text/x-vnote", notepage.height/3, notepage)
+                    shareMenu.show(content, "text/x-vnote", notePage.height/3, notePage)
                 }
             }
 
@@ -141,9 +144,9 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            if (notepage.currentIndex >= 0) {
+                            if (notePage.currentIndex >= 0) {
                                 var overview = pageStack.previousPage()
-                                overview.showDeleteNote(notepage.currentIndex)
+                                overview.showDeleteNote(notePage.currentIndex)
                             }
                             pageStack.pop(null, true)
                             noteview.opacity = 1.0
@@ -178,7 +181,7 @@ Page {
                                 potentialPage = 1
                             else
                                 textArea.text = ''
-                            notepage.editMode = true
+                            notePage.editMode = true
                             noteview.opacity = 1.0
                         }
                     }
@@ -188,15 +191,19 @@ Page {
 
         Column {
             id: column
+            width: notePage.width - x
+            y: isLandscape ? Theme.paddingLarge : 0
+            x: isLandscape ? 2*Theme.pageStackIndicatorWidth + Theme.paddingLarge : 0
+
             Item {
                 id: spacerItem
-                width: notepage.width
+                width: parent.width
                 height: 0
                 Behavior on height { NumberAnimation { duration: 200 } }
             }
             ShareMenu {
                 id: shareMenu
-                width: notepage.width
+                width: parent.width
                 onActiveChanged: {
                     if (active) {
                         spacerItem.height = 3 * Theme.paddingLarge // below the page indicator
@@ -209,7 +216,10 @@ Page {
                 id: headerItem
                 width: parent.width
                 height: Theme.itemSizeLarge
+                visible: isPortrait
                 ColorItem {
+                    isPortrait: notePage.isPortrait
+                    parent: isPortrait ? headerItem : noteview.contentItem
                     color: noteview.color
                     pageNumber: noteview.pageNumber
                     onClicked: openColorPicker()
@@ -218,7 +228,7 @@ Page {
             TextArea {
                 id: textArea
                 font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
-                width: noteview.width
+                width: parent.width
                 height: Math.max(noteview.height-headerItem.height, implicitHeight)
                 //: Placeholder text for new notes. At this point there's
                 //: nothing else on the screen.
@@ -230,11 +240,11 @@ Page {
                 Timer {
                     id: saveTimer
                     interval: 5000
-                    onTriggered: notepage.saveNote()
+                    onTriggered: notePage.saveNote()
                 }
                 Connections {
                     target: Qt.application
-                    onActiveChanged: if (!Qt.application.active) notepage.saveNote()
+                    onActiveChanged: if (!Qt.application.active) notePage.saveNote()
                 }
             }
         }

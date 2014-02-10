@@ -4,6 +4,8 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
+    allowedOrientations: Orientation.All
+
     function showDeleteNote(index) {
         // This is needed both for UI (the user should see the remorse item)
         // and to make sure the delegate exists.
@@ -19,7 +21,7 @@ Page {
 
         anchors.fill: overviewpage
         model: notesModel
-        cellHeight: overviewpage.width/2
+        cellHeight: overviewpage.width / (isLandscape ? 4 : 2)
         cellWidth: cellHeight
         property int columnCount: Math.floor(overviewpage.width / cellWidth)
 
