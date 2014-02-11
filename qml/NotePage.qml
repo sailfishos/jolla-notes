@@ -12,8 +12,6 @@ Page {
     property alias editMode: textArea.focus
     property alias text: textArea.text
 
-    allowedOrientations: Orientation.All
-
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
             potentialPage = 0
