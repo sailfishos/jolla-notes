@@ -22,6 +22,8 @@ Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.0.34
 Requires:  %{name}-all-translations
+Requires: the-vault >= 0.8.14
+Requires: sqlite >= 3.0
 
 %description
 Note-taking application using Sailfish Silica components
@@ -72,3 +74,11 @@ desktop-file-install --delete-original       \
 %files tests
 %defattr(-,root,root,-)
 /opt/tests/jolla-notes/*
+
+%post
+the-vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_datadir}/jolla-notes/notes-vault.js || :
+
+%postun
+if [ $1 -eq 0 ]; then
+the-vault -G -a unregister --unit=Notes || :
+fi
