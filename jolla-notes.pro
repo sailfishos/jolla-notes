@@ -7,7 +7,7 @@ SOURCES += notes.cpp
 
 HEADERS +=
 
-qml.files = Notes.qml qml
+qml.files = Notes.qml notes-vault.js qml
 
 desktop.files = jolla-notes.desktop
 
