@@ -44,6 +44,11 @@ var process_sqlite_import = function(data, vault_options) {
         return error.raise({message: "Database is not opened yet"});
     };
 
+    var mkdir = function(dir_name) {
+        if (!os.path.isDir(dir_name))
+            os.mkdir(dir_name, {parent: true});
+    };
+
     var actions = {
         version: function(info) {
             if (parseInt(info.data) !== 1)
@@ -58,6 +63,8 @@ var process_sqlite_import = function(data, vault_options) {
                 os.rename(db_name, db_name + ".back");
                 on_error.push(os.rename.curry(db_name + ".back", db_name));
                 on_ok.push(os.rm.curry(db_name + ".back"));
+            } else {
+                mkdir(os.path.dirName(db_name));
             }
 
             var ps = subprocess.process();
@@ -82,6 +89,8 @@ var process_sqlite_import = function(data, vault_options) {
                 os.rename(dst_name, dst_name + ".back");
                 on_error.push(os.rename.curry(dst_name + ".back", dst_name));
                 on_ok.push(os.rm.curry(dst_name + ".back"));
+            } else {
+                mkdir(os.path.dirName(dst_name));
             }
 
             os.cp(src_name, dst_name, {force: true});
