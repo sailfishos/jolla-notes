@@ -46,7 +46,7 @@ Page {
         ViewPlaceholder {
             //: Comforting text when overview is empty
             //% "Write a note"
-            text: qsTrId("notes-la-write-note")
+            text: qsTrId("notes-la-overview-placeholder")
             enabled: view.count == 0
         }
         delegate: Item {

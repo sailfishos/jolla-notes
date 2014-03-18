@@ -38,7 +38,7 @@ JollaNotes.Notes {
 
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
-            var comforter = find_text(currentPage, "notes-la-write-note")
+            var comforter = find_text(currentPage, "notes-la-overview-placeholder")
             verify_displayed(comforter, "Write-note text on empty overview")
         }
 
@@ -73,7 +73,7 @@ JollaNotes.Notes {
         }
 
         function test_5_no_comforter() {
-            var comforter = find_text(currentPage, "notes-la-write-note")
+            var comforter = find_text(currentPage, "notes-la-overview-placeholder")
             if (comforter) {
                 wait_for("write-note text went away when note was written",
                          function() {
