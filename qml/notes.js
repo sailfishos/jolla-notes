@@ -11,23 +11,33 @@
 
 .import QtQuick.LocalStorage 2.0 as Sql
 
+function _rawOpenDb() {
+    return Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000)
+}
+
 function upgradeSchema(db) {
+    // Awkward. db.changeVersion does NOT update db.version, but DOES
+    // check that db.version is equal to the first parameter.
+    // So reopen the database after every changeVersion to get the
+    // updated db.version.
     if (db.version == '') {
         db.changeVersion('', '1', function (tx) {
             tx.executeSql(
                 'CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT)')
         })
+        db = _rawOpenDb()
     }
     if (db.version == '1') {
         db.changeVersion('1', '2', function (tx) {
             tx.executeSql('CREATE TABLE next_color_index (value INTEGER)')
             tx.executeSql('INSERT INTO next_color_index VALUES (0)')
         })
+        db = _rawOpenDb()
     }
 }
 
 function openDb() {
-    var db = Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000, upgradeSchema)
+    var db = _rawOpenDb()
     if (db.version != '2')
         upgradeSchema(db);
     return db;
