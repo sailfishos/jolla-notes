@@ -58,7 +58,6 @@ JollaNotes.Notes {
                     verify(items[i].highlighted, "selected item is highlighted")
                     verify_displayed(items[i], "selected item")
                 } else {
-                    verify(!items[i].enabled, " non-selected item disabled")
                     verify(!items[i].highlighted,
                             " non-selected item not highlighted")
                 }
