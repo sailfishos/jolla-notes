@@ -58,7 +58,8 @@ Page {
     }
 
     function openColorPicker() {
-        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog")
+        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog",
+            {"colors": notesModel.availableColors()})
         dialog.accepted.connect(function() {
             noteview.color = dialog.color
             notesModel.updateColor(currentIndex, dialog.color)

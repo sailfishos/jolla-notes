@@ -47,6 +47,7 @@ ListModel {
         NoteScript.updateColor(row.pagenr, _color)
         setProperty(idx, "color", _color)
     }
+
     function moveToTop(idx) {
         var row = get(idx)
         NoteScript.moveToTop(row.pagenr)
@@ -67,5 +68,9 @@ ListModel {
             setProperty(i, "pagenr", parseInt(row.pagenr, 10) - 1)
         }
         remove(idx)
+    }
+
+    function availableColors() {
+        return NoteScript.availableColors
     }
 }
