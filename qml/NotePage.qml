@@ -11,6 +11,8 @@ Page {
     property int potentialPage
     property alias editMode: textArea.focus
     property alias text: textArea.text
+    property alias color: noteview.color
+    property alias pageNumber: noteview.pageNumber
 
     onCurrentIndexChanged: {
         if (currentIndex >= 0 && currentIndex < notesModel.count) {
