@@ -46,13 +46,13 @@ Page {
             id: itemcontainer
 
             // Adjust the height to make space for the context menu if needed
-            height: view.contextMenuOn === itemcontainer
-                    ? view.cellHeight + view.contextMenu.height
-                    : view.cellHeight
+            height: menuOpen ? view.cellHeight + view.contextMenu.height
+                             : view.cellHeight
             width: view.cellWidth
 
             // make model.index accessible to other delegates
             property int index: model.index
+            property bool menuOpen: view.contextMenuOn === itemcontainer
 
             function deleteNote() {
                 var remorse = remorsecomponent.createObject(view)
@@ -74,7 +74,8 @@ Page {
                 height: view.cellHeight
                 width: view.cellWidth
                 y: index >= view.minOffsetIndex ? view.yOffset : 0
-                highlighted: down || view.contextMenuOn === itemcontainer
+                highlighted: down || menuOpen
+                _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
                 onPressAndHold: view.showContextMenu(itemcontainer)
