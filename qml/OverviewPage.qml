@@ -152,6 +152,8 @@ Page {
 
     Component {
         id: remorsecomponent
-        RemorseItem { }
+        RemorseItem {
+            wrapMode: Text.Wrap
+        }
     }
 }
