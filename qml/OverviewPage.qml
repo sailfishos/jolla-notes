@@ -134,20 +134,18 @@ Page {
             }
 
             MenuItem {
-                //: Move this note to be first in the list
-                //% "Move to top"
-                text: qsTrId("notes-la-move-to-top")
-                onClicked: {
-                    if (contextmenu.parent.index > 0)
-                        moveToTopItem = contextmenu.parent
-                }
-            }
-
-            MenuItem {
                 //: Delete this note from overview
                 //% "Delete"
                 text: qsTrId("notes-la-delete")
                 onClicked: contextmenu.parent.deleteNote()
+            }
+
+            MenuItem {
+                //: Move this note to be first in the list
+                //% "Move to top"
+                text: qsTrId("notes-la-move-to-top")
+                visible: contextmenu.parent && contextmenu.parent.index > 0
+                onClicked: moveToTopItem = contextmenu.parent
             }
         }
     }
