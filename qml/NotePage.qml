@@ -13,17 +13,61 @@ Page {
     property alias text: textArea.text
     property alias color: noteview.color
     property alias pageNumber: noteview.pageNumber
+    property bool loaded  // only load from notesModel[currentIndex] once
+
+    // TODO: should some kind of IndexConnection go into the silica components?
+    Connections {
+        target: notesModel
+
+        onRowsRemoved: {
+            console.log("Notes removed: " + first + ".." + last)
+            if (currentIndex >= first) {
+                if (currentIndex > last) {
+                    currentIndex -= (last - first + 1)
+                } else {
+                    // current note was deleted; turn it into a potential note
+                    potentialPage = pageNumber
+                    currentIndex = -1
+                }
+            }
+        }
+
+        onRowsInserted: { 
+            console.log("Notes inserted: " + first + ".." + last)
+            if (currentIndex >= first)
+                currentIndex += (last - first + 1)
+        }
+
+        onRowsMoved: {
+            console.log("Notes moved: " + start + ".." + end + " -> " + row)
+            // start and end are indexes from before the move,
+            // "row" is start's new index after the move
+            var numMoved = end - start + 1
+            if (currentIndex >= start && currentIndex <= end) {
+                // current note was among those moved
+                currentIndex += start - row
+            } else if (currentIndex > end && currentIndex < row + numMoved) {
+                // moved notes jumped over current note
+                currentIndex -= numMoved
+            } else if (currentIndex < start && currentIndex >= row) {
+                // moved notes jumped before current note
+                currentIndex += numMoved
+            }
+        }
+    }
 
     onCurrentIndexChanged: {
-        if (currentIndex >= 0 && currentIndex < notesModel.count) {
+        if (!loaded && currentIndex >= 0 && currentIndex < notesModel.count) {
             potentialPage = 0
             var item = notesModel.get(currentIndex)
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
             noteview.pageNumber = item.pagenr
+            loaded = true
         }
     }
+
     onStatusChanged: {
         if (status == PageStatus.Deactivating) {
             if (currentIndex >= 0 && noteview.text.trim() == '') {
