@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
 Page {
-    id: notePage
+    id: page
 
     // currentIndex is for allocated notes.
     // potentialPage is for empty notes that haven't been added to the db yet.
@@ -160,11 +160,11 @@ Page {
                     needsToShowShareMenu = false
                     var content = {
                             "data": vnoteConverter.vNote(textArea.text), // root context property
-                            "name": notePage.vNoteName(textArea.text),
+                            "name": page.vNoteName(textArea.text),
                             "type": "text/x-vnote",
                             "icon": "icon-launcher-notes"
                         }
-                    shareMenu.show(content, "text/x-vnote", notePage.height/3, notePage)
+                    shareMenu.show(content, "text/x-vnote", page.height/3, page)
                 }
             }
 
@@ -189,9 +189,9 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            if (notePage.currentIndex >= 0) {
+                            if (page.currentIndex >= 0) {
                                 var overview = pageStack.previousPage()
-                                overview.showDeleteNote(notePage.currentIndex)
+                                overview.showDeleteNote(page.currentIndex)
                             }
                             pageStack.pop(null, true)
                             noteview.opacity = 1.0
@@ -226,7 +226,7 @@ Page {
                                 potentialPage = 1
                             else
                                 textArea.text = ''
-                            notePage.editMode = true
+                            page.editMode = true
                             noteview.opacity = 1.0
                         }
                     }
@@ -236,7 +236,7 @@ Page {
 
         Column {
             id: column
-            width: notePage.width - x
+            width: page.width - x
             y: isLandscape ? Theme.paddingLarge : 0
             x: isLandscape ? 2*Theme.pageStackIndicatorWidth + Theme.paddingLarge : 0
 
@@ -263,7 +263,7 @@ Page {
                 height: Theme.itemSizeLarge
                 visible: isPortrait
                 ColorItem {
-                    isPortrait: notePage.isPortrait
+                    isPortrait: page.isPortrait
                     parent: isPortrait ? headerItem : noteview.contentItem
                     color: noteview.color
                     pageNumber: noteview.pageNumber
@@ -285,11 +285,11 @@ Page {
                 Timer {
                     id: saveTimer
                     interval: 5000
-                    onTriggered: notePage.saveNote()
+                    onTriggered: page.saveNote()
                 }
                 Connections {
                     target: Qt.application
-                    onActiveChanged: if (!Qt.application.active) notePage.saveNote()
+                    onActiveChanged: if (!Qt.application.active) page.saveNote()
                 }
             }
         }
