@@ -27,7 +27,6 @@ Page {
                 } else {
                     // current note was deleted; turn it into a potential note
                     potentialPage = pageNumber
-                    currentIndex = -1
                 }
             }
         }
@@ -222,12 +221,10 @@ Page {
                     ScriptAction {
                         script: {
                             saveNote()
-                            if (!potentialPage)
-                                potentialPage = 1
-                            else
-                                textArea.text = ''
-                            page.editMode = true
-                            noteview.opacity = 1.0
+                            pageStack.replace(notePage, {
+                                potentialPage: 1,
+                                editMode: true
+                            }, PageStackAction.Immediate)
                         }
                     }
                 }
