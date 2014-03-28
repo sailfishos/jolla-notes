@@ -54,25 +54,15 @@ CoverBackground {
         CoverLabel {
             id: noteLabel
 
-            property variant model
-
-            visible: false
+            visible: notesModel.count > 0 && pageStack.depth > 1
+                      && pageStack.currentPage.currentIndex >= 0
             maximumLineCount: 8
             width: parent.width
             y: Theme.paddingMedium
             lineHeight: listView.lineHeight
-            text: model ? model.text.trim() : ""
-            color: model ? model.color :  Theme.primaryColor
-            pageNumber: model ? model.pagenr : 0
-            states: State {
-                when: notesModel.count > 0 && pageStack.depth > 1
-                      && pageStack.currentPage.currentIndex >= 0
-                PropertyChanges {
-                    target: noteLabel
-                    visible: true
-                    model: notesModel.get(pageStack.currentPage.currentIndex)
-                }
-            }
+            text: visible ? pageStack.currentPage.text.trim() : ""
+            color: visible ? pageStack.currentPage.color :  Theme.primaryColor
+            pageNumber: visible ? pageStack.currentPage.pageNumber : 0
         }
     }
 

@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
 Page {
-    id: notePage
+    id: page
 
     // currentIndex is for allocated notes.
     // potentialPage is for empty notes that haven't been added to the db yet.
@@ -11,17 +11,62 @@ Page {
     property int potentialPage
     property alias editMode: textArea.focus
     property alias text: textArea.text
+    property alias color: noteview.color
+    property alias pageNumber: noteview.pageNumber
+    property bool loaded  // only load from notesModel[currentIndex] once
+
+    // TODO: should some kind of IndexConnection go into the silica components?
+    Connections {
+        target: notesModel
+
+        onRowsRemoved: {
+            console.log("Notes removed: " + first + ".." + last)
+            if (currentIndex >= first) {
+                if (currentIndex > last) {
+                    currentIndex -= (last - first + 1)
+                } else {
+                    // current note was deleted; turn it into a potential note
+                    potentialPage = pageNumber
+                }
+            }
+        }
+
+        onRowsInserted: { 
+            console.log("Notes inserted: " + first + ".." + last)
+            if (currentIndex >= first)
+                currentIndex += (last - first + 1)
+        }
+
+        onRowsMoved: {
+            console.log("Notes moved: " + start + ".." + end + " -> " + row)
+            // start and end are indexes from before the move,
+            // "row" is start's new index after the move
+            var numMoved = end - start + 1
+            if (currentIndex >= start && currentIndex <= end) {
+                // current note was among those moved
+                currentIndex += start - row
+            } else if (currentIndex > end && currentIndex < row + numMoved) {
+                // moved notes jumped over current note
+                currentIndex -= numMoved
+            } else if (currentIndex < start && currentIndex >= row) {
+                // moved notes jumped before current note
+                currentIndex += numMoved
+            }
+        }
+    }
 
     onCurrentIndexChanged: {
-        if (currentIndex >= 0 && currentIndex < notesModel.count) {
+        if (!loaded && currentIndex >= 0 && currentIndex < notesModel.count) {
             potentialPage = 0
             var item = notesModel.get(currentIndex)
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
             noteview.pageNumber = item.pagenr
+            loaded = true
         }
     }
+
     onStatusChanged: {
         if (status == PageStatus.Deactivating) {
             if (currentIndex >= 0 && noteview.text.trim() == '') {
@@ -58,7 +103,8 @@ Page {
     }
 
     function openColorPicker() {
-        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog")
+        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog",
+            {"colors": notesModel.availableColors()})
         dialog.accepted.connect(function() {
             noteview.color = dialog.color
             notesModel.updateColor(currentIndex, dialog.color)
@@ -113,11 +159,11 @@ Page {
                     needsToShowShareMenu = false
                     var content = {
                             "data": vnoteConverter.vNote(textArea.text), // root context property
-                            "name": notePage.vNoteName(textArea.text),
+                            "name": page.vNoteName(textArea.text),
                             "type": "text/x-vnote",
                             "icon": "icon-launcher-notes"
                         }
-                    shareMenu.show(content, "text/x-vnote", notePage.height/3, notePage)
+                    shareMenu.show(content, "text/x-vnote", page.height/3, page)
                 }
             }
 
@@ -142,9 +188,9 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            if (notePage.currentIndex >= 0) {
+                            if (page.currentIndex >= 0) {
                                 var overview = pageStack.previousPage()
-                                overview.showDeleteNote(notePage.currentIndex)
+                                overview.showDeleteNote(page.currentIndex)
                             }
                             pageStack.pop(null, true)
                             noteview.opacity = 1.0
@@ -175,12 +221,10 @@ Page {
                     ScriptAction {
                         script: {
                             saveNote()
-                            if (!potentialPage)
-                                potentialPage = 1
-                            else
-                                textArea.text = ''
-                            notePage.editMode = true
-                            noteview.opacity = 1.0
+                            pageStack.replace(notePage, {
+                                potentialPage: 1,
+                                editMode: true
+                            }, PageStackAction.Immediate)
                         }
                     }
                 }
@@ -189,7 +233,7 @@ Page {
 
         Column {
             id: column
-            width: notePage.width - x
+            width: page.width - x
             y: isLandscape ? Theme.paddingLarge : 0
             x: isLandscape ? 2*Theme.pageStackIndicatorWidth + Theme.paddingLarge : 0
 
@@ -216,7 +260,7 @@ Page {
                 height: Theme.itemSizeLarge
                 visible: isPortrait
                 ColorItem {
-                    isPortrait: notePage.isPortrait
+                    isPortrait: page.isPortrait
                     parent: isPortrait ? headerItem : noteview.contentItem
                     color: noteview.color
                     pageNumber: noteview.pageNumber
@@ -238,11 +282,11 @@ Page {
                 Timer {
                     id: saveTimer
                     interval: 5000
-                    onTriggered: notePage.saveNote()
+                    onTriggered: page.saveNote()
                 }
                 Connections {
                     target: Qt.application
-                    onActiveChanged: if (!Qt.application.active) notePage.saveNote()
+                    onActiveChanged: if (!Qt.application.active) page.saveNote()
                 }
             }
         }
