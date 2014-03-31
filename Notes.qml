@@ -7,7 +7,7 @@ ApplicationWindow
     id: app
     initialPage: Component { OverviewPage { id: overviewpage } }
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
-    _defaultPageOrientations: Orientation.Portrait | Orientation.Landscape
+    _defaultPageOrientations: Orientation.Portrait | Orientation.Landscape | Orientation.LandscapeInverted
 
     property NotesModel notesModel: NotesModel { id: notesModel }
 
