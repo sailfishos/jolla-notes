@@ -163,7 +163,11 @@ Page {
                             "type": "text/x-vnote",
                             "icon": "icon-launcher-notes"
                         }
-                    shareMenu.show(content, "text/x-vnote", page.height/3, page)
+                    shareMenu.show(content, "text/x-vnote",
+                                   page.isPortrait
+                                   ? Screen.height / 3
+                                   : Screen.width / 2,
+                                    page)
                 }
             }
 
