@@ -9,7 +9,7 @@ ApplicationWindow
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
     _defaultPageOrientations: Orientation.Portrait | Orientation.Landscape | Orientation.LandscapeInverted
 
-    property NotesModel notesModel: NotesModel { id: notesModel }
+    NotesModel { id: notesModel }
 
     function openNewNote(operationType) {
         pageStack.push(notePage, {potentialPage: 1, editMode: true}, operationType)

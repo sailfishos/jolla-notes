@@ -4,6 +4,7 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
+    property bool startupCheck
     function showDeleteNote(index) {
         // This is needed both for UI (the user should see the remorse item)
         // and to make sure the delegate exists.
@@ -12,6 +13,15 @@ Page {
         // Is this really the only way to look up a delegate by index?
         view.currentIndex = index
         view.currentItem.deleteNote()
+    }
+    onStatusChanged: {
+        // Open new note page directly if no notes have yet been saved
+        if (status === PageStatus.Active && !startupCheck) {
+            startupCheck = true
+            if (notesModel.count === 0) {
+                openNewNote(PageStackAction.Immediate)
+            }
+        }
     }
 
     SilicaGridView {
@@ -96,6 +106,7 @@ Page {
                 onClicked: app.openNewNote(PageStackAction.Animated)
             }
         }
+        VerticalScrollDecorator {}
     }
 
     Component {
