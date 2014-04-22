@@ -35,14 +35,16 @@ JollaNotes.Notes {
             // Leave app at overview
         }
 
-        function check_deletion(old_count, notetext) {
+        function check_remorse() {
             var remorse = wait_find("remorse item started", currentPage,
                                     function (it) {
                 return it.text == "notes-la-deleting"
                        && it.visible && it.opacity == 1.0
             })
             fastforward_remorseitem(remorse)
+        }
 
+        function check_deletion(old_count, notetext) {
             // Check that the note has been deleted
             wait_for("note item gone from overview", function () {
                 return !find_text(currentPage, notetext)
@@ -65,6 +67,7 @@ JollaNotes.Notes {
             select_pull_down("notes-me-delete-note")
             wait_pagestack("note page closed", 1)
 
+            check_remorse()
             check_deletion(old_count, notes[2])
         }
 
@@ -81,6 +84,7 @@ JollaNotes.Notes {
             verify_displayed(action, "context menu delete note action")
             click_center(action)
 
+            check_remorse()
             check_deletion(old_count, notes[3])
         }
 
@@ -102,13 +106,29 @@ JollaNotes.Notes {
             go_back()
             wait_pagestack("back to overview", 1)
 
-            verify(!find_text(currentPage, notes[1]),
-                   "note item gone from overview")
-            compare(notesModel.count, old_count-1, "note has been deleted")
-            for (var i = 0; i < notesModel.count; i++) {
-                if (notesModel.get(i).text == notes[1])
-                    fail("note deleted from model")
-            }
+            check_deletion(old_count, notes[1])
+        }
+
+        function test_delete_emptied_note() {
+            // Emptying a note and then deleting it from the menu used
+            // to crash the app. This is a regression test for that.
+            var old_count = notesModel.count
+            var item = find_text(currentPage, notes[0])
+            verify(item, "Note '" + notes[0] + "' found")
+            click_center(item)
+            wait_pagestack("note page opened", 2)
+
+            click_center(currentPage)
+            wait_inputpanel_open()
+
+            for (var i = notes[0].length; i > 0; i--)
+                keyPress(Qt.Key_Backspace)
+            compare(currentPage.text, '', "message empty")
+
+            select_pull_down("notes-me-delete-note")
+            wait_pagestack("note page closed", 1)
+
+            check_deletion(old_count, notes[1])
         }
 
         function cleanupTestCase() {
