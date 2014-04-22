@@ -1,5 +1,6 @@
 // Test the app cover
 // The cover actions will be tested with the robot for now.
+//FIXTURE: defaultnotes
 
 import QtTest 1.0
 import QtQuick 2.0
@@ -14,21 +15,20 @@ JollaNotes.Notes {
         name: "AppCover"
         when: windowShown
 
-        function initTestCase() {
-            clear_db()
-
+        function init() {
             activate()
             tryCompare(main, 'applicationActive', true)
-
-            var notes = ["Alpha", "Beta"]
-
-            compare(notesModel.count, 0)
-            make_notes_fixture(notes)
-
-            // leave the app at the Alpha notepage
         }
 
         function test_cover_text() {
+            // Click a note to open it
+            var chosen = defaultNotes[2]
+            var item = find_text(currentPage, chosen)
+            verify(item, "Note '" + chosen + "' found")
+            click_center(item)
+            wait_pagestack("note page opened", 2)
+
+            // Go to home screen
             main.deactivate()
             var cover = wait_for("cover page created", function() {
                 return main._coverObject
@@ -36,12 +36,8 @@ JollaNotes.Notes {
             wait_for("application cover visible", function() {
                 return cover.visible
             })
-            var text = find_text(cover, "Alpha")
+            var text = find_text(cover, chosen)
             verify(text, "cover shows current note text")
-        }
-
-        function cleanupTestCase() {
-            clear_db()
         }
     }
 }

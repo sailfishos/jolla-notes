@@ -4,8 +4,24 @@
        <description>Jolla Notes automatic tests</description>
        <set name="feature-tests" feature="Jolla Notes">
            <description>Collection of Jolla Notes tests</description>
-           <case manual="false" name="qmltestrunner" timeout="180">
-               <step>cd /tmp/results &amp;&amp; PATH=/usr/lib/qt5/bin:&quot;$PATH&quot; XDG_DATA_HOME=/tmp/testdata qmltestrunner -input /opt/tests/jolla-notes/ -xunitxml -o jolla-notes-qmltestrunner.xml</step>
+           <case manual="false" name="first note">
+               <step>/opt/tests/jolla-notes/runtest tst_first_note</step>
+               <step>/opt/tests/jolla-notes/runtest tst_first_note_saved</step>
+           </case>
+           <case manual="false" name="context menu">
+               <step>/opt/tests/jolla-notes/runtest tst_contextmenu</step>
+           </case>
+           <case manual="false" name="cover page">
+               <step>/opt/tests/jolla-notes/runtest tst_cover</step>
+           </case>
+           <case manual="false" name="note deletion">
+               <step>/opt/tests/jolla-notes/runtest tst_delete</step>
+           </case>
+           <case manual="false" name="overview page">
+               <step>/opt/tests/jolla-notes/runtest tst_grid</step>
+           </case>
+           <case manual="false" name="note emptying">
+               <step>/opt/tests/jolla-notes/runtest tst_no_save_empty</step>
            </case>
        </set>
    </suite>

@@ -1,4 +1,5 @@
 // Test that empty notes are not saved
+//FIXTURE: empty
 
 import QtTest 1.0
 import QtQuick 2.0
@@ -82,10 +83,6 @@ JollaNotes.Notes {
 
             compare(notesModel.count, oldcount,
                     "whitespace note was not saved")
-        }
-
-        function cleanupTestCase() {
-            clear_db()
         }
     }
 }

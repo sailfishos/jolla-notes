@@ -1,5 +1,6 @@
 // Test that app is empty on startup, has comforter text on the overview,
 // and it's possible to write a note
+//FIXTURE: empty
 
 import QtTest 1.0
 import QtQuick 2.0

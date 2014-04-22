@@ -6,6 +6,8 @@ import QtTest 1.0
 import QtQuick.LocalStorage 2.0 as Sql
 
 SilicaTestCase {
+    property var defaultNotes: ["Fear", "Surprise", "Ruthless efficiency",
+                                "Fanatical devotion", "Nice red uniforms"]
 
     // Notes doesn't rely on the pagestack transition speed,
     // so speed it up for faster tests.

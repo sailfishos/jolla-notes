@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -e
+
+# Run one of the Jolla Notes test files, leaving the results in /tmp/results
+# where the automated test framework expects them.
+
+#  first argument is the name of a tst_xxxx.qml file, without the .qml part
+
+mkdir -p /tmp/results
+cd /tmp/results
+
+export XDG_DATA_HOME=/tmp/testdata
+
+datadir=/tmp/testdata/qmltestrunner/QML/OfflineStorage/Databases
+testfile=/opt/tests/jolla-notes/$1.qml
+
+grep "//FIXTURE: " $testfile | cut -f 2 -d" " | while read fixture; do
+    if [ "$fixture" = "empty" ]; then
+        rm -rf $datadir
+    elif [ "$fixture" = "defaultnotes" ]; then
+        rm -rf $datadir
+        if [ -d /tmp/testdata/Fixture ]; then
+            cp -a /tmp/testdata/Fixture $datadir
+        else
+            /usr/lib/qt5/bin/qmltestrunner -input /opt/tests/jolla-notes/make_notes.qml
+            cp -a $datadir /tmp/testdata/Fixture
+        fi
+    fi
+done
+
+/usr/lib/qt5/bin/qmltestrunner -input $testfile -o jolla-notes-$1.xml,xunitxml -o -,txt

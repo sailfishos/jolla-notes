@@ -43,9 +43,5 @@ JollaNotes.Notes {
 
             compare(old_text.y, new_text.y)
         }
-
-        function cleanupTestCase() {
-            clear_db()
-        }
     }
 }
