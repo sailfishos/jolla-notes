@@ -192,7 +192,11 @@ Page {
                     }
                     ScriptAction {
                         script: {
-                            if (page.currentIndex >= 0) {
+                            // If the note text is empty then the note
+                            // will be deleted by onStatusChanged, and
+                            // there should not be a remorse timer etc.
+                            if (page.currentIndex >= 0
+                                && noteview.text.trim() != '') {
                                 var overview = pageStack.previousPage()
                                 overview.showDeleteNote(page.currentIndex)
                             }
