@@ -9,7 +9,8 @@ ApplicationWindow
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
     _defaultPageOrientations: Orientation.Portrait | Orientation.Landscape | Orientation.LandscapeInverted
 
-    NotesModel { id: notesModel }
+    // exposed as a property so that the tests can access it
+    property NotesModel notesModel: NotesModel { id: notesModel }
 
     function openNewNote(operationType) {
         pageStack.push(notePage, {potentialPage: 1, editMode: true}, operationType)

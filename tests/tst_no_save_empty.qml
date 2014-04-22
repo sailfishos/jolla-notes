@@ -18,6 +18,12 @@ JollaNotes.Notes {
         function init() {
             activate()
             tryCompare(main, 'applicationActive', true)
+
+            // With an empty db, Notes will start with a new note page open
+            // Most of these tests need to start from the overview so make
+            // that the initial state.
+            go_back()
+            wait_pagestack("back to overview", 1)
         }
 
         function test_empty_not_saved() {

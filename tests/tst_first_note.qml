@@ -20,6 +20,22 @@ JollaNotes.Notes {
             tryCompare(main, 'applicationActive', true)
         }
 
+        function test_0_opens_on_notepage() {
+            compare(notesModel.count, 0) // precondition for this test
+
+            // When Notes starts with an empty db, it should open a new
+            // note automatically so that the user can start typing right away
+            wait_pagestack("new note page opened", 2)
+            compare(currentPage.text, '', "first note page is empty")
+
+            // The first note should be ready to write
+            wait_inputpanel_open()
+
+            // back to overview for the rest of the tests
+            go_back()
+            wait_pagestack("note page closed", 1)
+        }
+
         function test_1_comforter() {
             compare(notesModel.count, 0) // precondition for this test
             var comforter = find_text(currentPage, "notes-la-write-note")
@@ -79,6 +95,6 @@ JollaNotes.Notes {
             compare(pageStack.depth, 1, "tap-to-write was ignored")
         }
 
-        // The note is left for the tst_note_saved.qml test
+        // The note is left in the db for the tst_first_note_saved.qml test
     }
 }
