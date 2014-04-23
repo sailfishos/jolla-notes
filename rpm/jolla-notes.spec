@@ -40,6 +40,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: qt5-qtdeclarative-import-qttest
 Requires: qt5-qtdeclarative-devel-tools
 Requires: mce-tools
+Requires: testrunner-lite
 
 %description tests
 This package installs automated test scripts for jolla-notes,

@@ -1,5 +1,6 @@
 // Test that note items are visible in the overview,
 // with tint, page number and color tag.
+//FIXTURE: defaultnotes
 
 import QtTest 1.0
 import QtQuick 2.0
@@ -20,22 +21,13 @@ JollaNotes.Notes {
         }
 
         function test_noteitems() {
-            var notes = ["Foo", "Bar", "Gnu", "Xyzzy"]
-
-            compare(notesModel.count, 0)
-            make_notes_fixture(notes)
-
-            go_back()
-            wait_pagestack("note page closed", 1)
-            wait_inputpanel_closed()
-
             // Colors from silica colorpicker
-            var colors = ["#cc0000", "#cc7700", "#ccbb00", "#88cc00"]
-            colors = colors.reverse() // makes_notes_fixture works in reverse
+            var colors = ["#cc0000", "#cc7700", "#ccbb00", "#88cc00", "#00b315"]
+            colors.reverse() // makes_notes_fixture works backward
 
-            for (var i = 0; i < notes.length; i++) {
+            for (var i = 0; i < defaultNotes.length; i++) {
                 var pgnr = "" + (i+1)
-                var item = find_text(currentPage, notes[i])
+                var item = find_text(currentPage, defaultNotes[i])
                 verify_displayed(item, "noteitem " + pgnr)
                 verify_displayed(find_text(item, pgnr), "page number " + pgnr)
                 var colorbar = find_by_testname(item, "colortag")
@@ -43,10 +35,6 @@ JollaNotes.Notes {
                 verify_displayed(colorbar, "color bar " + pgnr)
                 // @todo: verify tint
             }
-        }
-
-        function cleanupTestCase() {
-            clear_db()
         }
     }
 }

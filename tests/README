@@ -1,0 +1,14 @@
+These tests are designed to be run via testrunner-lite.
+
+To run them all:
+    zypper install jolla-notes-tests
+    mcetool -D on  # prevent screen lock while the tests run
+    testrunner-lite -f /opt/tests/jolla-notes/test-definition/tests.xml -o /tmp/results/testresults.xml
+    mcetool -D off
+    grep FAIL /tmp/results/testresults.xml
+
+To run just one:
+    /opt/tests/jolla-notes/runtest TESTNAME
+where TESTNAME is the name of a tst_ qml file without the .qml extension
+
+Results will be in /tmp/results

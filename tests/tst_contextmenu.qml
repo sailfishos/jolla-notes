@@ -1,4 +1,5 @@
 // Test opening and closing of the context menu
+//FIXTURE: defaultnotes
 
 import QtTest 1.0
 import QtQuick 2.0
@@ -22,19 +23,8 @@ JollaNotes.Notes {
         }
 
         function initTestCase() {
-            activate()
-            tryCompare(main, 'applicationActive', true)
-
-            notes = ["Frame", "Note1", "Note2", "Sentinel"]
-            compare(notesModel.count, 0)
-            make_notes_fixture(notes)
-
-            go_back()
-            wait_pagestack("note page closed", 1)
-            wait_inputpanel_closed()
-
             // Remember the starting positions of the items
-            var items = verify_find_text_items(currentPage, notes)
+            var items = verify_find_text_items(currentPage, defaultNotes)
             var locs = []
             for (var i = 0; i < items.length; i++) {
                 locs.push(main.mapFromItem(items[i], 0, 0))
@@ -45,10 +35,10 @@ JollaNotes.Notes {
         }
 
         function test_menu() {
-            var items = verify_find_text_items(currentPage, notes)
+            var items = verify_find_text_items(currentPage, defaultNotes)
 
             var old_height = items[1].height
-            verify_displayed(items[1], "note '" + notes[1] + "'")
+            verify_displayed(items[1], "note '" + defaultNotes[1] + "'")
             longclick_center(items[1])
             // Context menu should now have opened. Check that:
             // 1. all other delegates are faded and disabled
@@ -79,9 +69,9 @@ JollaNotes.Notes {
             var checkitems = []
             verify_displayed(menu, "context menu")
             checkitems.push(menu)
-            for (var i = 0; i < notes.length; i++) {
-                var checkitem = find_real_text(items[i], notes[i])
-                verify_displayed(checkitem, "note '" + notes[i] + "'")
+            for (var i = 0; i < defaultNotes.length; i++) {
+                var checkitem = find_real_text(items[i], defaultNotes[i])
+                verify_displayed(checkitem, "note '" + defaultNotes[i] + "'")
                 checkitems.push(checkitem)
             }
             var ov = overlap(grid.contentItem, checkitems)
@@ -107,24 +97,24 @@ JollaNotes.Notes {
             var notemap = {}
             notemap[0] = 1
             notemap[1] = 0
-            for (var i = 2; i < notes.length; i++) {
+            for (var i = 2; i < defaultNotes.length; i++) {
                 notemap[i] = i
             }
 
-            for (var i = 0; i < notes.length; i++) {
+            for (var i = 0; i < defaultNotes.length; i++) {
                 var pos = main.mapFromItem(items[i], 0, 0)
                 compare(pos, itemlocs[notemap[i]],
-                        "note '" + notes[i] + "' moved to index " + notemap[i])
-                compare(notesModel.get(notemap[i]).text, notes[i],
-                        "note '" + notes[i] + "' at index " + notemap[i] + " in database")
+                        "note '" + defaultNotes[i] + "' moved to index " + notemap[i])
+                compare(notesModel.get(notemap[i]).text, defaultNotes[i],
+                        "note '" + defaultNotes[i] + "' at index " + notemap[i] + " in database")
             }
         }
 
         function test_menu_try_again() {
             // Regression test for a bug where the context menu would open on
             // an incorrect item when reopened after "move to top"
-            var item = find_text(currentPage, notes[3])
-            verify_displayed(item, "note '" + notes[3] + "'")
+            var item = find_text(currentPage, defaultNotes[3])
+            verify_displayed(item, "note '" + defaultNotes[3] + "'")
 
             longclick_center(item)
 
