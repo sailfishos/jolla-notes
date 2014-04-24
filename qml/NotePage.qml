@@ -211,6 +211,7 @@ Page {
                 //% "Share Note"
                 text: qsTrId("notes-me-share-note")
                 onClicked: pulley.needsToShowShareMenu = true
+                enabled: noteview.text.trim() != ''
             }
             MenuItem {
                 //: Create a new note ready for editing
