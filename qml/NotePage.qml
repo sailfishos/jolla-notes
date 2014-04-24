@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.TransferEngine 1.0
 
 Page {
     id: page
@@ -150,26 +149,6 @@ Page {
 
         PullDownMenu {
             id: pulley
-            property bool needsToShowShareMenu
-            onActiveChanged: {
-                // we do this so that the "opening" transition of the
-                // share menu begins after the "closing" transition
-                // of the pulley menu has completed.
-                if (needsToShowShareMenu) {
-                    needsToShowShareMenu = false
-                    var content = {
-                            "data": vnoteConverter.vNote(textArea.text), // root context property
-                            "name": page.vNoteName(textArea.text),
-                            "type": "text/x-vnote",
-                            "icon": "icon-launcher-notes"
-                        }
-                    shareMenu.show(content, "text/x-vnote",
-                                   page.isPortrait
-                                   ? Screen.height / 3
-                                   : Screen.width / 2,
-                                    page)
-                }
-            }
 
             MenuItem {
                 //% "Note color"
@@ -210,8 +189,14 @@ Page {
                 //: This menu option can be used to share the note via Bluetooth
                 //% "Share Note"
                 text: qsTrId("notes-me-share-note")
-                onClicked: pulley.needsToShowShareMenu = true
                 enabled: noteview.text.trim() != ''
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("NoteSharePage.qml"), {
+                        "name": page.vNoteName(noteview.text),
+                        // vnoteConverter is a global installed by notes.cpp
+                        "text": vnoteConverter.vNote(textArea.text),
+                    })
+                }
             }
             MenuItem {
                 //: Create a new note ready for editing
@@ -251,17 +236,6 @@ Page {
                 width: parent.width
                 height: 0
                 Behavior on height { NumberAnimation { duration: 200 } }
-            }
-            ShareMenu {
-                id: shareMenu
-                width: parent.width
-                onActiveChanged: {
-                    if (active) {
-                        spacerItem.height = 3 * Theme.paddingLarge // below the page indicator
-                    } else {
-                        spacerItem.height = 0
-                    }
-                }
             }
             Item {
                 id: headerItem
