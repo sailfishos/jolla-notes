@@ -3,6 +3,8 @@ import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
 
 Rectangle {
+    id: coloritem
+
     signal clicked
     property bool isPortrait
     property alias pageNumber: label.text
@@ -11,12 +13,12 @@ Rectangle {
     width: Theme.itemSizeExtraSmall
     radius: Theme.paddingSmall/2
     anchors {
-        right: isPortrait ? parent.right : undefined
+        // The anchors that depend on isPortrait are managed with states
+        // (see below) to avoid ordering problems: setting anchors to
+        // 'undefined' has to be done before related anchors are assigned.
+        // See http://qt-project.org/doc/qt-5/qtquick-positioning-anchors.html
         rightMargin: Theme.paddingLarge
-        verticalCenter: isPortrait ? parent.verticalCenter : undefined
-        top: isPortrait ? undefined : parent.top
         topMargin: Theme.itemSizeLarge
-        left: isPortrait ? undefined : parent.left
         leftMargin: Theme.paddingLarge
     }
     Label {
@@ -28,4 +30,33 @@ Rectangle {
         anchors { fill: parent; margins: -Theme.paddingMedium }
         onClicked: parent.clicked()
     }
+
+    states: [
+        State {
+            name: "portrait"
+            when: isPortrait
+            AnchorChanges {
+                target: coloritem
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    top: undefined
+                    left: undefined
+                }
+            }
+        },
+        State {
+            name: "landscape"
+            when: !isPortrait
+            AnchorChanges {
+                target: coloritem
+                anchors {
+                    right: undefined
+                    verticalCenter: undefined
+                    top: parent.top
+                    left: parent.left
+                }
+            }
+        }
+    ]
 }
