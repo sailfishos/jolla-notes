@@ -17,7 +17,10 @@ Rectangle {
         // (see below) to avoid ordering problems: setting anchors to
         // 'undefined' has to be done before related anchors are assigned.
         // See http://qt-project.org/doc/qt-5/qtquick-positioning-anchors.html
+        // The default state is portrait mode.
+        right: parent.right
         rightMargin: Theme.paddingLarge
+        verticalCenter: parent.verticalCenter
         topMargin: Theme.itemSizeLarge
         leftMargin: Theme.paddingLarge
     }
@@ -31,32 +34,17 @@ Rectangle {
         onClicked: parent.clicked()
     }
 
-    states: [
-        State {
-            name: "portrait"
-            when: isPortrait
-            AnchorChanges {
-                target: coloritem
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                    top: undefined
-                    left: undefined
-                }
-            }
-        },
-        State {
-            name: "landscape"
-            when: !isPortrait
-            AnchorChanges {
-                target: coloritem
-                anchors {
-                    right: undefined
-                    verticalCenter: undefined
-                    top: parent.top
-                    left: parent.left
-                }
+    states: State {
+        name: "landscape"
+        when: !isPortrait
+        AnchorChanges {
+            target: coloritem
+            anchors {
+                right: undefined
+                verticalCenter: undefined
+                top: parent.top
+                left: parent.left
             }
         }
-    ]
+    }
 }
