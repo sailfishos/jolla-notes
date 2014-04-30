@@ -33,9 +33,9 @@ JollaNotes.Notes {
 		for(var i = 0; i < numberOfNotes; i++){
 			wait_pagestack("new note page opened", 2)
 
-                        //Each time check that correct amount of notes have been generated
-                        //Tries also to take into account the number of previously existing notes
-                        compare(notesModel.count, (i+prevNotesCount), "Incorrect number of notes found for round " + (i))
+			//Each time check that correct amount of notes have been generated
+			//Tries also to take into account the number of previously existing notes
+			compare(notesModel.count, (i+prevNotesCount), "Incorrect number of notes found for round " + (i))
 
 			wait(500)
 			//New note page should be empty and not have the text from previous note page
@@ -48,9 +48,9 @@ JollaNotes.Notes {
 
 			//Write 'test' on the note page and check it really has been ritten
 			keyClick(Qt.Key_T)
-                        keyClick(Qt.Key_E)
-                        keyClick(Qt.Key_S)
-                        keyClick(Qt.Key_T)
+			keyClick(Qt.Key_E)
+			keyClick(Qt.Key_S)
+			keyClick(Qt.Key_T)
 			tryCompare(currentPage, 'text', "test")
 
 	                wait(500) // give timer time to run out
