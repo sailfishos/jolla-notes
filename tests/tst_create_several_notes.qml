@@ -23,7 +23,6 @@ JollaNotes.Notes {
         }
 
         function test_write_several_notes() {
-
 		//Variable for taking into account the amount of previously existing notes
 		var prevNotesCount = notesModel.count
 		
@@ -60,7 +59,7 @@ JollaNotes.Notes {
 
 		//Checking in the end that current number of notes matches
 		//Tries to take into account the number of previously existing notes
-		compare(notesModel.count, numberOfNotes+prevNotesCount, "Incorrect number of notes have been generated")
+		compare(notesModel.count, numberOfNotes+prevNotesCount, "Generated " + numberOfNotes + " notes")
         }
     }
 }
