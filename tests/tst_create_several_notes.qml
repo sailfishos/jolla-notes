@@ -29,20 +29,18 @@ JollaNotes.Notes {
 		//Variable for changing amount of new notes created
 		var numberOfNotes = 4;		
 
-		select_pull_down("notes-me-new-note")
-
 		for(var i = 0; i < numberOfNotes; i++){
+			//From pulley menu select create new note
+			select_pull_down("notes-me-new-note")
+
 			//After pull down, wait for current page to change
 			wait_for("new note page opened", function() {
-				return currentPage.text == ""
+				return currentPage.text === ""
 			})
 
                         //Each time check that correct amount of notes have been generated
                         //Tries also to take into account the number of previously existing notes
                         compare(notesModel.count, (i+prevNotesCount), "Incorrect number of notes found for current round: " + notesModel.count)
-
-			//New note page should be empty and not have the text from previous note page
-			compare(currentPage.text, '', "new note page is empty")
 
 			wait_inputpanel_open()
 
@@ -52,10 +50,10 @@ JollaNotes.Notes {
                         keyClick(Qt.Key_S)
                         keyClick(Qt.Key_T)
 			tryCompare(currentPage, 'text', "test")
-
-			//Select create new note from pulley
-			select_pull_down("notes-me-new-note")
 		}
+
+		//Going back after last note to save it
+		go_back()
 
 		//Checking in the end that current number of notes matches
 		//Tries to take into account the number of previously existing notes
