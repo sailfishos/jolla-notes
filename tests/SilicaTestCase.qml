@@ -61,16 +61,13 @@ TestCase {
     }
 
     function debug_item(item) {
-        var dump = ""
+        var attrs = []
         for (var key in item) {
             if (!item.hasOwnProperty(key))
                 continue
-            if (dump != "")
-                dump += ", "
-            var value = item[key]
-            dump += key + ": " + value
+            attrs.push(key + ": " + item[key])
         }
-        return "{ " + dump + " }"
+        return "{ " + attrs.join(", ") + " }"
     }
 
     // Print an item's attributes to the console
