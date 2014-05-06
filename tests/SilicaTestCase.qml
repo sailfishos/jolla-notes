@@ -203,6 +203,38 @@ TestCase {
         })
     }
 
+    function wait_for_value(description, item, attr, value) {
+        var attr_path = attr.split(".")
+        var notfound
+        var it
+        verify(item, description + ": item not valid")
+
+        // wait_for is effectively reimplemented here to give
+        // better error messages when attr lookup fails
+        for (var delay = 0; delay < timeout; delay += 50) {
+            if (delay > 0)
+                wait(50)
+            it = item
+            notfound = ""
+            for (var i = 0; i < attr_path.length; i++) {
+                if (!(attr_path[i] in it)) {
+                    notfound = attr_path.slice(0, i+1).join(".")
+                    break
+                }
+                it = it[attr_path[i]]
+            }
+            if (notfound == "" && it === value)
+                return value
+        }
+
+        if (notfound)
+            fail(description + ": " + notfound + " not found")
+        // this should fail now, and produce a helpful message
+        compare(it, value, description)
+        // if it doesn't fail, something went wrong with the test
+        fail(description + ": internal error")
+    }
+
     // Monitor an item and its tree of children and wait for their
     // properties to stop changing.
     //
