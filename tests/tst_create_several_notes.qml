@@ -30,13 +30,10 @@ JollaNotes.Notes {
 		var numberOfNotes = 4;		
 
 		for(var i = 0; i < numberOfNotes; i++){
-			//From pulley menu select create new note
 			select_pull_down("notes-me-new-note")
 
-			//After pull down, wait for current page to change
-			wait_for("new note page opened", function() {
-				return currentPage.text === ""
-			})
+			//Waiting for current page to change to new page
+			wait_for_value("pageStack", pageStack, "currentPage.text", "")
 
                         //Each time check that correct amount of notes have been generated
                         //Tries also to take into account the number of previously existing notes
