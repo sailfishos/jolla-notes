@@ -12,7 +12,7 @@ JollaNotes.Notes {
     id: main
 
     NotesTestCase {
-        name: "DeleteNote"
+        name: "DeleteNoteDuringRemorse"
         when: windowShown
 
         function init() {
@@ -20,35 +20,35 @@ JollaNotes.Notes {
             tryCompare(main, 'applicationActive', true)
         }
 
-	function test_select_and_delete_another_note_during_remorse() {
-		var prevCount = notesModel.count
+	function test_delete_during_remorse() {
+                var prevCount = notesModel.count
 
-		//Select items to click
-		var item1 = find_text(currentPage, defaultNotes[0])
-		var item2 = find_text(currentPage, defaultNotes[1])
-		verify(item1, "Note " + defaultNotes[0] + " found")
-		verify(item2, "Note " + defaultNotes[1] + " found")
+                //Select items to click
+                var item1 = find_text(currentPage, defaultNotes[0])
+                var item2 = find_text(currentPage, defaultNotes[1])
+                verify(item1, "Note " + defaultNotes[0] + " found")
+                verify(item2, "Note " + defaultNotes[1] + " found")
 
-		//Click note and delete from pulley
-		click_center(item1)
-		wait_pagestack("note page opened", 2)
-		select_pull_down("notes-me-delete-note")
-		wait_pagestack("note page closed", 1)
+                //Click note and delete from pulley
+                click_center(item1)
+                wait_pagestack("note page opened", 2)
+                select_pull_down("notes-me-delete-note")
+                wait_pagestack("note page closed", 1)
 
-		//Before remorse timer runs out select second note
-		click_center(item2)
+                //Before remorse timer runs out select second note
+                click_center(item2)
 
-		//Wait for remorse timer to run out
-		check_deletion(prevCount, defaultNotes[0])
-		
-		//Delete second item
-		select_pull_down("notes-me-delete-note")
+                //Wait for remorse timer to run out
+                check_deletion(prevCount, defaultNotes[0])
 
-		//Wait for remorse timer to run out
-		check_deletion(prevCount-1, defaultNotes[1])
+                //Delete second item
+                select_pull_down("notes-me-delete-note")
 
-		//Check that defaultNotes[2] has not been deleted
-		compare(notesModel.get(0).text, defaultNotes[2])
-	}
+                //Wait for remorse timer to run out
+                check_deletion(prevCount-1, defaultNotes[1])
+
+                //Check that defaultNotes[2] has not been deleted
+                compare(notesModel.get(0).text, defaultNotes[2])
+        }
     }
 }
