@@ -39,16 +39,19 @@ JollaNotes.Notes {
             click_center(item2)
 
             //Wait for remorse timer to run out
-            check_deletion(prevCount, defaultNotes[0])
+            wait_for_value("notesModel", notesModel, "count", prevCount-1)
 
             //Delete second item
             select_pull_down("notes-me-delete-note")
 
-            //Wait for remorse timer to run out
+            //Wait for return to overview and remorse timer to run out
+            wait_pagestack("back to overview", 1)
             check_deletion(prevCount-1, defaultNotes[1])
 
-            //Check that defaultNotes[2] has not been deleted
-            compare(notesModel.get(0).text, defaultNotes[2])
+            //Check that other notes have not been deleted
+            for (var i = 2; i < notesModel.count+2; i++) {
+                compare(notesModel.get(i-2).text, defaultNotes[i])
+            }
         }
     }
 }
