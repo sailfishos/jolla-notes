@@ -57,14 +57,14 @@ SilicaTestCase {
     }
 
     function check_deletion(old_count, notetext) {
-	// Check that the note has been deleted
-	wait_for("note item gone from overview", function () {
-	    return !find_text(currentPage, notetext)
-	})
+        // Check that the note has been deleted
+        wait_for("note item gone from overview", function () {
+            return !find_text(currentPage, notetext)
+        })
         compare(notesModel.count, old_count-1, "a note has been deleted")
         for (var i = 0; i < notesModel.count; i++) {
             if (notesModel.get(i).text == notetext)
-            	fail("note deleted from model")
+                fail("note deleted from model")
         }
     }
 
@@ -74,6 +74,6 @@ SilicaTestCase {
             return it.text == "notes-la-deleting"
                    && it.visible && it.opacity == 1.0
         })
-            fastforward_remorseitem(remorse)
+        fastforward_remorseitem(remorse)
     }
 }
