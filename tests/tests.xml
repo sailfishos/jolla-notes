@@ -24,11 +24,11 @@
                <step>/opt/tests/jolla-notes/runtest tst_no_save_empty</step>
            </case>
            <case manual="false" name="create multiple notes">
-                <step>/opt/tests/jolla-notes/runtest tst_create_several_notes</step>
+               <step>/opt/tests/jolla-notes/runtest tst_create_several_notes</step>
            </case>
-	   <case manual="false" name="select another note during remorse timer">
-		<step>/opt/tests/jolla-notes/runtest tst_select_and_delete_during_remorse</step>
-	   </case>
+           <case manual="false" name="select another note during remorse timer">
+               <step>/opt/tests/jolla-notes/runtest tst_delete_during_remorse</step>
+           </case>
        </set>
    </suite>
 </testdefinition>
