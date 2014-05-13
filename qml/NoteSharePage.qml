@@ -7,7 +7,7 @@ Page {
 
     property string name
     property string text
-    property string type: "text/v-note"
+    property string type: "text/x-vnote"
     property string icon: "icon-launcher-notes"
 
     ShareMethodList {
@@ -25,6 +25,7 @@ Page {
             "type": type,
             "icon": icon
         }
+        filter: type
 
         ViewPlaceholder {
             enabled: methodlist.count == 0
