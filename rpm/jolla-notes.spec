@@ -14,6 +14,8 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
+BuildRequires: pkgconfig(vault-unit) >= 0.1.0
+BuildRequires: pkgconfig(qtaround) >= 0.1.0
 
 Requires:  ambient-icons-closed
 Requires:  sailfishsilica-qt5 >= 0.10.15
@@ -22,7 +24,8 @@ Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.0.34
 Requires:  %{name}-all-translations
-Requires: the-vault >= 0.8.14
+Requires: vault >= 0.1.0
+Requires: qtaround
 Requires: sqlite >= 3.0
 
 %description
@@ -50,7 +53,7 @@ and a test definition XML file for testrunner-lite.
 %setup -q -n %{name}-%{version}
 
 %build
-%qmake5
+%qmake5 jolla-notes.pro
 make %{?jobs:-j%jobs}
 
 %install
@@ -65,6 +68,7 @@ desktop-file-install --delete-original       \
 %defattr(-,root,root,-)
 %{_datadir}/applications/*.desktop
 %{_datadir}/jolla-notes/*
+%{_libexecdir}/jolla-notes/notes-vault
 %{_bindir}/jolla-notes
 %{_datadir}/translations/notes_eng_en.qm
 
@@ -77,9 +81,9 @@ desktop-file-install --delete-original       \
 /opt/tests/jolla-notes/*
 
 %post
-the-vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_datadir}/jolla-notes/notes-vault.js || :
+vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
 
 %postun
 if [ $1 -eq 0 ]; then
-the-vault -G -a unregister --unit=Notes || :
+vault -G -a unregister --unit=Notes || :
 fi
