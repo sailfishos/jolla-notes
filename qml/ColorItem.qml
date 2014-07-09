@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 
 Rectangle {
     id: coloritem
@@ -21,8 +20,7 @@ Rectangle {
         right: parent.right
         rightMargin: Theme.paddingLarge
         verticalCenter: parent.verticalCenter
-        topMargin: Theme.itemSizeLarge
-        leftMargin: Theme.paddingLarge
+        topMargin: Theme.paddingLarge
     }
     Label {
         id: label
@@ -40,10 +38,8 @@ Rectangle {
         AnchorChanges {
             target: coloritem
             anchors {
-                right: undefined
                 verticalCenter: undefined
                 top: parent.top
-                left: parent.left
             }
         }
     }
