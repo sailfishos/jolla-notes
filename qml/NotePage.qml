@@ -102,11 +102,12 @@ Page {
     }
 
     function openColorPicker() {
-        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog",
+        var page = pageStack.push("Sailfish.Silica.ColorPickerPage",
             {"colors": notesModel.availableColors()})
-        dialog.accepted.connect(function() {
-            noteview.color = dialog.color
-            notesModel.updateColor(currentIndex, dialog.color)
+        page.colorClicked.connect(function(color) {
+            noteview.color = color
+            notesModel.updateColor(currentIndex, color)
+            pageStack.pop()
         })
     }
 
@@ -227,22 +228,16 @@ Page {
 
         Column {
             id: column
-            width: page.width - x
+            width: page.width - (isLandscape ? colorItem.width+Theme.paddingMedium : 0)
             y: isLandscape ? Theme.paddingLarge : 0
-            x: isLandscape ? 2*Theme.pageStackIndicatorWidth + Theme.paddingLarge : 0
 
-            Item {
-                id: spacerItem
-                width: parent.width
-                height: 0
-                Behavior on height { NumberAnimation { duration: 200 } }
-            }
             Item {
                 id: headerItem
                 width: parent.width
                 height: Theme.itemSizeLarge
                 visible: isPortrait
                 ColorItem {
+                    id: colorItem
                     isPortrait: page.isPortrait
                     parent: isPortrait ? headerItem : noteview.contentItem
                     color: noteview.color
