@@ -1,4 +1,5 @@
 #include <qtaround/os.hpp>
+#include <qtaround/debug.hpp>
 #include <qtaround/subprocess.hpp>
 #include <vault/unit.hpp>
 #include <qtaround/debug.hpp>
@@ -93,7 +94,7 @@ void process_sqlite_import(QString const &data, options_ptr options)
 
     action_type on_file = [skip, &on_error, &on_ok, mkdir, &options](str_map_type const &info) {
         auto dst_name = info["data"];
-        auto src_name = os::path::join(options->value("data-dir"), os::path::fileName(dst_name));
+        auto src_name = os::path::join(options->value("dir"), os::path::fileName(dst_name));
 
         if (os::path::isFile(dst_name)) {
             // backup existing file
@@ -185,14 +186,20 @@ void export_notes(options_ptr options)
     };
     data.push_back(str(ps.stdout()));
     data.push_back("");
-    os::write_file(get_export_fname(options->value("data-dir")), data.join("\n"));
-    os::cp(ini_name, options->value("data-dir"), {{"force", true}});
+    auto out_dir = options->value("dir");
+    auto sql_fname = get_export_fname(out_dir);
+    debug::info("Writing data to", sql_fname);
+    os::write_file(sql_fname, data.join("\n"));
+    debug::info("Copying ini from", ini_name, "to", out_dir);
+    os::cp(ini_name, out_dir, {{"force", true}});
 }
 
 void import_notes(options_ptr options)
 {
     os::system("pkill", {"jolla-notes"});
-    auto data = os::read_file(get_export_fname(options->value("data-dir")));
+    auto sql_fname = get_export_fname(options->value("dir"));
+    debug::info("Reading data from", sql_fname);
+    auto data = os::read_file(sql_fname);
     process_sqlite_import(str(data), std::move(options));
 }
 
