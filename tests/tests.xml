@@ -4,8 +4,13 @@
        <description>Jolla Notes automatic tests</description>
        <set name="feature-tests" feature="Jolla Notes">
            <description>Collection of Jolla Notes tests</description>
+           <pre_steps>
+               <step>/usr/sbin/mcetool -jdisabled -Doff -B1 -jenabled -U -B1 -kunlocked</step>
+           </pre_steps>
            <case manual="false" name="first note">
                <step>/opt/tests/jolla-notes/runtest tst_first_note</step>
+           </case>
+           <case manual="false" name="first note saved">
                <step>/opt/tests/jolla-notes/runtest tst_first_note_saved</step>
            </case>
            <case manual="false" name="context menu">
@@ -29,6 +34,9 @@
            <case manual="false" name="select another note during remorse timer">
                <step>/opt/tests/jolla-notes/runtest tst_delete_during_remorse</step>
            </case>
+           <post_steps>
+               <step>/usr/sbin/mcetool -jdisabled -Doff</step>
+           </post_steps>
        </set>
    </suite>
 </testdefinition>
