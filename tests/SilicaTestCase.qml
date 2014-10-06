@@ -363,12 +363,17 @@ TestCase {
         fail("Could not activate pull-down option " + option)
     }
 
+    function click_indicator(item) {
+        var pos = main.mapFromItem(item, 2, item.height/2)
+        testEvent.mouseClick(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
+    }
+
     function go_back() {
         // Refer to page instead of main, because main might
         // be rotated due to screen orientation. The coordinate
         // transformation can then be handled by mapFromItem.
 
-        click_center(main.pageStack._pageStackIndicator)
+        click_indicator(main.pageStack._pageStackIndicator)
     }
     function wait_inputpanel_open() {
         wait_for("input panel opened", function() {
