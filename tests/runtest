@@ -2,13 +2,8 @@
 
 set -e
 
-# Run one of the Jolla Notes test files, leaving the results in /tmp/results
-# where the automated test framework expects them.
-
-#  first argument is the name of a tst_xxxx.qml file, without the .qml part
-
-mkdir -p /tmp/results
-cd /tmp/results
+# Run one of the Jolla Notes test files.
+# First argument is the name of a tst_xxxx.qml file, without the .qml part.
 
 export XDG_DATA_HOME=/tmp/testdata
 
@@ -29,4 +24,4 @@ grep "//FIXTURE: " $testfile | cut -f 2 -d" " | while read fixture; do
     fi
 done
 
-/usr/lib/qt5/bin/qmltestrunner -input $testfile -o jolla-notes-$1.xml,xunitxml -o -,txt
+/usr/lib/qt5/bin/qmltestrunner -input $testfile
