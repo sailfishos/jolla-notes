@@ -6,6 +6,12 @@
 #include <qtaround/util.hpp>
 #include <QCoreApplication>
 
+namespace sys = qtaround::sys;
+namespace os = qtaround::os;
+namespace subprocess = qtaround::subprocess;
+namespace error = qtaround::error;
+namespace debug = qtaround::debug;
+
 typedef QMap<QString, QString> str_map_type;
 typedef std::unique_ptr<sys::GetOpt> options_ptr;
 using subprocess::Process;
