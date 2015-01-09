@@ -29,9 +29,10 @@ Page {
 
         anchors.fill: overviewpage
         model: notesModel
-        cellHeight: overviewpage.width / (isLandscape ? 4 : 2)
+        cellHeight: overviewpage.width / columnCount
         cellWidth: cellHeight
-        property int columnCount: Math.floor(overviewpage.width / cellWidth)
+        // reference column width: 960 / 4
+        property int columnCount: Math.floor(width / (Theme.pixelRatio * 240))
 
         property Item contextMenu
         property Item contextMenuOn: contextMenu ? contextMenu.parent : null
