@@ -13,7 +13,10 @@ DEPLOYMENT_PATH = $$PREFIX/share/$$TARGET
 qml.path = $$DEPLOYMENT_PATH
 desktop.path = $$PREFIX/share/applications
 
-INSTALLS += target qml desktop
+dbus_service_entry.files = com.jolla.notes.service
+dbus_service_entry.path = /usr/share/dbus-1/services
+
+INSTALLS += target qml desktop dbus_service_entry
 
 DEFINES += DEPLOYMENT_PATH=\"\\\"\"$${DEPLOYMENT_PATH}/\"\\\"\"
 
