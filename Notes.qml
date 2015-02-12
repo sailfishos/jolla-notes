@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import org.nemomobile.dbus 1.0
 import "qml"
 
 ApplicationWindow
@@ -19,5 +20,17 @@ ApplicationWindow
     Component {
         id: notePage
         NotePage { }
+    }
+
+    DBusAdaptor {
+        service: "com.jolla.notes"
+        path: "/"
+        iface: "com.jolla.notes"
+
+        signal newNote
+
+        onNewNote: {
+            openNewNote(PageStackAction.Immediate)
+        }
     }
 }

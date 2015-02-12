@@ -71,6 +71,7 @@ desktop-file-install --delete-original       \
 %{_libexecdir}/jolla-notes/notes-vault
 %{_bindir}/jolla-notes
 %{_datadir}/translations/notes_eng_en.qm
+%{_datadir}/dbus-1/services/com.jolla.notes.service
 
 %files ts-devel
 %defattr(-,root,root,-)
