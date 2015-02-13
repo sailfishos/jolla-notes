@@ -8,7 +8,8 @@ ApplicationWindow
     id: app
     initialPage: Component { OverviewPage { id: overviewpage } }
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
-    _defaultPageOrientations: Orientation.Portrait | Orientation.Landscape | Orientation.LandscapeInverted
+    allowedOrientations: defaultAllowedOrientations
+    _defaultPageOrientations: Orientation.All
 
     // exposed as a property so that the tests can access it
     property NotesModel notesModel: NotesModel { id: notesModel }
