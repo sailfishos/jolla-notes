@@ -14,6 +14,8 @@ Page {
     property alias pageNumber: noteview.pageNumber
     property bool loaded  // only load from notesModel[currentIndex] once
 
+    property bool __jollanotes_notepage
+
     // TODO: should some kind of IndexConnection go into the silica components?
     Connections {
         target: notesModel
