@@ -30,7 +30,11 @@ ApplicationWindow
         signal newNote
 
         onNewNote: {
-            openNewNote(PageStackAction.Immediate)
+            if (pageStack.currentPage.__jollanotes_notepage === undefined || pageStack.currentPage.currentIndex >= 0) {
+                // don't open a new note if already showing a new unedited note
+                openNewNote(PageStackAction.Immediate)
+            }
+            app.activate()
         }
     }
 }
