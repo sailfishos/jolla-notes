@@ -18,7 +18,7 @@ Rectangle {
         // See http://qt-project.org/doc/qt-5/qtquick-positioning-anchors.html
         // The default state is portrait mode.
         right: parent.right
-        rightMargin: Theme.paddingLarge
+        rightMargin: Theme.horizontalPageMargin
         verticalCenter: parent.verticalCenter
         topMargin: Theme.paddingLarge
     }
