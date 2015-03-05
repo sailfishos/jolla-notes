@@ -230,7 +230,7 @@ Page {
 
         Column {
             id: column
-            width: page.width - (isLandscape ? colorItem.width+Theme.paddingMedium : 0)
+            width: page.width
             y: isLandscape ? Theme.paddingLarge : 0
 
             Item {
@@ -251,7 +251,9 @@ Page {
                 id: textArea
                 font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
                 width: parent.width
-                height: Math.max(noteview.height-headerItem.height, implicitHeight)
+                textRightMargin: isLandscape ? (colorItem.anchors.rightMargin + colorItem.width + Theme.paddingMedium)
+                                             : textMargin
+                height: Math.max(noteview.height - (headerItem.visible ? headerItem.height : column.y), implicitHeight)
                 //: Placeholder text for new notes. At this point there's
                 //: nothing else on the screen.
                 //% "Write a note..."
