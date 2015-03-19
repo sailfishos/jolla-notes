@@ -10,6 +10,7 @@ ApplicationWindow
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
     _defaultPageOrientations: Orientation.All
+    _defaultLabelFormat: Text.PlainText
 
     // exposed as a property so that the tests can access it
     property NotesModel notesModel: NotesModel { id: notesModel }
