@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import org.nemomobile.configuration 1.0
 
 Page {
     id: page
@@ -113,7 +114,7 @@ Page {
         })
     }
 
-    function vNoteName(noteText) {
+    function noteFileName(noteText) {
         // Return a name for this vnote that can be used as a filename
 
         // Remove any whitespace
@@ -132,7 +133,7 @@ Page {
         }
 
         // Remove any characters that are not part of the portable filename character set
-        return Format.formatText(sevenBit, Formatter.PortableFilename) + '.vnt'
+        return Format.formatText(sevenBit, Formatter.PortableFilename)
     }
 
     SilicaFlickable {
@@ -194,10 +195,14 @@ Page {
                 text: qsTrId("notes-me-share-note")
                 enabled: noteview.text.trim() != ''
                 onClicked: {
+                    var fileName = page.noteFileName(noteview.text) + (transferAsVNoteConfig.value == true ? ".vnt" : ".txt")
+                    var mimeType = transferAsVNoteConfig.value == true ? "text/x-vnote" : "text/plain"
+                    // vnoteConverter is a global installed by notes.cpp
+                    var noteText = transferAsVNoteConfig.value == true ? vnoteConverter.vNote(textArea.text) : textArea.text
                     pageStack.push(Qt.resolvedUrl("NoteSharePage.qml"), {
-                        "name": page.vNoteName(noteview.text),
-                        // vnoteConverter is a global installed by notes.cpp
-                        "text": vnoteConverter.vNote(textArea.text),
+                        "name": fileName,
+                        "text": noteText,
+                        "type": mimeType,
                     })
                 }
             }
@@ -273,5 +278,11 @@ Page {
             }
         }
         VerticalScrollDecorator {}
+    }
+
+    ConfigurationValue {
+       id: transferAsVNoteConfig
+       key: "/apps/jolla-notes/settings/transferAsVNote"
+       defaultValue: false
     }
 }

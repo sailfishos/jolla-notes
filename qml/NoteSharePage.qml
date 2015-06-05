@@ -7,7 +7,7 @@ Page {
 
     property string name
     property string text
-    property string type: "text/x-vnote"
+    property string type: "text/plain"
     property string icon: "icon-launcher-notes"
 
     ShareMethodList {
