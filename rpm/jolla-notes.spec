@@ -17,6 +17,7 @@ BuildRequires:  qt5-qttools-linguist
 BuildRequires: pkgconfig(vault-unit) >= 0.1.0
 BuildRequires: pkgconfig(qtaround) >= 0.2.0
 
+Requires:  jolla-notes-settings = %{version}
 Requires:  ambient-icons-closed
 Requires:  sailfishsilica-qt5 >= 0.13.44
 Requires:  qt5-qtdeclarative-import-localstorageplugin
@@ -49,6 +50,15 @@ Requires: testrunner-lite
 This package installs automated test scripts for jolla-notes,
 and a test definition XML file for testrunner-lite.
 
+%package settings
+Summary:   Setting page for jolla-notes
+License:   TBD
+Group:     System/Applications
+Requires:  jolla-settings
+
+%description settings
+Settings page for jolla-notes
+
 %prep
 %setup -q -n %{name}-%{version}
 
@@ -80,6 +90,10 @@ desktop-file-install --delete-original       \
 %files tests
 %defattr(-,root,root,-)
 /opt/tests/jolla-notes/*
+
+%files settings
+%{_libdir}/qt5/qml/com/jolla/notes/settings/*
+%{_datadir}/jolla-settings/*
 
 %post
 vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
