@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+NoDisplay=true
+Name=Plaintext and vNote File MimeHandler
+Icon=icon-launcher-notes
+Exec=invoker --type=silica-qt5 -s /usr/bin/jolla-notes
+Comment=Sailfish MimeType handler for plain-text files and vNote files
+MimeType=text/plain;text/x-vnote;
+X-Maemo-Service=com.jolla.notes
+X-Maemo-Object-Path=/
+X-Maemo-Method=com.jolla.notes.importNoteFile

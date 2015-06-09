@@ -23,7 +23,10 @@ Page {
             "name": name,
             "data": text,
             "type": type,
-            "icon": icon
+            "icon": icon,
+            // also some non-standard fields for Twitter/Facebook status sharing:
+            "status" : text,
+            "linkTitle" : name
         }
         filter: type
 
