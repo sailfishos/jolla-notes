@@ -1,6 +1,6 @@
 Name:       jolla-notes
 Summary:    Note-taking application
-Version:    0.8.49
+Version:    0.8.50
 Release:    1
 Group:      Applications/Editors
 License:    TBD
@@ -10,6 +10,7 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
@@ -24,6 +25,7 @@ Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.0.34
+Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
 Requires: qtaround
