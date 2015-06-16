@@ -6,6 +6,7 @@ ListModel {
     id: listmodel
 
     property string filter
+    property int moveCount: 1
 
     Component.onCompleted: {
         NoteScript.populateNotes(listmodel)
@@ -58,6 +59,7 @@ ListModel {
             setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
         }
         move(idx, 0, 1) // move 1 item to position 0
+        moveCount++
     }
 
     function deleteNote(idx) {

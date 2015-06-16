@@ -6,7 +6,22 @@ import "qml"
 ApplicationWindow
 {
     id: app
-    initialPage: Component { OverviewPage { id: overviewpage } }
+
+    property Item currentNotePage
+
+    initialPage: Component {
+        OverviewPage {
+            id: overviewpage
+            property Item currentPage: pageStack.currentPage
+            onCurrentPageChanged: {
+                if (currentPage == overviewpage) {
+                    currentNotePage = null
+                } else if (currentPage.hasOwnProperty("__jollanotes_notepage")) {
+                    currentNotePage = currentPage
+                }
+            }
+        }
+    }
     cover: Qt.resolvedUrl("qml/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
     _defaultPageOrientations: Orientation.All

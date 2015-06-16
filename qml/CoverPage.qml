@@ -4,65 +4,44 @@ import Sailfish.Silica 1.0
 CoverBackground {
     property string testName: "coverpage"
 
-    CoverPlaceholder {
-        //: Coverpage text when there are no notes
-        //% "Write a note"
-        text: qsTrId("notes-la-write-note")
-        icon.source: "image://theme/icon-launcher-notes"
-        visible: !notesModel.count
+    Repeater {
+        model: 4
+        delegate: Rectangle {
+            y: Theme.itemSizeSmall + index * label.lineHeight
+            width: parent.width
+            // gives 1.5 on phone, which looks OK on the phone small cover.
+            height: Theme.paddingSmall/4
+            color: Theme.primaryColor
+            opacity: 0.4
+        }
     }
-    Item {
-        visible: notesModel.count > 0
-        anchors {
-            fill: parent
-            margins: Theme.paddingLarge
-        }
-        ListView {
-            id: listView
 
-            property real itemHeight: 2*lineHeight
-            property real lineHeight: dummyLabel.implicitHeight
-
-            clip: true
-            model: notesModel
-            interactive: false
-            width: parent.width
-            header: Item { height: Theme.paddingMedium; width: listView.width }
-            visible: pageStack.depth === 1
-                  || pageStack.currentPage && pageStack.currentPage.potentialPage != undefined
-                                           && pageStack.currentPage.potentialPage
-            height: Math.min(count, 3) * (itemHeight + spacing)
-            spacing: Theme.paddingLarge
-
-            delegate: CoverLabel {
-                text: model.text.trim()
-                color: model.color
-                maximumLineCount: 2
-                width: listView.width
-                pageNumber: model.pagenr
-                lineHeight: listView.lineHeight
-                Component.onCompleted: listView.itemHeight = height
+    Label {
+        id: label
+        property var noteText: {
+            if (pageStack.depth > 1 && currentNotePage) {
+                return currentNotePage.text.trim()
+            } else if (notesModel.count > 0 && notesModel.moveCount) {
+                return notesModel.get(0).text.trim()
             }
-            // we need text dimensions before label delegates get created
-            Label {
-                id: dummyLabel
-                lineHeight: 0.8
-                font.pixelSize: Theme.fontSizeSmall
-            }
-        }
-        CoverLabel {
-            id: noteLabel
 
-            visible: notesModel.count > 0 && pageStack.depth > 1
-                      && pageStack.currentPage.currentIndex >= 0
-            maximumLineCount: 8
-            width: parent.width
-            y: Theme.paddingMedium
-            lineHeight: listView.lineHeight
-            text: visible ? pageStack.currentPage.text.trim() : ""
-            color: visible ? pageStack.currentPage.color :  Theme.primaryColor
-            pageNumber: visible ? pageStack.currentPage.pageNumber : 0
+            return undefined
         }
+        text: noteText !== undefined
+              ? noteText.replace(/\n/g, " ")
+              // From notes.cpp
+              : qsTrId("notes-de-name")
+        x: Theme.paddingSmall/2
+        y: Theme.itemSizeSmall - baselineOffset - Theme.paddingSmall + (noteText !== undefined ? 0 : lineHeight)
+        opacity: 0.6
+        font.pixelSize: Theme.fontSizeExtraLarge
+        font.italic: true
+        width: noteText !== undefined ? parent.width + Theme.itemSizeLarge : parent.width - Theme.paddingSmall
+        horizontalAlignment: noteText !== undefined || implicitWidth > width - Theme.paddingSmall ? Text.AlignLeft : Text.AlignHCenter
+        lineHeightMode: Text.FixedHeight
+        lineHeight: Math.floor(Theme.fontSizeExtraLarge * 1.35)
+        wrapMode: noteText !== undefined ? Text.Wrap : Text.NoWrap
+        maximumLineCount: 4
     }
 
     CoverActionList {
