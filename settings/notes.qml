@@ -27,52 +27,38 @@ Page {
                 title: qsTrId("settings_notes-he-notes")
             }
 
-            SectionHeader {
+            ComboBox {
+                id: transferFormatCombo
                 //% "Sharing format"
-                text: qsTrId("settings_notes-he-sharing_format")
-            }
-
-            TextSwitch {
-                id: transferAsPTextSwitch
-                automaticCheck: false
-                //: Whether to transfer notes as plain text files
-                //% "Plain-text"
-                text: qsTrId("settings_notes-la-plain-text")
-                checked: !transferAsVNoteConfig.value
-                onClicked: {
-                    if (checked) {
-                        checked = false
-                        transferAsVNoteSwitch.checked = true
-                        transferAsVNoteConfig.value = true
-                    } else {
-                        checked = true
-                        transferAsVNoteSwitch.checked = false
-                        transferAsVNoteConfig.value = false
+                label: qsTrId("settings_notes-he-sharing_format")
+                currentIndex: transferAsVNoteConfig.value == false ? 0 : 1
+                onCurrentIndexChanged: transferAsVNoteConfig.value = currentIndex == 0 ? false : true
+                menu: ContextMenu {
+                    id: transferFormatComboMenu
+                    MenuItem {
+                        id: transferAsPTextMenu
+                        //: Whether to transfer notes as plain text files
+                        //% "Plain-text"
+                        text: qsTrId("settings_notes-la-plain-text")
+                    }
+                    MenuItem {
+                        id: transferAsVNoteMenu
+                        //: Whether to transfer notes as vNote files
+                        //% "vNote"
+                        text: qsTrId("settings_notes-la-vnote")
                     }
                 }
             }
-
-            TextSwitch {
-                id: transferAsVNoteSwitch
-                automaticCheck: false
-                //: Whether to transfer notes as vNote files
-                //% "vNote"
-                text: qsTrId("settings_notes-la-vnote")
-                //: Description informing the user that if this toggle is selected notes will be transferred as vNote files
+            Label {
+                id: vnoteWarningLabel
+                anchors.left: transferFormatCombo.left
+                anchors.leftMargin: transferFormatCombo.labelMargin
+                visible: !transferFormatComboMenu._open
+                opacity: (!transferFormatComboMenu._open && transferFormatCombo.currentIndex == 1) ? 1.0 : 0.0
+                Behavior on opacity { FadeAnimation {} }
+                //: Description informing the user of the disadvantes of using vNote format for sharing
                 //% "Notes sent in vNote format may not be readable by the recipient"
-                description: qsTrId("settings_notes-la-vnote_description")
-                checked: transferAsVNoteConfig.value
-                onClicked: {
-                    if (checked) {
-                        checked = false
-                        transferAsPTextSwitch.checked = true
-                        transferAsVNoteConfig.value = false
-                    } else {
-                        checked = true
-                        transferAsPTextSwitch.checked = false
-                        transferAsVNoteConfig.value = true
-                    }
-                }
+                text: qsTrId("settings_notes-la-vnote_description")
             }
         }
         VerticalScrollDecorator {}
