@@ -14,12 +14,31 @@ Page {
         view.currentIndex = index
         view.currentItem.deleteNote()
     }
+    function flashGridDelegate(index) {
+        // This is needed both for UI (the user should see the remorse item)
+        // and to make sure the delegate exists.
+        view.positionViewAtIndex(index, GridView.Contain)
+        // Set currentIndex in order to find the corresponding currentItem.
+        // Is this really the only way to look up a delegate by index?
+        view.currentIndex = index
+        view.currentItem.flash()
+    }
+    property var _flashDelegateIndexes: []
+
     onStatusChanged: {
-        // Open new note page directly if no notes have yet been saved
-        if (status === PageStatus.Active && !startupCheck) {
-            startupCheck = true
-            if (notesModel.count === 0) {
-                openNewNote(PageStackAction.Immediate)
+        if (status === PageStatus.Active) {
+            if (!startupCheck) {
+                // Open new note page directly if no notes have yet been saved
+                startupCheck = true
+                if (notesModel.count === 0) {
+                    openNewNote(PageStackAction.Immediate)
+                }
+            } else if (_flashDelegateIndexes.length) {
+                // Flash grid delegates of imported notes
+                for (var i in _flashDelegateIndexes) {
+                    flashGridDelegate(_flashDelegateIndexes[i])
+                }
+                _flashDelegateIndexes = []
             }
         }
     }
@@ -75,6 +94,10 @@ Page {
                 })
             }
 
+            function flash() {
+                flashAnim.running = true
+            }
+
             NoteItem {
                 id: noteitem
 
@@ -89,6 +112,21 @@ Page {
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
                 onPressAndHold: view.showContextMenu(itemcontainer)
+
+                Rectangle {
+                    id: flashRect
+                    anchors.fill: parent
+                    color: noteitem.color
+                    opacity: 0.0
+                    SequentialAnimation {
+                        id: flashAnim
+                        running: false
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.40; duration: 600; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.01; duration: 600; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.40; duration: 600; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.00; duration: 600; easing.type: Easing.InOutQuad }
+                    }
+                }
             }
         }
 

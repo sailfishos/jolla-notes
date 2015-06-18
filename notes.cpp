@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QLocale>
 #include <QTranslator>
+#include <QStringList>
+#include <QFile>
 
 #include "vnote.h"
 #include "sailfishapplication.h"
@@ -65,6 +67,40 @@ QString VNoteConverter::vNote(const QString &noteText,
     return QString::fromUtf8(retn);
 }
 
+QStringList VNoteConverter::plainTextNotes(const QString &vnoteText) const
+{
+    QStringList retn;
+    QStringList lines = vnoteText.split("\r\n", QString::SkipEmptyParts);
+    Q_FOREACH (const QString &line, lines) {
+        const QString trimmedLine = line.trimmed();
+        if ((trimmedLine.startsWith("BODY;", Qt::CaseInsensitive)
+                || trimmedLine.startsWith("BODY:", Qt::CaseInsensitive))
+                && trimmedLine.contains(':')) {
+            retn << trimmedLine.mid(line.indexOf(':') + 1);
+        }
+    }
+    return retn;
+}
+
+QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
+{
+    if (!filePath.isLocalFile()) {
+        return QStringList();
+    }
+    QString filename = filePath.toLocalFile();
+    if (QFile::exists(filename)) {
+        QFile textFile(filename);
+        if (textFile.open(QIODevice::ReadOnly)) {
+            QString fileData = QString::fromUtf8(textFile.readAll());
+            if (filename.endsWith(".vnt", Qt::CaseInsensitive)) {
+                return plainTextNotes(fileData);
+            }
+            return QStringList() << fileData;
+        }
+    }
+    return QStringList();
+}
+
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
@@ -84,10 +120,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     // Set the offlineStoragePath explicitly in case we are boosted
     QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     dataLocation += QDir::separator() + QLatin1String("QML")
-                    + QDir::separator() + QLatin1String("OfflineStorage");
+                  + QDir::separator() + QLatin1String("OfflineStorage");
     view->engine()->setOfflineStoragePath(dataLocation);
-    Sailfish::setSource(view.data(), "Notes.qml");
     view->engine()->rootContext()->setContextProperty("vnoteConverter", new VNoteConverter(view->engine()));
+    Sailfish::setSource(view.data(), "Notes.qml");
     Sailfish::showView(view.data());
     
     int result = app->exec();

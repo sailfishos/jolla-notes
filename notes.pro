@@ -9,7 +9,7 @@ HEADERS +=
 
 qml.files = Notes.qml qml
 
-desktop.files = jolla-notes.desktop
+desktop.files = jolla-notes.desktop jolla-notes-import.desktop
 
 include(sailfishapplication/sailfishapplication.pri)
 include(translations.pri)
