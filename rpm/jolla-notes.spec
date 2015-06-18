@@ -1,6 +1,6 @@
 Name:       jolla-notes
 Summary:    Note-taking application
-Version:    0.8.50
+Version:    0.8.51
 Release:    1
 Group:      Applications/Editors
 License:    TBD
