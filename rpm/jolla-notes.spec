@@ -20,6 +20,7 @@ BuildRequires: pkgconfig(qtaround) >= 0.2.0
 Requires:  ambient-icons-closed
 Requires:  sailfishsilica-qt5 >= 0.13.44
 Requires:  qt5-qtdeclarative-import-localstorageplugin
+Requires:  mapplauncherd >= 4.1.17
 Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.0.34
