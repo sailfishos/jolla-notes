@@ -156,6 +156,11 @@ void export_notes(options_ptr options)
     os::system("pkill", {"jolla-notes"});
 
     auto notes_dir = os::path::join(os::home(), ".local/share/jolla-notes/QML/OfflineStorage/Databases");
+    if (!os::path::exists(notes_dir)) {
+        debug::warning("Nothing to backup, no Notes directory:"
+                       , notes_dir);
+        return;
+    }
     auto files = find_files(notes_dir, "*.sqlite");
     if (!files.size()) {
         debug::info("No sqlite notes db, nothing to export");
@@ -205,8 +210,12 @@ void import_notes(options_ptr options)
     os::system("pkill", {"jolla-notes"});
     auto sql_fname = get_export_fname(options->value("dir"));
     debug::info("Reading data from", sql_fname);
-    auto data = os::read_file(sql_fname);
-    process_sqlite_import(str(data), std::move(options));
+    if (os::path::exists(sql_fname)) {
+        auto data = os::read_file(sql_fname);
+        process_sqlite_import(str(data), std::move(options));
+    } else {
+        debug::info("Nothing to import, no file", sql_fname);
+    }
 }
 
 }
