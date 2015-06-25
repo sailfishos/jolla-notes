@@ -53,7 +53,12 @@ Page {
                 id: vnoteWarningLabel
                 anchors.left: transferFormatCombo.left
                 anchors.leftMargin: transferFormatCombo.labelMargin
+                anchors.right: parent.right
+                anchors.rightMargin: Theme.horizontalPageMargin
                 visible: !transferFormatComboMenu._open
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeExtraSmall
+                wrapMode: Text.Wrap
                 opacity: (!transferFormatComboMenu._open && transferFormatCombo.currentIndex == 1) ? 1.0 : 0.0
                 Behavior on opacity { FadeAnimation {} }
                 //: Description informing the user of the disadvantes of using vNote format for sharing
