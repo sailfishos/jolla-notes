@@ -43,7 +43,7 @@ public:
         AppTranslator *engineeringEnglish = new AppTranslator(engine);
         AppTranslator *translator = new AppTranslator(engine);
         engineeringEnglish->load("notes_eng_en", "/usr/share/translations");
-        translator->load(QLocale(), "jolla-notes", "-", "/usr/share/translations");
+        translator->load(QLocale(), "notes", "-", "/usr/share/translations");
     }
 
     void registerTypes(const char *uri)
