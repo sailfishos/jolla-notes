@@ -16,9 +16,6 @@
  * You can visit <https://sailfishos.org/legal/> for more information
  */
 
-// Copyright (C) 2012-2013 Jolla Ltd.
-// Contact: Richard Braakman <richard.braakman@jollamobile.com>
-
 // The page numbers in the db must stay sequential (starting from 1),
 // but the page numbers in the model may have gaps if the filter is active.
 // The page numbers in the model must still be ascending, though.

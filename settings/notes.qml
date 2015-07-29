@@ -16,13 +16,6 @@
  * You can visit <https://sailfishos.org/legal/> for more information
  */
 
-/****************************************************************************
-**
-** Copyright (C) 2015 Jolla Ltd.
-** Contact: Chris Adams <chris.adams@jollamobile.com>
-**
-****************************************************************************/
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
