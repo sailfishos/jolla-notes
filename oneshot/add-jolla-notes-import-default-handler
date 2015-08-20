@@ -1,0 +1,13 @@
+#!/bin/sh
+# add jolla-notes-import as the default handler
+# for text/plain and text/x-vnote mime types
+FILE="/usr/share/applications/defaults.list"
+TEMP_FILE="/tmp/defaults.list"
+rm -f "$TEMP_FILE"
+echo "[Default Applications]" >> "$TEMP_FILE"
+if [[ -s "$FILE" ]]; then
+    cat "$FILE" | grep -v "[Default Applications]" | grep -v "^text/plain=" | grep -v "^text/x-vnote" >> "$TEMP_FILE"
+fi
+echo "text/plain=jolla-notes-import.desktop" >> "$TEMP_FILE"
+echo "text/x-vnote=jolla-notes-import.desktop" >> "$TEMP_FILE"
+mv "$TEMP_FILE" "$FILE"
