@@ -85,6 +85,7 @@ desktop-file-install --delete-original       \
 %{_bindir}/jolla-notes
 %{_datadir}/translations/notes_eng_en.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
+%{_oneshotdir}/add-jolla-notes-import-default-handler
 
 %files ts-devel
 %defattr(-,root,root,-)
@@ -100,6 +101,7 @@ desktop-file-install --delete-original       \
 
 %post
 vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
+%{_bindir}/add-oneshot --now add-jolla-notes-import-default-handler
 
 %postun
 if [ $1 -eq 0 ]; then
