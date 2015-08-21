@@ -1,6 +1,6 @@
 Name:       jolla-notes
 Summary:    Note-taking application
-Version:    0.8.51
+Version:    0.8.57
 Release:    1
 Group:      Applications/Editors
 License:    LGPL-2.1+ OR GPL-2.0+ OR SailfishCommercial
@@ -17,6 +17,7 @@ BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
 BuildRequires: pkgconfig(vault-unit) >= 0.1.0
 BuildRequires: pkgconfig(qtaround) >= 0.2.0
+BuildRequires:  oneshot
 
 Requires:  jolla-notes-settings = %{version}
 Requires:  ambient-icons-closed
