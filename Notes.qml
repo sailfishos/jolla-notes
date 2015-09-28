@@ -113,5 +113,9 @@ ApplicationWindow
                 app.activate()
             }
         }
+
+        function activateWindow(arg) {
+            app.activate()
+        }
     }
 }

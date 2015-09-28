@@ -142,7 +142,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     view->engine()->setOfflineStoragePath(dataLocation);
     view->engine()->rootContext()->setContextProperty("vnoteConverter", new VNoteConverter(view->engine()));
     Sailfish::setSource(view.data(), "Notes.qml");
-    Sailfish::showView(view.data());
+    if (!app->arguments().contains("-prestart")) {
+        Sailfish::showView(view.data());
+    }
     
     int result = app->exec();
     app->removeTranslator(translator.data());

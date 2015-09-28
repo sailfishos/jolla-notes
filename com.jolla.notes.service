@@ -1,3 +1,3 @@
 [D-BUS Service]
 Name=com.jolla.notes
-Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=jolla-notes.desktop -s -n -d 5 /usr/bin/jolla-notes
+Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=jolla-notes.desktop -s -n -d 5 /usr/bin/jolla-notes -prestart
