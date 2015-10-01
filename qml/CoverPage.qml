@@ -66,7 +66,6 @@ CoverBackground {
         CoverAction {
             iconSource: "image://theme/icon-cover-new"
             onTriggered: {
-                pageStack.pop(null, true)
                 openNewNote(PageStackAction.Immediate)
                 activate()
             }

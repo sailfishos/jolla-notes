@@ -49,6 +49,7 @@ ApplicationWindow
     property NotesModel notesModel: NotesModel { id: notesModel }
 
     function openNewNote(operationType) {
+        pageStack.pop(null, PageStackAction.Immediate)
         pageStack.push(notePage, {potentialPage: 1, editMode: true}, operationType)
     }
 
@@ -76,7 +77,7 @@ ApplicationWindow
             if (notesModel.count == 0
                     && pageStack.currentPage.__jollanotes_notepage !== undefined
                     && pageStack.currentPage.potentialPage == 1) {
-                pageStack.pop(null, true)
+                pageStack.pop(null, PageStackAction.Immediate)
             }
 
             // For compatibility reasons this signal sometimes receives an array of strings
@@ -112,6 +113,10 @@ ApplicationWindow
                 }
                 app.activate()
             }
+        }
+
+        function activateWindow(arg) {
+            app.activate()
         }
     }
 }
