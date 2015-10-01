@@ -201,7 +201,7 @@ Page {
                                 var overview = pageStack.previousPage()
                                 overview.showDeleteNote(page.currentIndex)
                             }
-                            pageStack.pop(null, true)
+                            pageStack.pop(null, PageStackAction.Immediate)
                             noteview.opacity = 1.0
                         }
                     }
