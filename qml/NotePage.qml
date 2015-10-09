@@ -254,17 +254,14 @@ Page {
         Column {
             id: column
             width: page.width
-            y: isLandscape ? Theme.paddingLarge : 0
 
             Item {
                 id: headerItem
                 width: parent.width
                 height: Theme.itemSizeLarge
-                visible: isPortrait
+
                 ColorItem {
                     id: colorItem
-                    isPortrait: page.isPortrait
-                    parent: isPortrait ? headerItem : noteview.contentItem
                     color: noteview.color
                     pageNumber: noteview.pageNumber
                     onClicked: openColorPicker()
@@ -274,9 +271,7 @@ Page {
                 id: textArea
                 font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
                 width: parent.width
-                textRightMargin: isLandscape ? (colorItem.anchors.rightMargin + colorItem.width + Theme.paddingMedium)
-                                             : textMargin
-                height: Math.max(noteview.height - (headerItem.visible ? headerItem.height : column.y), implicitHeight)
+                height: Math.max(noteview.height - headerItem.height, implicitHeight)
                 //: Placeholder text for new notes. At this point there's
                 //: nothing else on the screen.
                 //% "Write a note..."
