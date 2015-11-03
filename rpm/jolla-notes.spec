@@ -29,7 +29,6 @@ Requires:  declarative-transferengine-qt5 >= 0.0.34
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
-Requires: qtaround
 Requires: sqlite >= 3.0
 
 %description
