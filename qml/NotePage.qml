@@ -124,7 +124,7 @@ Page {
 
     function openColorPicker() {
         var page = pageStack.push("Sailfish.Silica.ColorPickerPage",
-            {"colors": notesModel.availableColors()})
+            {"colors": notesModel.availableColors})
         page.colorClicked.connect(function(color) {
             noteview.color = color
             notesModel.updateColor(currentIndex, color)

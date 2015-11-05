@@ -18,6 +18,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import org.nemomobile.configuration 1.0
 import "notes.js" as NoteScript
 
 ListModel {
@@ -25,13 +26,28 @@ ListModel {
 
     property string filter
     property int moveCount: 1
+    readonly property var availableColors: [
+        "#cc0000", "#cc7700", "#ccbb00",
+        "#88cc00", "#00b315", "#00bf9f",
+        "#005fcc", "#0016de", "#bb00cc"]
+    property var colorIndexConf: ConfigurationValue {
+        key: "/apps/jolla-notes/next_color_index"
+        defaultValue: 0
+    }
 
     Component.onCompleted: {
         NoteScript.populateNotes(listmodel)
+        if (NoteScript.migrated_color_index !== -1) {
+            colorIndexConf.value = NoteScript.migrated_color_index
+        }
     }
 
     function nextColor() {
-        return NoteScript.nextColor()
+        var index = colorIndexConf.value
+        if (index >= availableColors.length)
+            index = 0
+        colorIndexConf.value = index + 1
+        return availableColors[index]
     }
 
     function newNote(pagenr, initialtext, color) {
@@ -88,9 +104,5 @@ ListModel {
             setProperty(i, "pagenr", parseInt(row.pagenr, 10) - 1)
         }
         remove(idx)
-    }
-
-    function availableColors() {
-        return NoteScript.availableColors
     }
 }

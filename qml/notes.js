@@ -26,6 +26,8 @@
 
 .import QtQuick.LocalStorage 2.0 as Sql
 
+var migrated_color_index = -1
+
 function _rawOpenDb() {
     return Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000)
 }
@@ -49,11 +51,24 @@ function upgradeSchema(db) {
         })
         db = _rawOpenDb()
     }
+    if (db.version == '2') {
+        db.changeVersion('2', '3', function (tx) {
+            // "next_color_index" table may be missing because it was never backed up.
+            var results = tx.executeSql('SELECT name FROM sqlite_master WHERE type="table" AND name="next_color_index"');
+            if (results.rows.length) {
+                var r = tx.executeSql('SELECT value FROM next_color_index LIMIT 1')
+                migrated_color_index = parseInt(r.rows.item(0).value, 10)
+                // next_color_index is stored in dconf from now on. Drop the table.
+                tx.executeSql('DROP TABLE next_color_index')
+            }
+        })
+        db = _rawOpenDb()
+    }
 }
 
 function openDb() {
     var db = _rawOpenDb()
-    if (db.version != '2')
+    if (db.version != '3')
         upgradeSchema(db);
     return db;
 }
@@ -72,24 +87,6 @@ function populateNotes(model) {
             })
         }
     })
-}
-
-var availableColors = [
-    "#cc0000", "#cc7700", "#ccbb00",
-    "#88cc00", "#00b315", "#00bf9f",
-    "#005fcc", "#0016de", "#bb00cc"]
-
-function nextColor() {
-    var index
-    var db = openDb()
-    db.transaction(function (tx) {
-        var r = tx.executeSql('SELECT value FROM next_color_index LIMIT 1')
-        index = parseInt(r.rows.item(0).value, 10)
-        if (index >= availableColors.length)
-            index = 0
-        tx.executeSql('UPDATE next_color_index SET value = ?', [index + 1])
-    })
-    return availableColors[index]
 }
 
 function newNote(pagenr, color, initialtext) {
