@@ -38,17 +38,25 @@ function upgradeSchema(db) {
     // So reopen the database after every changeVersion to get the
     // updated db.version.
     if (db.version == '') {
-        db.changeVersion('', '1', function (tx) {
+        // Change the version directly to '3', no point creating the
+        // now obsolete next_color_index table and drop it immediately
+        // after that.
+        db.changeVersion('', '3', function (tx) {
             tx.executeSql(
                 'CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT)')
         })
         db = _rawOpenDb()
     }
     if (db.version == '1') {
+        // Version '1' equals to version '3'. Just change the version number.
+        // Old migration code to version '2' left in comments for reference.
+        db.changeVersion('1', '3')
+        /*
         db.changeVersion('1', '2', function (tx) {
             tx.executeSql('CREATE TABLE next_color_index (value INTEGER)')
             tx.executeSql('INSERT INTO next_color_index VALUES (0)')
         })
+        */
         db = _rawOpenDb()
     }
     if (db.version == '2') {
