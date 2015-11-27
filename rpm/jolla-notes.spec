@@ -3,7 +3,7 @@ Summary:    Note-taking application
 Version:    0.8.57
 Release:    1
 Group:      Applications/Editors
-License:    LGPL-2.1+ OR GPL-2.0+ OR SailfishCommercial
+License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
 BuildRequires:  pkgconfig(Qt5Core)
@@ -55,8 +55,6 @@ and a test definition XML file for testrunner-lite.
 
 %package settings
 Summary:   Setting page for jolla-notes
-License:   LGPL-2.1+ OR GPL-2.0+ OR SailfishCommercial
-Group:     System/Applications
 Requires:  jolla-settings
 
 %description settings
