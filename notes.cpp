@@ -37,8 +37,8 @@ QString VNoteConverter::vNote(const QString &noteText,
                         : modifiedDate.toUTC())
                     : QDateTime::currentDateTimeUtc());
 
-    retn += "DCREATED:" + cdate.toString("yyyyMMddThhmmssZ").toUtf8() + "\r\n";
-    retn += "LAST-MODIFIED:" + mdate.toString("yyyyMMddThhmmssZ").toUtf8() + "\r\n";
+    retn += "DCREATED:" + QLocale::c().toString(cdate, "yyyyMMddThhmmssZ").toUtf8() + "\r\n";
+    retn += "LAST-MODIFIED:" + QLocale::c().toString(mdate, "yyyyMMddThhmmssZ").toUtf8() + "\r\n";
 
     // check for non-ascii characters to determine encoding
     bool ascii = true;
