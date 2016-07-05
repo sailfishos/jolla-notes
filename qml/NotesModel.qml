@@ -71,7 +71,7 @@ ListModel {
 
         setProperty(idx, "pagenr", 1)
         for (var i = idx - 1; i >= 0; i--) {
-            var row = get(i)
+            row = get(i)
             setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
         }
         move(idx, 0, 1) // move 1 item to position 0
@@ -82,7 +82,7 @@ ListModel {
         var row = get(idx)
         NoteScript.deleteNote(row.pagenr)
         for (var i = count - 1; i > idx; i--) {
-            var row = get(i)
+            row = get(i)
             setProperty(i, "pagenr", parseInt(row.pagenr, 10) - 1)
         }
         remove(idx)
