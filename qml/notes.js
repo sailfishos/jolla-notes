@@ -62,8 +62,8 @@ function upgradeSchema(db) {
 function openDb() {
     var db = _rawOpenDb()
     if (db.version != '3')
-        upgradeSchema(db);
-    return db;
+        upgradeSchema(db)
+    return db
 }
  
 function populateNotes(model) {
