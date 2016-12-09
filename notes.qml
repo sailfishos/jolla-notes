@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.dbus 2.0
-import "qml"
+import "pages"
 
 ApplicationWindow
 {
@@ -22,7 +22,7 @@ ApplicationWindow
             }
         }
     }
-    cover: Qt.resolvedUrl("qml/CoverPage.qml")
+    cover: Qt.resolvedUrl("cover/NotesCover.qml")
     allowedOrientations: defaultAllowedOrientations
     _defaultPageOrientations: Orientation.All
     _defaultLabelFormat: Text.PlainText

@@ -56,7 +56,7 @@ Page {
                 anchors.right: parent.right
                 anchors.rightMargin: Theme.horizontalPageMargin
                 visible: !transferFormatComboMenu._open
-                color: Theme.secondaryColor
+                color: Theme.secondaryHighlightColor
                 font.pixelSize: Theme.fontSizeExtraSmall
                 wrapMode: Text.Wrap
                 opacity: (!transferFormatComboMenu._open && transferFormatCombo.currentIndex == 1) ? 1.0 : 0.0
