@@ -1,6 +1,11 @@
 TEMPLATE = subdirs
-SUBDIRS = notes vault settings
+SUBDIRS = notes.pro settings vault
 OTHER_FILES += rpm/jolla-notes.spec
 
-notes.file = notes.pro
-vault.file = notes-vault.pro
+include(tests.pri)
+
+OTHER_FILES += oneshot/add-jolla-notes-import-default-handler
+oneshot.files = oneshot/add-jolla-notes-import-default-handler
+oneshot.path  = /usr/lib/oneshot.d
+
+INSTALLS += oneshot

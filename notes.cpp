@@ -123,7 +123,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
                   + QDir::separator() + QLatin1String("OfflineStorage");
     view->engine()->setOfflineStoragePath(dataLocation);
     view->engine()->rootContext()->setContextProperty("vnoteConverter", new VNoteConverter(view->engine()));
-    Sailfish::setSource(view.data(), "Notes.qml");
+    Sailfish::setSource(view.data(), "notes.qml");
     if (!app->arguments().contains("-prestart")) {
         Sailfish::showView(view.data());
     }
