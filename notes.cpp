@@ -8,6 +8,11 @@
 #include <QTranslator>
 #include <QStringList>
 #include <QFile>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QDebug>
+
+#include <unicode/ucsdet.h>
 
 #include "vnote.h"
 #include "sailfishapplication.h"
@@ -69,17 +74,66 @@ QString VNoteConverter::vNote(const QString &noteText,
 
 QStringList VNoteConverter::plainTextNotes(const QString &vnoteText) const
 {
+    QString copy(vnoteText);
+    QTextStream stream(&copy, QIODevice::ReadOnly);
+    return plainTextNotes(stream);
+}
+
+QStringList VNoteConverter::plainTextNotes(QTextStream &stream) const
+{
     QStringList retn;
-    QStringList lines = vnoteText.split("\r\n", QString::SkipEmptyParts);
-    Q_FOREACH (const QString &line, lines) {
-        const QString trimmedLine = line.trimmed();
-        if ((trimmedLine.startsWith("BODY;", Qt::CaseInsensitive)
-                || trimmedLine.startsWith("BODY:", Qt::CaseInsensitive))
-                && trimmedLine.contains(':')) {
-            retn << trimmedLine.mid(line.indexOf(':') + 1);
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine().trimmed();
+        if ((line.startsWith("BODY;", Qt::CaseInsensitive)
+                || line.startsWith("BODY:", Qt::CaseInsensitive))
+                && line.contains(':')) {
+            retn << line.mid(line.indexOf(':') + 1);
         }
     }
     return retn;
+}
+
+static QTextCodec *detectCodec(const char *encodedCharacters, int length)
+{
+    QTextCodec *codec = QTextCodec::codecForLocale();
+
+    UErrorCode error = U_ZERO_ERROR;
+    if (UCharsetDetector * const detector = ucsdet_open(&error)) {
+        ucsdet_setText(detector, encodedCharacters, length, &error);
+
+
+        int32_t count = 0;
+        if (U_FAILURE(error)) {
+            qWarning() << "Unable to detect text encoding" << u_errorName(error);
+        } else if (const UCharsetMatch ** const matches = ucsdet_detectAll(detector, &count, &error)) {
+            QTextCodec *bestMatch = nullptr;
+            int32_t bestConfidence = 0;
+
+            for (int32_t i = 0; i < count; ++i) {
+                if (QTextCodec *detectedCodec = QTextCodec::codecForName(ucsdet_getName(matches[i], &error))) {
+                    const int32_t confidence = ucsdet_getConfidence(matches[i], &error);
+
+                    // Pick the first match, unless the system locale has equal confidence
+                    // in which case prefer that.
+                    if (!bestMatch || (confidence == bestConfidence && detectedCodec == codec)) {
+                        bestMatch = detectedCodec;
+                        bestConfidence = confidence;
+                    }
+                }
+            }
+
+            if (bestMatch) {
+                codec = bestMatch;
+            }
+        } else {
+            qWarning() << "Unable to detect text encoding" << u_errorName(error);
+        }
+        ucsdet_close(detector);
+    } else {
+        qWarning() << "Unable to detect text encoding" << u_errorName(error);
+    }
+
+    return codec;
 }
 
 QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
@@ -87,18 +141,36 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
     if (!filePath.isLocalFile()) {
         return QStringList();
     }
-    QString filename = filePath.toLocalFile();
-    if (QFile::exists(filename)) {
-        QFile textFile(filename);
-        if (textFile.open(QIODevice::ReadOnly)) {
-            QString fileData = QString::fromUtf8(textFile.readAll());
-            if (filename.endsWith(".vnt", Qt::CaseInsensitive)) {
-                return plainTextNotes(fileData);
+
+    QStringList notes;
+
+    const QString filename = filePath.toLocalFile();
+    QFile textFile(filename);
+    if (!textFile.exists() || textFile.size() < 0 || textFile.size() > INT_MAX) {
+        // Basic sanity checks to guard against integer overflow.  Realistically the maximum
+        // supported file size is much much smaller but we should never reach the point of opening
+        // such files.
+    } else if (textFile.open(QIODevice::ReadOnly)) {
+        if (uchar * const data = textFile.map(0, textFile.size())) {
+            const char * const encodedCharacters = reinterpret_cast<char *>(data);
+
+            QTextStream stream(
+                        QByteArray::fromRawData(encodedCharacters, textFile.size()),
+                        QIODevice::ReadOnly);
+            stream.setCodec(detectCodec(encodedCharacters, textFile.size()));
+
+            if (filename.endsWith(QLatin1String(".vnt"), Qt::CaseInsensitive)) {
+                notes = plainTextNotes(stream);
+            } else {
+                notes.append(stream.readAll());
             }
-            return QStringList() << fileData;
+
+            textFile.unmap(data);
         }
+        textFile.close();
     }
-    return QStringList();
+
+    return notes;
 }
 
 Q_DECL_EXPORT int main(int argc, char *argv[])

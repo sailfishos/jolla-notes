@@ -1,5 +1,7 @@
 TARGET = jolla-notes
-CONFIG += warn_on
+CONFIG += warn_on link_pkgconfig
+
+PKGCONFIG += icu-i18n
 
 HEADERS += vnote.h
 SOURCES += notes.cpp

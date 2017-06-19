@@ -17,6 +17,7 @@ BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
 BuildRequires: pkgconfig(vault-unit) >= 0.1.0
 BuildRequires: pkgconfig(qtaround) >= 0.2.0
+BuildRequires: pkgconfig(icu-i18n)
 BuildRequires:  oneshot
 
 Requires:  jolla-notes-settings = %{version}
