@@ -33,7 +33,6 @@ ListModel {
     }
 
     function newNote(pagenr, initialtext, color) {
-
         // convert to string
         var _color = color + ""
         NoteScript.newNote(pagenr, _color, initialtext)
@@ -41,8 +40,9 @@ ListModel {
         var i
         for (i = count - 1; i >= 0; i--) {
             var row = get(i)
-            if (row.pagenr >= pagenr)
-                setProperty(i, "pagenr", parseInt(row.pagenr, 10) + 1)
+            var rowPageNr = parseInt(row.pagenr, 10)
+            if (rowPageNr >= pagenr)
+                setProperty(i, "pagenr", rowPageNr + 1)
             else
                 break;
         }

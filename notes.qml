@@ -56,9 +56,7 @@ ApplicationWindow
         function importNoteFile(pathList) {
             // If the user has an empty note open (or we automatically pushed newNote
             // page due to having no notes) then we need to pop that page.
-            if (notesModel.count == 0
-                    && pageStack.currentPage.__jollanotes_notepage !== undefined
-                    && pageStack.currentPage.potentialPage == 1) {
+            if (pageStack.currentPage.__jollanotes_notepage !== undefined) {
                 pageStack.pop(null, PageStackAction.Immediate)
             }
 
@@ -75,23 +73,23 @@ ApplicationWindow
             if (filePath && (String(filePath) != '')) {
                 console.log('jolla-notes: Importing note file:', filePath)
                 var plaintextNotes = vnoteConverter.importFromFile(filePath)
-                var originalNotesModelCount = notesModel.count
-                for (var index in plaintextNotes) {
+                for (var index = 0; index < plaintextNotes.length; ++index) {
                     // insert the note into the database
-                    notesModel.newNote(notesModel.count+1, plaintextNotes[index], notesModel.nextColor())
+                    notesModel.newNote(index + 1, plaintextNotes[index], notesModel.nextColor())
                 }
-                while (originalNotesModelCount < notesModel.count) {
-                    if (pageStack.currentPage.__jollanotes_notepage === undefined) {
+                if (plaintextNotes.length === 1 && pageStack.depth === 1) {
+                    pageStack.push(notePage, {currentIndex: 0}, PageStackAction.Immediate)
+                } else for (index = 0; index < plaintextNotes.length; ++index) {
+                    if (pageStack.depth === 1) {
                         // the current page is the overview page.  indicate to the user which notes were imported,
                         // by flashing the delegates of the imported notes in the gridview.
-                        pageStack.currentPage.flashGridDelegate(originalNotesModelCount)
+                        pageStack.currentPage.flashGridDelegate(index)
                     } else {
                         // a note is currently open.  Queue up the indication to the user
                         // so that it gets displayed when they next return to the gridview.
-                        var overviewPage = pageStack.previousPage(pageStack.currentPage)
-                        overviewPage._flashDelegateIndexes[overviewPage._flashDelegateIndexes.length] = originalNotesModelCount
+                        var overviewPage = pageStack.previousPage(app.currentNotePage)
+                        overviewPage._flashDelegateIndexes[overviewPage._flashDelegateIndexes.length] = index
                     }
-                    originalNotesModelCount++
                 }
                 app.activate()
             }
