@@ -6,6 +6,10 @@
 #include <QDateTime>
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
+class QTextStream;
+QT_END_NAMESPACE
+
 class VNoteConverter : public QObject
 {
     Q_OBJECT
@@ -17,6 +21,8 @@ public:
                               const QDateTime &modifiedDate = QDateTime()) const;
     Q_INVOKABLE QStringList plainTextNotes(const QString &vnoteText) const;
     Q_INVOKABLE QStringList importFromFile(const QUrl &filePath) const;
+
+    QStringList plainTextNotes(QTextStream &stream) const;
 };
 
 #endif
