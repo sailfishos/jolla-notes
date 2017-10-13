@@ -34,6 +34,9 @@
            <case manual="false" name="select another note during remorse timer">
                <step>/opt/tests/jolla-notes/runtest tst_delete_during_remorse</step>
            </case>
+           <case manual="false" name="notes model">
+               <step>/opt/tests/jolla-notes/runtest tst_notesmodel</step>
+           </case>
            <post_steps>
                <step>/usr/sbin/mcetool -jdisabled -Doff</step>
            </post_steps>

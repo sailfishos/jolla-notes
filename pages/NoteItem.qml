@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.5
 import Sailfish.Silica 1.0
 
 // BackgroundItem is also a MouseArea
@@ -37,10 +37,25 @@ BackgroundItem {
 
     Item {
         anchors { fill: parent; margins: Theme.paddingLarge }
-
-        NoteSummary {
+        Text {
             id: summary
+            anchors {
+                top: parent.top
+                topMargin: - (font.pixelSize / 4)
+                left: parent.left
+                right: parent.right
+            }
+            height: parent.height
+            textFormat: Text.StyledText
+            font { family: Theme.fontFamily; pixelSize: Theme.fontSizeSmall }
             color: highlighted ? Theme.highlightColor : Theme.primaryColor
+            wrapMode: Text.Wrap
+            maximumLineCount: Math.floor((height - Theme.paddingLarge) / fontMetrics.height)
+            elide: Text.ElideRight
+        }
+        FontMetrics {
+            id: fontMetrics
+            font: summary.font
         }
 
         OpacityRampEffect {
