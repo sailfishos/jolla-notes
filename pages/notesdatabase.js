@@ -65,20 +65,35 @@ function openDb() {
         upgradeSchema(db)
     return db
 }
- 
-function populateNotes(model) {
+
+var regex = new RegExp(/['\%\\\_]/g)
+var escaper = function escaper(char){
+    var m = ["'", "%", "_", "\\"]
+    var r = ["''", "\\%", "\\_", "\\\\"]
+    return r[m.indexOf(char)]
+}
+
+function updateNotes(filter, callback) {
     var db = openDb()
     db.readTransaction(function (tx) {
-        model.clear()
-        var results = tx.executeSql('SELECT pagenr, color, body FROM notes ORDER BY pagenr');
-        for (var i = 0; results.rows.item(i) != null; i++) {
+        var results
+        if (filter.length > 0) {
+            results = tx.executeSql("SELECT pagenr, color, body FROM notes WHERE body LIKE '%" + filter.replace(regex, escaper) + "%' ESCAPE '\\' ORDER BY pagenr")
+        } else {
+            results = tx.executeSql("SELECT pagenr, color, body FROM notes ORDER BY pagenr")
+        }
+
+        var array = []
+        for (var i = 0; i < results.rows.length; i++) {
             var item = results.rows.item(i)
-            model.append({
+            array[i] = {
                 "pagenr": item.pagenr,
                 "text": item.body,
                 "color": item.color
-            })
+            }
         }
+
+        callback(array)
     })
 }
 

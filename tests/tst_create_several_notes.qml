@@ -52,9 +52,18 @@ JollaNotes.Notes {
             //Going back after last note to save it
             go_back()
 
+            countSpy.clear()
+            countSpy.wait()
+
             //Checking in the end that current number of notes matches
             //Tries to take into account the number of previously existing notes
             compare(notesModel.count, numberOfNotes+prevNotesCount, "Generated " + numberOfNotes + " notes")
+        }
+
+        SignalSpy {
+            id: countSpy
+            target: notesModel
+            signalName: "countChanged"
         }
     }
 }

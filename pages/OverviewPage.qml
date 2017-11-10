@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    property bool startupCheck
+    property bool searchMode
     function showDeleteNote(index) {
         // This is needed both for UI (the user should see the remorse item)
         // and to make sure the delegate exists.
@@ -25,33 +25,40 @@ Page {
     }
     property var _flashDelegateIndexes: []
 
+    readonly property bool populated: notesModel.populated
+    onPopulatedChanged: {
+        if (notesModel.count === 0) {
+            openNewNote(PageStackAction.Immediate)
+        }
+    }
+
     onStatusChanged: {
         if (status === PageStatus.Active) {
-            if (!startupCheck) {
-                // Open new note page directly if no notes have yet been saved
-                startupCheck = true
-                if (notesModel.count === 0) {
-                    openNewNote(PageStackAction.Immediate)
-                }
-            } else if (_flashDelegateIndexes.length) {
+            if (populated && _flashDelegateIndexes.length) {
                 // Flash grid delegates of imported notes
                 for (var i in _flashDelegateIndexes) {
                     flashGridDelegate(_flashDelegateIndexes[i])
                 }
                 _flashDelegateIndexes = []
             }
+            if (notesModel.filter.length > 0) {
+                notesModel.refresh() // refresh search
+            }
+        } else if (status === PageStatus.Inactive) {
+            if (notesModel.filter.length == 0) searchMode = false
         }
     }
 
     SilicaGridView {
         id: view
 
+        currentIndex: -1
         anchors.fill: overviewpage
         model: notesModel
         cellHeight: overviewpage.width / columnCount
         cellWidth: cellHeight
         // reference column width: 960 / 4
-        property int columnCount: Math.floor(width / (Theme.pixelRatio * 240))
+        property int columnCount: Math.floor((isLandscape ? Screen.height : Screen.width) / (Theme.pixelRatio * 240))
 
         property Item contextMenu
         property Item contextMenuOn: contextMenu ? contextMenu.parent : null
@@ -64,16 +71,53 @@ Page {
         property int yOffset: contextMenu ? contextMenu.height : 0
 
         ViewPlaceholder {
-            //: Comforting text when overview is empty
-            //% "Write a note"
-            text: qsTrId("notes-la-overview-placeholder")
-            enabled: view.count == 0
+            id: placeholder
+
+            // Avoid flickering empty state placeholder when updating search results
+            function placeholderText() {
+                //% "Sorry, we couldn't find anything"
+                return notesModel.filter.length > 0 ? qsTrId("notes-la-could_not_find_anything")
+                                                      //: Comforting text when overview is empty
+                                                      //% "Write a note"
+                                                    : qsTrId("notes-la-overview-placeholder")
+            }
+            Component.onCompleted: text = placeholderText()
+            Binding {
+                when: placeholder.opacity == 0.0
+                target: placeholder
+                property: "text"
+                value: placeholder.placeholderText()
+            }
+
+            y: Math.round(view.height/3)
+            enabled: notesModel.populated && notesModel.count === 0
         }
+        header: SearchField {
+            property bool active: activeFocus || text.length > 0
+            onActiveChanged: if (!active) searchMode = false
+            onEnabledChanged: {
+                if (enabled) {
+                    text = ""
+                    forceActiveFocus()
+                }
+            }
+            onTextChanged: notesModel.filter = text
+
+            enabled: searchMode
+            width: parent.width
+            height: enabled ? implicitHeight : 0.0
+            opacity: enabled ? 1.0 : 0.0
+            Behavior on opacity { FadeAnimator {} }
+            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
+            EnterKey.iconSource: "image://theme/icon-m-enter-close"
+            EnterKey.onClicked: focus = false
+        }
+
         delegate: Item {
             // The NoteItem is wrapped in an Item in order to allow the
             // delegate to resize for the contextMenu without affecting
             // the layout inside the NoteItem.
-            id: itemcontainer
+            id: itemContainer
 
             // Adjust the height to make space for the context menu if needed
             height: menuOpen ? view.cellHeight + view.contextMenu.height
@@ -82,16 +126,16 @@ Page {
 
             // make model.index accessible to other delegates
             property int index: model.index
-            property bool menuOpen: view.contextMenuOn === itemcontainer
+            property bool menuOpen: view.contextMenuOn === itemContainer
 
             function deleteNote() {
-                var remorse = remorsecomponent.createObject(itemcontainer)
+                var remorse = remorsecomponent.createObject(itemContainer)
                 //: Remorse item text, will delete note when timer expires
                 //% "Deleting"
-                remorse.execute(noteitem, qsTrId("notes-la-deleting"),
+                remorse.execute(noteItem, qsTrId("notes-la-deleting"),
                                 function() {
-                    notesModel.deleteNote(index)
-                })
+                                    notesModel.deleteNote(index)
+                                })
             }
 
             function flash() {
@@ -99,9 +143,9 @@ Page {
             }
 
             NoteItem {
-                id: noteitem
+                id: noteItem
 
-                text: model.text
+                text: model.text ? Theme.highlightText(model.text.substr(0, Math.min(model.text.length, 300)), notesModel.filter, Theme.highlightColor) : ""
                 color: model.color
                 pageNumber: model.pagenr
                 height: view.cellHeight
@@ -111,12 +155,12 @@ Page {
                 _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
-                onPressAndHold: view.showContextMenu(itemcontainer)
+                onPressAndHold: view.showContextMenu(itemContainer)
 
                 Rectangle {
                     id: flashRect
                     anchors.fill: parent
-                    color: noteitem.color
+                    color: noteItem.color
                     opacity: 0.0
                     SequentialAnimation {
                         id: flashAnim
@@ -132,11 +176,19 @@ Page {
 
         function showContextMenu(item) {
             if (!contextMenu)
-                contextMenu = contextmenucomponent.createObject(view)
+                contextMenu = contextMenuComponent.createObject(view)
+
             contextMenu.show(item)
         }
 
         PullDownMenu {
+            id: pullDownMenu
+            MenuItem {
+                visible: !searchMode && (notesModel.filter.length > 0 || notesModel.count > 0)
+                //% "Search"
+                text: qsTrId("notes-me-search")
+                onDelayedClick: searchMode = true
+            }
             MenuItem {
                 //: Create a new note ready for editing
                 //% "New note"
@@ -148,9 +200,9 @@ Page {
     }
 
     Component {
-        id: contextmenucomponent
+        id: contextMenuComponent
         ContextMenu {
-            id: contextmenu
+            id: contextMenu
 
             // The menu extends across the whole gridview horizontally
             width: view.width
@@ -186,15 +238,15 @@ Page {
                 //: Delete this note from overview
                 //% "Delete"
                 text: qsTrId("notes-la-delete")
-                onClicked: contextmenu.parent.deleteNote()
+                onClicked: contextMenu.parent.deleteNote()
             }
 
             MenuItem {
                 //: Move this note to be first in the list
                 //% "Move to top"
                 text: qsTrId("notes-la-move-to-top")
-                visible: contextmenu.parent && contextmenu.parent.index > 0
-                onClicked: moveToTopItem = contextmenu.parent
+                visible: contextMenu.parent && contextMenu.parent.index > 0
+                onClicked: moveToTopItem = contextMenu.parent
             }
         }
     }
@@ -202,7 +254,12 @@ Page {
     Component {
         id: remorsecomponent
         RemorseItem {
+            id: remorseItem
             wrapMode: Text.Wrap
+            Connections {
+                target: notesModel
+                onFilterChanged: remorseItem.trigger()
+            }
         }
     }
 }

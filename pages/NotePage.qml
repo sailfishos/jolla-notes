@@ -55,6 +55,7 @@ Page {
                 currentIndex += numMoved
             }
         }
+        onNewNoteInserted: currentIndex = 0
     }
 
     onCurrentIndexChanged: {
@@ -86,7 +87,7 @@ Page {
             noteview.savedText = text
             if (potentialPage) {
                 if (text.trim() != '') {
-                    currentIndex = notesModel.newNote(potentialPage, text, noteview.color)
+                    notesModel.newNote(potentialPage, text, noteview.color)
                 }
             } else {
                 notesModel.updateNote(currentIndex, text)
