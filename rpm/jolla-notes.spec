@@ -27,7 +27,7 @@ Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  mapplauncherd >= 4.1.17
 Requires:  mapplauncherd-booster-silica-qt5
 Requires:  qt5-plugin-sqldriver-sqlite
-Requires:  declarative-transferengine-qt5 >= 0.2.3
+Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
