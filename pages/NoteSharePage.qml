@@ -29,12 +29,7 @@ Page {
             "linkTitle" : name
         }
         filter: type
-
-        ViewPlaceholder {
-            enabled: methodlist.count == 0 && methodlist.model.ready
-            //: Empty state for share method selection page
-            //% "No sharing accounts available. You can add accounts in settings"
-            text: qsTrId("notes-ph-no-share-methods")
-        }
+        serviceFilter: ["sharing", "e-mail", "IM"]
+        containerPage: page
     }
 }
