@@ -155,7 +155,7 @@ Page {
                 _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
                 onClicked: pageStack.push(notePage, {currentIndex: model.index})
-                onPressAndHold: view.showContextMenu(itemContainer)
+                onPressAndHold: view.openContextMenu(itemContainer)
 
                 Rectangle {
                     id: flashRect
@@ -174,11 +174,11 @@ Page {
             }
         }
 
-        function showContextMenu(item) {
+        function openContextMenu(item) {
             if (!contextMenu)
                 contextMenu = contextMenuComponent.createObject(view)
 
-            contextMenu.show(item)
+            contextMenu.open(item)
         }
 
         PullDownMenu {
