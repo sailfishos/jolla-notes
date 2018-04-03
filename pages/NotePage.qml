@@ -206,12 +206,15 @@ Page {
                     var content = {
                         "name": fileName,
                         "data": noteText,
-                        "type": mimeType,
-                        "icon": "icon-launcher-notes",
-                        // also some non-standard fields for Twitter/Facebook status sharing:
-                        "status": noteText,
-                        "linkTitle": fileName
+                        "type": mimeType
                     }
+
+                    if (mimeType == "text/plain") {
+                        // also some non-standard fields for Twitter/Facebook status sharing:
+                        content["status"] = noteText
+                        content["linkTitle"] = fileName
+                    }
+
                     pageStack.push("Sailfish.TransferEngine.SharePage",
                                    {
                                        //: Page header for share method selection
