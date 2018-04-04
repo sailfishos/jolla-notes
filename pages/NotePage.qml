@@ -203,11 +203,27 @@ Page {
                     var mimeType = transferAsVNoteConfig.value == true ? "text/x-vnote" : "text/plain"
                     // vnoteConverter is a global installed by notes.cpp
                     var noteText = transferAsVNoteConfig.value == true ? vnoteConverter.vNote(textArea.text) : textArea.text
-                    pageStack.push(Qt.resolvedUrl("NoteSharePage.qml"), {
+                    var content = {
                         "name": fileName,
-                        "text": noteText,
-                        "type": mimeType,
-                    })
+                        "data": noteText,
+                        "type": mimeType
+                    }
+
+                    if (mimeType == "text/plain") {
+                        // also some non-standard fields for Twitter/Facebook status sharing:
+                        content["status"] = noteText
+                        content["linkTitle"] = fileName
+                    }
+
+                    pageStack.push("Sailfish.TransferEngine.SharePage",
+                                   {
+                                       //: Page header for share method selection
+                                       //% "Share note"
+                                       "header": qsTrId("notes-he-share-note"),
+                                       "serviceFilter": ["sharing", "e-mail", "IM"],
+                                       "mimeType": mimeType,
+                                       "content": content
+                                   })
                 }
             }
             MenuItem {
