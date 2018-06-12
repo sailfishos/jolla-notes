@@ -88,11 +88,14 @@ Page {
             if (potentialPage) {
                 if (text.trim() != '') {
                     notesModel.newNote(potentialPage, text, noteview.color)
+                    return true
                 }
             } else {
                 notesModel.updateNote(currentIndex, text)
+                return true
             }
         }
+        return false
     }
 
     onPotentialPageChanged: {
@@ -227,10 +230,35 @@ Page {
                 }
             }
             MenuItem {
+                id: saveItem
+                enabled: !saving
+
+                property bool saving
+
+                function replace(force) {
+                    if (!newNoteAnimation.running || force) {
+                        app.pageStack.replace(notePage, {
+                                                  potentialPage: 1,
+                                                  editMode: true
+                                              }, PageStackAction.Immediate)
+                        notesModel.newNoteInserted.disconnect(replace)
+                        saving = false
+                    }
+                }
+
                 //: Create a new note ready for editing
                 //% "New note"
                 text: qsTrId("notes-me-new-note")
-                onClicked: newNoteAnimation.restart()
+
+                onDelayedClick: {
+                    if (saveNote()) {
+                        saving = true
+                        notesModel.newNoteInserted.connect(replace)
+                    }
+                    newNoteAnimation.restart()
+                }
+
+
                 SequentialAnimation {
                     id: newNoteAnimation
                     NumberAnimation {
@@ -241,13 +269,7 @@ Page {
                         to: 0.0
                     }
                     ScriptAction {
-                        script: {
-                            saveNote()
-                            pageStack.replace(notePage, {
-                                potentialPage: 1,
-                                editMode: true
-                            }, PageStackAction.Immediate)
-                        }
+                        script: saveItem.replace(true)
                     }
                 }
             }
