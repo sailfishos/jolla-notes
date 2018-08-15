@@ -32,7 +32,7 @@ ApplicationWindow
 
     function openNewNote(operationType) {
         pageStack.pop(null, PageStackAction.Immediate)
-        pageStack.push(notePage, {potentialPage: 1, editMode: true}, operationType)
+        pageStack.animatorPush(notePage, {potentialPage: 1, editMode: true}, operationType)
     }
 
     Component {

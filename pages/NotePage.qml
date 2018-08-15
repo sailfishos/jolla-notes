@@ -109,15 +109,16 @@ Page {
     }
 
     function openColorPicker() {
-        var page = pageStack.push("Sailfish.Silica.ColorPickerPage",
+        var obj = pageStack.animatorPush("Sailfish.Silica.ColorPickerPage",
                                   {"colors": notesModel.availableColors})
-
-        page.colorClicked.connect(function(color) {
-            noteview.color = color
-            if (currentIndex >= 0) {
-                notesModel.updateColor(currentIndex, color)
-            }
-            pageStack.pop()
+        obj.pageCompleted.connect(function(page) {
+            page.colorClicked.connect(function(color) {
+                noteview.color = color
+                if (currentIndex >= 0) {
+                    notesModel.updateColor(currentIndex, color)
+                }
+                pageStack.pop()
+            })
         })
     }
 
@@ -218,7 +219,7 @@ Page {
                         content["linkTitle"] = fileName
                     }
 
-                    pageStack.push("Sailfish.TransferEngine.SharePage",
+                    pageStack.animatorPush("Sailfish.TransferEngine.SharePage",
                                    {
                                        //: Page header for share method selection
                                        //% "Share note"
