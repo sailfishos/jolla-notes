@@ -33,7 +33,7 @@ Page {
             }
         }
 
-        onRowsInserted: { 
+        onRowsInserted: {
             console.log("Notes inserted: " + first + ".." + last)
             if (currentIndex >= first)
                 currentIndex += (last - first + 1)
@@ -109,15 +109,16 @@ Page {
     }
 
     function openColorPicker() {
-        var page = pageStack.push("Sailfish.Silica.ColorPickerPage",
-                                  {"colors": notesModel.availableColors})
-
-        page.colorClicked.connect(function(color) {
-            noteview.color = color
-            if (currentIndex >= 0) {
-                notesModel.updateColor(currentIndex, color)
-            }
-            pageStack.pop()
+        var obj = pageStack.animatorPush("Sailfish.Silica.ColorPickerPage",
+                                         {"colors": notesModel.availableColors})
+        obj.pageCompleted.connect(function(page) {
+            page.colorClicked.connect(function(color) {
+                noteview.color = color
+                if (currentIndex >= 0) {
+                    notesModel.updateColor(currentIndex, color)
+                }
+                pageStack.pop()
+            })
         })
     }
 
@@ -186,7 +187,7 @@ Page {
                             // will be deleted by onStatusChanged, and
                             // there should not be a remorse timer etc.
                             if (page.currentIndex >= 0
-                                && noteview.text.trim() != '') {
+                                    && noteview.text.trim() != '') {
                                 var overview = pageStack.previousPage()
                                 overview.showDeleteNote(page.currentIndex)
                             }
@@ -218,15 +219,15 @@ Page {
                         content["linkTitle"] = fileName
                     }
 
-                    pageStack.push("Sailfish.TransferEngine.SharePage",
-                                   {
-                                       //: Page header for share method selection
-                                       //% "Share note"
-                                       "header": qsTrId("notes-he-share-note"),
-                                       "serviceFilter": ["sharing", "e-mail", "IM"],
-                                       "mimeType": mimeType,
-                                       "content": content
-                                   })
+                    pageStack.animatorPush("Sailfish.TransferEngine.SharePage",
+                                           {
+                                               //: Page header for share method selection
+                                               //% "Share note"
+                                               "header": qsTrId("notes-he-share-note"),
+                                               "serviceFilter": ["sharing", "e-mail", "IM"],
+                                               "mimeType": mimeType,
+                                               "content": content
+                                           })
                 }
             }
             MenuItem {
@@ -318,8 +319,8 @@ Page {
     }
 
     ConfigurationValue {
-       id: transferAsVNoteConfig
-       key: "/apps/jolla-notes/settings/transferAsVNote"
-       defaultValue: false
+        id: transferAsVNoteConfig
+        key: "/apps/jolla-notes/settings/transferAsVNote"
+        defaultValue: false
     }
 }

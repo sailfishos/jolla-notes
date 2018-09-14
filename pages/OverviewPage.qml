@@ -154,7 +154,7 @@ Page {
                 highlighted: down || menuOpen
                 _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
-                onClicked: pageStack.push(notePage, {currentIndex: model.index})
+                onClicked: pageStack.animatorPush(notePage, {currentIndex: model.index})
                 onPressAndHold: view.openContextMenu(itemContainer)
 
                 Rectangle {
