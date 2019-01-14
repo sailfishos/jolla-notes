@@ -151,7 +151,12 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
         // supported file size is much much smaller but we should never reach the point of opening
         // such files.
     } else if (textFile.open(QIODevice::ReadOnly)) {
-        if (uchar * const data = textFile.map(0, textFile.size())) {
+        const bool isVnt = filename.endsWith(QLatin1String(".vnt"), Qt::CaseInsensitive);
+        if (textFile.size() == 0) {
+            if (!isVnt) {
+                notes.append(QString());
+            }
+        } else if (uchar * const data = textFile.map(0, textFile.size())) {
             const char * const encodedCharacters = reinterpret_cast<char *>(data);
 
             QTextStream stream(
@@ -159,7 +164,7 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
                         QIODevice::ReadOnly);
             stream.setCodec(detectCodec(encodedCharacters, textFile.size()));
 
-            if (filename.endsWith(QLatin1String(".vnt"), Qt::CaseInsensitive)) {
+            if (isVnt) {
                 notes = plainTextNotes(stream);
             } else {
                 notes.append(stream.readAll());
