@@ -78,7 +78,7 @@ ApplicationWindow
                     notesModel.newNote(index + 1, plaintextNotes[index], notesModel.nextColor())
                 }
                 if (plaintextNotes.length === 1 && pageStack.depth === 1) {
-                    pageStack.push(notePage, {currentIndex: 0}, PageStackAction.Immediate)
+                    pageStack.push(notePage, {currentIndex: -1}, PageStackAction.Immediate)
                 } else for (index = 0; index < plaintextNotes.length; ++index) {
                     if (pageStack.depth === 1) {
                         // the current page is the overview page.  indicate to the user which notes were imported,
