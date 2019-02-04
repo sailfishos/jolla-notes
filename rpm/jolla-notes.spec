@@ -67,7 +67,7 @@ Settings page for jolla-notes
 
 %build
 %qmake5 jolla-notes.pro
-make %{?jobs:-j%jobs}
+make %{_smp_mflags}
 
 %install
 rm -rf %{buildroot}
