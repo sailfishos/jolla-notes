@@ -83,25 +83,28 @@ desktop-file-install --delete-original       \
 %files
 %defattr(-,root,root,-)
 %{_datadir}/applications/*.desktop
-%{_datadir}/jolla-notes/*
+%{_datadir}/jolla-notes
 %{_datadir}/mapplauncherd/privileges.d/*
 %{_libexecdir}/jolla-notes/notes-vault
+# Own com.jolla.notes import
+%dir %{_libdir}/qt5/qml/com/jolla/notes
 %{_bindir}/jolla-notes
-%{_datadir}/translations/notes_eng_en.qm
+%{_datadir}/translations/*.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
 %{_oneshotdir}/add-jolla-notes-import-default-handler
 
 %files ts-devel
 %defattr(-,root,root,-)
-%{_datadir}/translations/source/notes.ts
+%{_datadir}/translations/source/*.ts
 
 %files tests
 %defattr(-,root,root,-)
-/opt/tests/jolla-notes/*
+/opt/tests/jolla-notes
 
 %files settings
-%{_libdir}/qt5/qml/com/jolla/notes/settings/*
-%{_datadir}/jolla-settings/*
+%{_libdir}/qt5/qml/com/jolla/notes/settings
+%{_datadir}/jolla-settings/entries/*.json
+%{_datadir}/jolla-settings/pages/jolla-notes
 
 %post
 vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
