@@ -6,6 +6,7 @@ Group:      Applications/Editors
 License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
+Source1:    %{name}.privileges
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
@@ -72,6 +73,9 @@ make %{?jobs:-j%jobs}
 rm -rf %{buildroot}
 %qmake5_install
 
+mkdir -p %{buildroot}%{_datadir}/mapplauncherd/privileges.d
+install -m 644 -p %{SOURCE1} %{buildroot}%{_datadir}/mapplauncherd/privileges.d/
+
 desktop-file-install --delete-original       \
   --dir %{buildroot}%{_datadir}/applications \
    %{buildroot}%{_datadir}/applications/*.desktop
@@ -80,6 +84,7 @@ desktop-file-install --delete-original       \
 %defattr(-,root,root,-)
 %{_datadir}/applications/*.desktop
 %{_datadir}/jolla-notes/*
+%{_datadir}/mapplauncherd/privileges.d/*
 %{_libexecdir}/jolla-notes/notes-vault
 %{_bindir}/jolla-notes
 %{_datadir}/translations/notes_eng_en.qm
