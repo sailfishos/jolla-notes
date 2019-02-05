@@ -6,6 +6,7 @@ Group:      Applications/Editors
 License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
+Source1:    %{name}.privileges
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
@@ -66,11 +67,14 @@ Settings page for jolla-notes
 
 %build
 %qmake5 jolla-notes.pro
-make %{?jobs:-j%jobs}
+make %{_smp_mflags}
 
 %install
 rm -rf %{buildroot}
 %qmake5_install
+
+mkdir -p %{buildroot}%{_datadir}/mapplauncherd/privileges.d
+install -m 644 -p %{SOURCE1} %{buildroot}%{_datadir}/mapplauncherd/privileges.d/
 
 desktop-file-install --delete-original       \
   --dir %{buildroot}%{_datadir}/applications \
@@ -79,24 +83,28 @@ desktop-file-install --delete-original       \
 %files
 %defattr(-,root,root,-)
 %{_datadir}/applications/*.desktop
-%{_datadir}/jolla-notes/*
+%{_datadir}/jolla-notes
+%{_datadir}/mapplauncherd/privileges.d/*
 %{_libexecdir}/jolla-notes/notes-vault
+# Own com.jolla.notes import
+%dir %{_libdir}/qt5/qml/com/jolla/notes
 %{_bindir}/jolla-notes
-%{_datadir}/translations/notes_eng_en.qm
+%{_datadir}/translations/*.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
 %{_oneshotdir}/add-jolla-notes-import-default-handler
 
 %files ts-devel
 %defattr(-,root,root,-)
-%{_datadir}/translations/source/notes.ts
+%{_datadir}/translations/source/*.ts
 
 %files tests
 %defattr(-,root,root,-)
-/opt/tests/jolla-notes/*
+/opt/tests/jolla-notes
 
 %files settings
-%{_libdir}/qt5/qml/com/jolla/notes/settings/*
-%{_datadir}/jolla-settings/*
+%{_libdir}/qt5/qml/com/jolla/notes/settings
+%{_datadir}/jolla-settings/entries/*.json
+%{_datadir}/jolla-settings/pages/jolla-notes
 
 %post
 vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
