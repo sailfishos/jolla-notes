@@ -4,7 +4,8 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    property bool searchMode
+    property bool showSearchOption: true
+
     function showDeleteNote(index) {
         // This is needed both for UI (the user should see the remorse item)
         // and to make sure the delegate exists.
@@ -45,7 +46,7 @@ Page {
                 notesModel.refresh() // refresh search
             }
         } else if (status === PageStatus.Inactive) {
-            if (notesModel.filter.length == 0) searchMode = false
+            if (notesModel.filter.length == 0) view.headerItem.active = false
         }
     }
 
@@ -93,22 +94,18 @@ Page {
             enabled: notesModel.populated && notesModel.count === 0
         }
         header: SearchField {
-            property bool active: activeFocus || text.length > 0
-            onActiveChanged: if (!active) searchMode = false
-            onEnabledChanged: {
-                if (enabled) {
-                    text = ""
-                    forceActiveFocus()
-                }
+            width: parent.width
+            canHide: text.length === 0
+            active: false
+            inputMethodHints: Qt.ImhNone    // Enable predictive text
+
+            onHideClicked: {
+                active = false
+                showSearchOption = true
             }
+
             onTextChanged: notesModel.filter = text
 
-            enabled: searchMode
-            width: parent.width
-            height: enabled ? implicitHeight : 0.0
-            opacity: enabled ? 1.0 : 0.0
-            Behavior on opacity { FadeAnimator {} }
-            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
             EnterKey.iconSource: "image://theme/icon-m-enter-close"
             EnterKey.onClicked: focus = false
         }
@@ -155,6 +152,7 @@ Page {
                 _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
                 onClicked: pageStack.animatorPush(notePage, {currentIndex: model.index})
+                onPressed: overviewpage.focus = true    // close the vkb
                 onPressAndHold: view.openContextMenu(itemContainer)
 
                 Rectangle {
@@ -183,12 +181,20 @@ Page {
 
         PullDownMenu {
             id: pullDownMenu
+
             MenuItem {
-                visible: !searchMode && (notesModel.filter.length > 0 || notesModel.count > 0)
+                visible: showSearchOption && (notesModel.filter.length > 0 || notesModel.count > 0)
                 //% "Search"
                 text: qsTrId("notes-me-search")
-                onDelayedClick: searchMode = true
+                onClicked: {
+                    view.headerItem.active = true
+                    view.headerItem.forceActiveFocus()
+                }
+                onDelayedClick: {
+                    showSearchOption = !view.headerItem.active
+                }
             }
+
             MenuItem {
                 //: Create a new note ready for editing
                 //% "New note"
