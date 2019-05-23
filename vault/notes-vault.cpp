@@ -5,6 +5,10 @@
 #include <qtaround/debug.hpp>
 #include <qtaround/util.hpp>
 #include <QCoreApplication>
+#include <QSqlDatabase>
+#include <QSqlDriver>
+#include <QSqlQuery>
+#include <QSqlRecord>
 
 namespace sys = qtaround::sys;
 namespace os = qtaround::os;
@@ -17,13 +21,6 @@ typedef std::unique_ptr<sys::GetOpt> options_ptr;
 using subprocess::Process;
 
 namespace {
-
-QStringList get_export_commands()
-{
-    return QStringList({".mode insert notes\n"
-                ,"SELECT pagenr, color, body FROM notes ORDER BY pagenr;"
-                });
-}
 
 QString get_export_fname(QString const &path)
 {
@@ -46,10 +43,36 @@ QStringList find_files(QString const &dir, QString const &pattern)
     return filterEmpty(data.split("\n"));
 }
 
+QStringList data_to_inserts(QString const &data)
+{
+    // This looks insane, but I couldn't figure out a prettier way of
+    // even somewhat reliably getting the newlines back in.  Earlier,
+    // this was handled by the sqlite3 shell parser.  Optimally, the
+    // dump would not have multi-line strings, but I don't think breaking
+    // existing backups would be welcomed.
+    auto rawlines = data.split("\n");
+    QStringList lines;
+    QString nextline;
+    for (auto it = rawlines.begin(); it != rawlines.end(); ++it) {
+        nextline.append(*it);
+        if (nextline.count(QLatin1Char('\'')) % 2 == 0) {
+            // Not in a multi-line string
+            lines += nextline;
+            nextline.clear();
+        } else {
+            // In a multi-line string, need to add a newline sqlite understands
+            nextline.append("' || char(10) || '");
+        }
+    }
+    if (nextline.size() != 0) {
+        debug::error("Odd number of single quotes in DB dump.");
+    }
+    return lines;
+}
+
 // TODO generic function, create the-vault-unit-sql package from it
 void process_sqlite_import(QString const &data, options_ptr options)
 {
-    auto lines = data.split("\n");
     std::list<std::function<void()> > on_ok, on_error;
 
     typedef std::function<void(QString const &)> process_type;
@@ -84,16 +107,17 @@ void process_sqlite_import(QString const &data, options_ptr options)
         } else {
             mkdir(os::path::dirName(db_name));
         }
-                
-        auto ps = std::make_shared<Process>();
-        ps->popen_sync("sqlite3", {db_name});
-        on_ok.push_back([ps]() mutable {
-                ps->stdinClose();
-                ps->wait(-1);
-                ps->check_error();
+
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName(db_name);
+        db.open();
+        on_ok.push_back([db]() mutable {
+                db.close();
             });
-        write = [ps](QString const &line) mutable {
-            return ps->write(line + "\n");
+        write = [db](QString const &line) mutable {
+            QSqlQuery q(db);
+            bool res = q.exec(line);
+            return res;
         };
         return skip;
     };
@@ -130,6 +154,7 @@ void process_sqlite_import(QString const &data, options_ptr options)
         , {"data", on_data}
     };
 
+    auto lines = data_to_inserts(data);
     try {
         size_t nr = 0;
         process_type process_data = skip;
@@ -175,16 +200,6 @@ void export_notes(options_ptr options)
     }
     auto ini_name = files[0];
 
-    Process ps;
-    ps.popen_sync("sqlite3", {db_name});
-    auto commands = get_export_commands();
-    for (auto it = commands.begin(); it != commands.end(); ++it)
-        ps.write(*it + "\n");
-
-    ps.stdinClose();
-    ps.wait(-1);
-    ps.check_error();
-
     QStringList data = {
         str("-- @version@1"),
         str("-- @file@") + ini_name,
@@ -195,7 +210,18 @@ void export_notes(options_ptr options)
         str("CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT);"),
         str("-- @data@")
     };
-    data.push_back(str(ps.stdout()));
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(db_name);
+    db.open();
+    QSqlQuery q =
+        db.exec("SELECT pagenr, color, body FROM notes ORDER BY pagenr;");
+    while (q.next()) {
+        data.push_back(db.driver()->sqlStatement(QSqlDriver::InsertStatement,
+                                                 "notes", q.record(), false));
+        data.push_back(";");
+    }
+    db.close();
     data.push_back("");
     auto out_dir = options->value("dir");
     auto sql_fname = get_export_fname(out_dir);
