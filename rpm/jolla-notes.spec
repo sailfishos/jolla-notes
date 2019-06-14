@@ -12,6 +12,7 @@ BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5DBus)
+BuildRequires:  pkgconfig(Qt5Sql)
 BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
@@ -32,7 +33,6 @@ Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
-Requires: sqlite >= 3.0
 
 %description
 Note-taking application using Sailfish Silica components

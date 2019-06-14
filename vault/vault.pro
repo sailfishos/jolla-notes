@@ -11,3 +11,5 @@ unix {
 
 target.path = $$PREFIX/libexec/jolla-notes
 INSTALLS += target
+
+QT += sql
