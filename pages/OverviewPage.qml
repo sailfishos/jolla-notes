@@ -4,8 +4,6 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    property bool showSearchOption: true
-
     function showDeleteNote(index) {
         // This is needed both for UI (the user should see the remorse item)
         // and to make sure the delegate exists.
@@ -71,6 +69,10 @@ Page {
                           : 0
         property int yOffset: contextMenu ? contextMenu.height : 0
 
+        onMovementStarted: {
+            focus = false   // close the vkb
+        }
+
         ViewPlaceholder {
             id: placeholder
 
@@ -101,7 +103,6 @@ Page {
 
             onHideClicked: {
                 active = false
-                showSearchOption = true
             }
 
             onTextChanged: notesModel.filter = text
@@ -152,7 +153,6 @@ Page {
                 _backgroundColor: down && !menuOpen ? highlightedColor : "transparent"
 
                 onClicked: pageStack.animatorPush(notePage, {currentIndex: model.index})
-                onPressed: overviewpage.focus = true    // close the vkb
                 onPressAndHold: view.openContextMenu(itemContainer)
 
                 Rectangle {
@@ -183,15 +183,12 @@ Page {
             id: pullDownMenu
 
             MenuItem {
-                visible: showSearchOption && (notesModel.filter.length > 0 || notesModel.count > 0)
+                visible: notesModel.filter.length > 0 || notesModel.count > 0
                 //% "Search"
                 text: qsTrId("notes-me-search")
                 onClicked: {
                     view.headerItem.active = true
                     view.headerItem.forceActiveFocus()
-                }
-                onDelayedClick: {
-                    showSearchOption = !view.headerItem.active
                 }
             }
 
