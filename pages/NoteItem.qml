@@ -30,7 +30,7 @@ BackgroundItem {
 
             gradient: Gradient {
                 GradientStop { position: 0.0; color: Theme.rgba(Theme.primaryColor, 0) }
-                GradientStop { position: 1.0; color: Theme.rgba(Theme.primaryColor, 0.1) }
+                GradientStop { position: 1.0; color: Theme.rgba(Theme.primaryColor, Theme.opacityFaint) }
             }
         }
     }
@@ -85,7 +85,7 @@ BackgroundItem {
         anchors.baselineOffset: -Theme.paddingMedium
         anchors.right: parent.right
         anchors.rightMargin: Theme.paddingMedium
-        opacity: 0.4
+        opacity: Theme.opacityLow
         color: highlighted ? Theme.highlightColor : Theme.primaryColor
         font { family: Theme.fontFamily; pixelSize: Theme.fontSizeLarge }
         horizontalAlignment: Text.AlignRight
