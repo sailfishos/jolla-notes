@@ -163,9 +163,9 @@ Page {
                     SequentialAnimation {
                         id: flashAnim
                         running: false
-                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.40; duration: 600; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: Theme.opacityLow; duration: 600; easing.type: Easing.InOutQuad }
                         PropertyAnimation { target: flashRect; property: "opacity"; to: 0.01; duration: 600; easing.type: Easing.InOutQuad }
-                        PropertyAnimation { target: flashRect; property: "opacity"; to: 0.40; duration: 600; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: flashRect; property: "opacity"; to: Theme.opacityLow; duration: 600; easing.type: Easing.InOutQuad }
                         PropertyAnimation { target: flashRect; property: "opacity"; to: 0.00; duration: 600; easing.type: Easing.InOutQuad }
                     }
                 }
@@ -226,7 +226,7 @@ Page {
                     target: moveToTopItem
                     properties: "opacity"
                     duration: 200
-                    to: 0.5
+                    to: Theme.opacityHigh
                 }
                 ScriptAction {
                     script: {

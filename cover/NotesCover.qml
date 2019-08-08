@@ -14,7 +14,7 @@ CoverBackground {
             // gives 1.5 on phone, which looks OK on the phone small cover.
             height: Theme.paddingSmall/4
             color: Theme.primaryColor
-            opacity: 0.4
+            opacity: Theme.opacityLow
         }
     }
 
@@ -35,7 +35,7 @@ CoverBackground {
               : qsTrId("notes-de-name")
         x: Theme.paddingSmall/2
         y: topMargin - baselineOffset - Theme.paddingSmall + (noteText !== undefined ? 0 : lineHeight)
-        opacity: 0.6
+        opacity: Theme.opacityHigh
         font.pixelSize: Theme.fontSizeExtraLarge
         font.italic: true
         width: noteText !== undefined ? parent.width + Theme.itemSizeLarge : parent.width - Theme.paddingSmall
