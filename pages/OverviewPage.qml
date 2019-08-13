@@ -127,13 +127,10 @@ Page {
             property bool menuOpen: view.contextMenuOn === itemContainer
 
             function deleteNote() {
-                var remorse = remorsecomponent.createObject(itemContainer)
-                //: Remorse item text, will delete note when timer expires
-                //% "Deleting"
-                remorse.execute(noteItem, qsTrId("notes-la-deleting"),
-                                function() {
-                                    notesModel.deleteNote(index)
-                                })
+                Remorse.itemAction(noteItem, Remorse.deletedText,
+                                 function() {
+                                     notesModel.deleteNote(index)
+                                 })
             }
 
             function flash() {

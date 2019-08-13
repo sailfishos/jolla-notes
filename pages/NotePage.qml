@@ -163,13 +163,13 @@ Page {
             id: pulley
 
             MenuItem {
-                //% "Note color"
+                //% "Change color"
                 text: qsTrId("notes-me-note-color")
                 onClicked: openColorPicker()
             }
             MenuItem {
                 //: Delete this note from note page
-                //% "Delete note"
+                //% "Delete"
                 text: qsTrId("notes-me-delete-note")
                 onClicked: deleteNoteAnimation.restart()
                 SequentialAnimation {
@@ -199,7 +199,7 @@ Page {
             }
             MenuItem {
                 //: This menu option can be used to share the note via Bluetooth
-                //% "Share Note"
+                //% "Share"
                 text: qsTrId("notes-me-share-note")
                 enabled: noteview.text.trim() != ''
                 onClicked: {
