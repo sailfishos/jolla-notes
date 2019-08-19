@@ -1,0 +1,8 @@
+{
+    "group": "organizer",
+    "icon": "icon-launcher-notes",
+    "is_unit_config": true,
+    "name": "Notes",
+    "script": "/usr/libexec/jolla-notes/notes-vault",
+    "translation": "vault-ap-notes"
+}
