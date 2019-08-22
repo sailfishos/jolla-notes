@@ -1,7 +1,7 @@
 #include <qtaround/os.hpp>
 #include <qtaround/debug.hpp>
 #include <qtaround/subprocess.hpp>
-#include <vault/unit.hpp>
+#include <vault/unit.h>
 #include <qtaround/debug.hpp>
 #include <qtaround/util.hpp>
 #include <QCoreApplication>

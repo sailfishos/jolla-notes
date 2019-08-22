@@ -17,7 +17,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
-BuildRequires: pkgconfig(vault-unit) >= 0.1.0
+BuildRequires: pkgconfig(vault)
 BuildRequires: pkgconfig(qtaround) >= 0.2.0
 BuildRequires: pkgconfig(icu-i18n)
 BuildRequires:  oneshot
@@ -92,6 +92,8 @@ desktop-file-install --delete-original       \
 %{_datadir}/translations/*.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
 %{_oneshotdir}/add-jolla-notes-import-default-handler
+%dir %{_datadir}/jolla-vault/units
+%{_datadir}/jolla-vault/units/Notes.json
 
 %files ts-devel
 %defattr(-,root,root,-)
@@ -106,11 +108,3 @@ desktop-file-install --delete-original       \
 %{_datadir}/jolla-settings/entries/*.json
 %{_datadir}/jolla-settings/pages/jolla-notes
 
-%post
-vault -G -a register --data=name=Notes,translation=vault-ap-notes,group=organizer,icon=icon-launcher-notes,script=%{_libexecdir}/jolla-notes/notes-vault || :
-%{_bindir}/add-oneshot --now add-jolla-notes-import-default-handler
-
-%postun
-if [ $1 -eq 0 ]; then
-vault -G -a unregister --unit=Notes || :
-fi
