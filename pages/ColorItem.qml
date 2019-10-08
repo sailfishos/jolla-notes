@@ -8,7 +8,7 @@ Rectangle {
     property alias pageNumber: label.text
 
     height: Theme.itemSizeExtraSmall
-    width: Theme.itemSizeExtraSmall
+    width: Math.max(Theme.itemSizeExtraSmall, label.width + 2*Theme.paddingMedium)
     radius: Theme.paddingSmall/2
     anchors {
         right: parent.right
