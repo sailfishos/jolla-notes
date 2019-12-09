@@ -82,7 +82,6 @@ Page {
                 value: placeholder.placeholderText()
             }
 
-            y: Math.round(parent.height/3)
             enabled: notesModel.populated && notesModel.count === 0
         }
         header: SearchField {
