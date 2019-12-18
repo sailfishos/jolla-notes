@@ -1,35 +1,29 @@
-#include <qtaround/os.hpp>
-#include <qtaround/debug.hpp>
-#include <qtaround/subprocess.hpp>
 #include <vault/unit.h>
-#include <qtaround/debug.hpp>
-#include <qtaround/util.hpp>
+#include <functional>
 #include <QCoreApplication>
 #include <QSqlDatabase>
 #include <QSqlDriver>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QStringList>
+#include <QRegExp>
+#include <QProcess>
+#include <QDir>
+#include <QFileInfo>
+#include <QLoggingCategory>
 
-namespace sys = qtaround::sys;
-namespace os = qtaround::os;
-namespace subprocess = qtaround::subprocess;
-namespace error = qtaround::error;
-namespace debug = qtaround::debug;
-
+Q_LOGGING_CATEGORY(lcBackup, "org.sailfishos.backup", QtWarningMsg);
 typedef QMap<QString, QString> str_map_type;
-typedef std::unique_ptr<sys::GetOpt> options_ptr;
-using subprocess::Process;
 
 namespace {
 
 QString get_export_fname(QString const &path)
 {
-    return os::path::join(path, "notes.sql");
+    return path + "/notes.sql";
 }
 
 str_map_type parse_export_line(QString const &line)
 {
-    
     QRegExp re("^-- @([^@]+)@(.*)$");
     if (!re.exactMatch(line))
         return str_map_type({{"data", line}});
@@ -37,11 +31,19 @@ str_map_type parse_export_line(QString const &line)
     return str_map_type({{"tag", matches[1]}, {"data", matches[2]}});
 }
 
-QStringList find_files(QString const &dir, QString const &pattern)
+
+void find_files(QString const &path, QString const &pattern, QStringList &found, bool clear = true)
 {
-    auto data = str(subprocess::check_output("find", {dir, "-name", pattern}));
-    return filterEmpty(data.split("\n"));
+    if (clear)
+        found.clear();
+    QDir pwd(path);
+    for (const QString &match : pwd.entryList(QStringList(pattern), QDir::Files))
+        found.append(path + "/" + match);
+    for (const QString &dir : pwd.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        find_files(path + "/" + dir, pattern, found, false);
 }
+
+
 
 QStringList data_to_inserts(QString const &data)
 {
@@ -53,8 +55,8 @@ QStringList data_to_inserts(QString const &data)
     auto rawlines = data.split("\n");
     QStringList lines;
     QString nextline;
-    for (auto it = rawlines.begin(); it != rawlines.end(); ++it) {
-        nextline.append(*it);
+    for (auto const &line : rawlines) {
+        nextline.append(line);
         if (nextline.count(QLatin1Char('\'')) % 2 == 0) {
             // Not in a multi-line string
             lines += nextline;
@@ -65,25 +67,55 @@ QStringList data_to_inserts(QString const &data)
         }
     }
     if (nextline.size() != 0) {
-        debug::error("Odd number of single quotes in DB dump.");
+        qCDebug(lcBackup) << "Odd number of single quotes in DB dump.";
     }
     return lines;
 }
 
+void mv(QString const &src, QString const &dest)
+{
+    if (QFile::exists(dest))
+        QFile::remove(dest);
+    if (!QFile::rename(src, dest))
+        throw std::runtime_error("Rename: " + src.toStdString() + " " + dest.toStdString());
+}
+
+void rm(QString const &path)
+{
+    if (!QFile::remove(path))
+        throw std::runtime_error("Remove: " + path.toStdString());
+}
+
+void cp(QString const &src, QString dest)
+{
+    if (QFileInfo(dest).isDir())
+       dest += "/" + src.split('/').last();
+    if (QFile::exists(dest))
+        QFile::remove(dest);
+    if (!QFile::copy(src, dest))
+        throw std::runtime_error("Fail: cp " + src.toStdString() + " " + dest.toStdString());
+}
+
+QString dirName(QString const &path)
+{
+    return QFileInfo(path).dir().path();
+}
+
+void mkpath(QString const &path)
+{
+    if (!QDir().mkpath(path))
+        throw std::runtime_error("mkpath: " + path.toStdString());
+}
+
 // TODO generic function, create the-vault-unit-sql package from it
-void process_sqlite_import(QString const &data, options_ptr options)
+void process_sqlite_import(QString const &data, QString const &opt_dir)
 {
     std::list<std::function<void()> > on_ok, on_error;
 
     typedef std::function<void(QString const &)> process_type;
     process_type skip = [](QString const &){};
     process_type write = [](QString const &) {
-        return error::raise({{"message", "Database is not opened yet"}});
-    };
-
-    auto mkdir = [](QString const &dir_name) {
-        if (!os::path::isDir(dir_name))
-            os::mkdir(dir_name, {{"parent", true}});
+        throw std::runtime_error("Database is not opened yet");
     };
 
     typedef std::function<process_type (str_map_type const &)> action_type;
@@ -91,29 +123,28 @@ void process_sqlite_import(QString const &data, options_ptr options)
     action_type on_version = [skip](str_map_type const &info) {
         bool ok = false;
         auto ver = info["data"].toInt(&ok);
-        if (!(ok && ver == 1))
-            error::raise({{"message", "Unsupported notes export version"}
-                    , {"version", info["data"]}, {"expected", 1}});
+        if (!(ok && ver == 1)) {
+            throw std::runtime_error("Unsupported notes export version. Got "
+                                     + info["data"].toStdString() + "expected 1");
+        }
         return skip;
     };
 
-    action_type on_db = [skip, &on_error, &on_ok, mkdir, &write](str_map_type const &info) {
-        auto db_name = info["data"];
-        if (os::path::isFile(db_name)) {
+    action_type on_db = [skip, &on_error, &on_ok, &write](str_map_type const &info) {
+        auto const db_name = info["data"];
+        if (QFileInfo(db_name).isFile()) {
             // backup existing db
-            os::rename(db_name, db_name + ".back");
-            on_error.push_back([db_name]() { os::rename(db_name + ".back", db_name); });
-            on_ok.push_back([db_name]() { os::rm(db_name + ".back"); });
+            mv(db_name, db_name + ".back");
+            on_error.push_back([db_name]() { mv(db_name + ".back", db_name); });
+            on_ok.push_back([db_name]() { rm(db_name + ".back"); });
         } else {
-            mkdir(os::path::dirName(db_name));
+            mkpath(dirName(db_name));
         }
 
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
         db.setDatabaseName(db_name);
         db.open();
-        on_ok.push_back([db]() mutable {
-                db.close();
-            });
+        on_ok.push_back([db]() mutable { db.close(); });
         write = [db](QString const &line) mutable {
             QSqlQuery q(db);
             bool res = q.exec(line);
@@ -122,19 +153,19 @@ void process_sqlite_import(QString const &data, options_ptr options)
         return skip;
     };
 
-    action_type on_file = [skip, &on_error, &on_ok, mkdir, &options](str_map_type const &info) {
+    action_type on_file = [skip, &on_error, &on_ok, opt_dir](str_map_type const &info) {
         auto dst_name = info["data"];
-        auto src_name = os::path::join(options->value("dir"), os::path::fileName(dst_name));
+        auto src_name = opt_dir + "/" + QFileInfo(dst_name).fileName();
 
-        if (os::path::isFile(dst_name)) {
+        if (QFileInfo(dst_name).isFile()) {
             // backup existing file
-            os::rename(dst_name, dst_name + ".back");
-            on_error.push_back([dst_name]() { os::rename(dst_name + ".back", dst_name); });
-            on_ok.push_back([dst_name]() { os::rm(dst_name + ".back"); });
+            mv(dst_name, dst_name + ".back");
+            on_error.push_back([dst_name]() { mv(dst_name + ".back", dst_name); });
+            on_ok.push_back([dst_name]() { rm(dst_name + ".back"); });
         } else {
-            mkdir(os::path::dirName(dst_name));
+            mkpath(dirName(dst_name));
         }
-        os::cp(src_name, dst_name, {{"force", true}});
+        cp(src_name, dst_name);
         return skip;
     };
 
@@ -156,11 +187,9 @@ void process_sqlite_import(QString const &data, options_ptr options)
 
     auto lines = data_to_inserts(data);
     try {
-        size_t nr = 0;
         process_type process_data = skip;
-        for (auto it = lines.begin(); it != lines.end(); ++it, ++nr) {
+        for (auto const &line : lines) {
             action_type action;
-            auto line = *it;
             auto info = parse_export_line(line);
             if (!info["tag"].isEmpty()) {
                 action = actions.value(info["tag"], skip_action);
@@ -169,46 +198,50 @@ void process_sqlite_import(QString const &data, options_ptr options)
                 process_data(info["data"]);
             }
         }
-        for (auto it = on_ok.begin(); it != on_ok.end(); ++it) (*it)();
+        for (auto &ok_function : on_ok)
+            ok_function();
     } catch(...) {
-        for (auto it = on_error.begin(); it != on_error.end(); ++it) (*it)();
+        for (auto &error_function : on_error)
+            error_function();
         throw;
     }
 }
 
-void export_notes(options_ptr options)
+int get_filenames(QString &db_name, QString &ini_name)
 {
-    os::system("pkill", {"jolla-notes"});
-
-    auto notes_dir = os::path::join(os::home(), ".local/share/jolla-notes/QML/OfflineStorage/Databases");
-    if (!os::path::exists(notes_dir)) {
-        debug::warning("Nothing to backup, no Notes directory:"
-                       , notes_dir);
-        return;
+    auto notes_dir = QDir::homePath() + "/.local/share/jolla-notes/QML/OfflineStorage/Databases";
+    if (!QFileInfo(notes_dir).exists()) {
+        qCDebug(lcBackup) << "Nothing to backup, no directory:" << notes_dir;
+        return 1;
     }
-    auto files = find_files(notes_dir, "*.sqlite");
+    QStringList files;
+    find_files(notes_dir, "*.sqlite", files);
     if (!files.size()) {
-        debug::info("No sqlite notes db, nothing to export");
-        return;
+        qCDebug(lcBackup) << "No sqlite notes db, nothing to export";
+        return 1;
     }
-    auto db_name = files[0];
+    db_name = files[0];
 
-    files = find_files(notes_dir, "*.ini");
+    find_files(notes_dir, "*.ini", files);
     if (!files.size()) {
-        debug::error("No sqlite notes db ini found");
-        return;
+        qCDebug(lcBackup) << "No sqlite notes db ini found";
+        return 1;
     }
-    auto ini_name = files[0];
+    ini_name = files[0];
+    return 0;
+}
 
+QString sql_query(QString const &db_name, QString const &ini_name)
+{
     QStringList data = {
-        str("-- @version@1"),
-        str("-- @file@") + ini_name,
-        str("-- @db@") + db_name,
-        str("-- @delete@"),
-        str("DROP TABLE notes;"),
-        str("-- @create@"),
-        str("CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT);"),
-        str("-- @data@")
+        "-- @version@1",
+        "-- @file@" + ini_name,
+        "-- @db@" + db_name,
+        "-- @delete@",
+        "DROP TABLE notes;",
+        "-- @create@",
+        "CREATE TABLE notes (pagenr INTEGER, color TEXT, body TEXT);",
+        "-- @data@"
     };
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -223,24 +256,52 @@ void export_notes(options_ptr options)
     }
     db.close();
     data.push_back("");
-    auto out_dir = options->value("dir");
-    auto sql_fname = get_export_fname(out_dir);
-    debug::info("Writing data to", sql_fname);
-    os::write_file(sql_fname, data.join("\n"));
-    debug::info("Copying ini from", ini_name, "to", out_dir);
-    os::cp(ini_name, out_dir, {{"force", true}});
+    return data.join("\n");
 }
 
-void import_notes(options_ptr options)
+void export_notes()
 {
-    os::system("pkill", {"jolla-notes"});
-    auto sql_fname = get_export_fname(options->value("dir"));
-    debug::info("Reading data from", sql_fname);
-    if (os::path::exists(sql_fname)) {
-        auto data = os::read_file(sql_fname);
-        process_sqlite_import(str(data), std::move(options));
+    vault::unit::runProcess("pkill", {"jolla-notes"});
+
+    QString db_name;
+    QString ini_name;
+    if (get_filenames(db_name, ini_name) != 0) {
+        return;
+    }
+
+    auto data = sql_query(db_name, ini_name);
+    auto out_dir = vault::unit::optValue("dir");
+    auto sql_fname = get_export_fname(out_dir);
+
+    qCDebug(lcBackup) << "Writing data to" << sql_fname;
+    QFile f(sql_fname);
+    if (f.open(QFile::WriteOnly)) {
+        f.write(data.toUtf8());
     } else {
-        debug::info("Nothing to import, no file", sql_fname);
+        qCDebug(lcBackup) << "Can't open " << sql_fname;
+    }
+    f.close();
+    qCDebug(lcBackup) << "Copying ini from" << ini_name << "to" << out_dir;
+    cp(ini_name, out_dir);
+}
+
+void import_notes()
+{
+    vault::unit::runProcess("pkill", {"jolla-notes"});
+    QString const opt_dir = vault::unit::optValue("dir");
+    auto sql_fname = get_export_fname(opt_dir);
+    qCDebug(lcBackup) << "Reading data from" << sql_fname;
+    if (QFileInfo(sql_fname).exists()) {
+        QFile file(sql_fname);
+        if (file.open(QFile::ReadOnly)) {
+            auto data = file.readAll();
+            process_sqlite_import(data, opt_dir);
+            file.close();
+        } else {
+            qCDebug(lcBackup) << "Reading" << sql_fname << "failed";
+        }
+    } else {
+        qCDebug(lcBackup) << "Nothing to import, no file" << sql_fname;
     }
 }
 
@@ -248,21 +309,20 @@ void import_notes(options_ptr options)
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication app(argc, argv);
+    auto action = vault::unit::optValue("action");
     try {
-        QCoreApplication app(argc, argv);
-        auto opt = vault::unit::getopt();
-        auto action = opt->value("action");
         if (action == "export") {
-            export_notes(std::move(opt));
+            export_notes();
         } else if (action == "import") {
-            import_notes(std::move(opt));
+            import_notes();
         }
-    } catch (error::Error const &e) {
-        qDebug() << e;
-        return 1;
+        else {
+            return 1;
+        }
     } catch (std::exception const &e) {
-        qDebug() << e.what();
-        return 2;
+        qCDebug(lcBackup) << e.what();
+        return 1;
     }
     return 0;
 }
