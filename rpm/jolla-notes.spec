@@ -17,8 +17,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
-BuildRequires: pkgconfig(vault)
-BuildRequires: pkgconfig(qtaround) >= 0.2.0
+BuildRequires: pkgconfig(vault) >= 1.0.2
 BuildRequires: pkgconfig(icu-i18n)
 BuildRequires:  oneshot
 

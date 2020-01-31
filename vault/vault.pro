@@ -5,7 +5,7 @@ CONFIG += warn_on c++11
 SOURCES += notes-vault.cpp
 
 CONFIG += link_pkgconfig
-PKGCONFIG += qtaround vault
+PKGCONFIG += vault
 
 target.path = $$PREFIX/libexec/jolla-notes
 
