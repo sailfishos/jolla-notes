@@ -107,3 +107,11 @@ desktop-file-install --delete-original       \
 %{_datadir}/jolla-settings/entries/*.json
 %{_datadir}/jolla-settings/pages/jolla-notes
 
+%post
+update-desktop-database -q
+
+
+%postun
+if [ $1 -eq 0 ]; then
+update-desktop-database -q
+fi
