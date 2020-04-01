@@ -1,0 +1,23 @@
+{
+    "translation_catalog": "notes",
+    "entries": [
+        {
+            "path": "system_settings/look_and_feel/topmenu/actions/make_a_note",
+            "title": "Make a note",
+            "translation_id": "settings_quick-la-make_a_note",
+            "title_short": "Note",
+            "translation_id_short": "settings_quick-la-make_a_note_short",
+            "type": "action",
+            "icon": "image://theme/icon-m-note",
+            "order": 56,
+            "params": {
+                "type": "grid",
+                "requires-package": "jolla-notes",
+                "remote-service": "com.jolla.notes",
+                "remote-path": "/",
+                "remote-interface": "com.jolla.notes",
+                "remote-method": "newNote"
+            }
+        }
+    ]
+}
