@@ -15,7 +15,7 @@ settingsqml.path = /usr/share/jolla-settings/pages/jolla-notes
 settingsqml.files = *.qml
 
 plugin_entry.path = /usr/share/jolla-settings/entries
-plugin_entry.files = jolla-notes.json
+plugin_entry.files = *.json
 
 OTHER_FILES += *.qml *.json qmldir
 
