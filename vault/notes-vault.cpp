@@ -261,7 +261,7 @@ QString sql_query(QString const &db_name, QString const &ini_name)
 
 void export_notes()
 {
-    vault::unit::runProcess("pkill", {"jolla-notes"});
+    vault::unit::runProcess("pkill", {"^jolla-notes$"});
 
     QString db_name;
     QString ini_name;
@@ -287,7 +287,7 @@ void export_notes()
 
 void import_notes()
 {
-    vault::unit::runProcess("pkill", {"jolla-notes"});
+    vault::unit::runProcess("pkill", {"^jolla-notes$"});
     QString const opt_dir = vault::unit::optValue("dir");
     auto sql_fname = get_export_fname(opt_dir);
     qCDebug(lcBackup) << "Reading data from" << sql_fname;
