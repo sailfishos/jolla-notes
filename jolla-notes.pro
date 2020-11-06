@@ -4,8 +4,11 @@ OTHER_FILES += rpm/jolla-notes.spec
 
 include(tests.pri)
 
-OTHER_FILES += oneshot/add-jolla-notes-import-default-handler translations.js
-oneshot.files = oneshot/add-jolla-notes-import-default-handler
+OTHER_FILES += oneshot/add-jolla-notes-import-default-handler \
+    oneshot/jolla-notes-move-data-to-new-location \
+    translations.js
+oneshot.files = oneshot/add-jolla-notes-import-default-handler \
+    oneshot/jolla-notes-move-data-to-new-location
 oneshot.path  = /usr/lib/oneshot.d
 
 INSTALLS += oneshot

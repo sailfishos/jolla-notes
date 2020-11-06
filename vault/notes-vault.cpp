@@ -17,6 +17,8 @@ typedef QMap<QString, QString> str_map_type;
 
 namespace {
 
+const auto NotesDirectory = QStringLiteral("%1/.local/share/com.jolla/notes/QML/OfflineStorage/Databases/");
+
 QString get_export_fname(QString const &path)
 {
     return path + "/notes.sql";
@@ -107,6 +109,19 @@ void mkpath(QString const &path)
         throw std::runtime_error("mkpath: " + path.toStdString());
 }
 
+QString fixPath(const QString &path)
+{
+    // Check that the path is as expected and replace dynamic parts
+    QRegExp re("^[\\w/-]+/.local/share/[\\w/-]+/QML/OfflineStorage/Databases/(.+)$");
+    if (!re.exactMatch(path)) {
+        qCWarning(lcBackup) << "Path did not match regexp" << path;
+        return path;
+    }
+    auto newPath = NotesDirectory.arg(QDir::homePath()) + re.cap(1);
+    qCDebug(lcBackup) << "Fixed path" << path << "to" << newPath;
+    return newPath;
+}
+
 // TODO generic function, create the-vault-unit-sql package from it
 void process_sqlite_import(QString const &data, QString const &opt_dir)
 {
@@ -131,7 +146,7 @@ void process_sqlite_import(QString const &data, QString const &opt_dir)
     };
 
     action_type on_db = [skip, &on_error, &on_ok, &write](str_map_type const &info) {
-        auto const db_name = info["data"];
+        auto const db_name = fixPath(info["data"]);
         if (QFileInfo(db_name).isFile()) {
             // backup existing db
             mv(db_name, db_name + ".back");
@@ -154,7 +169,7 @@ void process_sqlite_import(QString const &data, QString const &opt_dir)
     };
 
     action_type on_file = [skip, &on_error, &on_ok, opt_dir](str_map_type const &info) {
-        auto dst_name = info["data"];
+        auto dst_name = fixPath(info["data"]);
         auto src_name = opt_dir + "/" + QFileInfo(dst_name).fileName();
 
         if (QFileInfo(dst_name).isFile()) {
@@ -209,7 +224,7 @@ void process_sqlite_import(QString const &data, QString const &opt_dir)
 
 int get_filenames(QString &db_name, QString &ini_name)
 {
-    auto notes_dir = QDir::homePath() + "/.local/share/jolla-notes/QML/OfflineStorage/Databases";
+    auto notes_dir = NotesDirectory.arg(QDir::homePath());
     if (!QFileInfo(notes_dir).exists()) {
         qCDebug(lcBackup) << "Nothing to backup, no directory:" << notes_dir;
         return 1;
