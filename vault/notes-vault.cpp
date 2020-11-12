@@ -261,8 +261,6 @@ QString sql_query(QString const &db_name, QString const &ini_name)
 
 void export_notes()
 {
-    vault::unit::runProcess("pkill", {"^jolla-notes$"});
-
     QString db_name;
     QString ini_name;
     if (get_filenames(db_name, ini_name) != 0) {
