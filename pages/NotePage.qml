@@ -301,7 +301,8 @@ Page {
                 //: nothing else on the screen.
                 //% "Write a note..."
                 placeholderText: qsTrId("notes-ph-empty-note")
-                background: null // full-screen text fields don't need bottom border background
+                color: Theme.primaryColor
+                backgroundStyle: TextEditor.NoBackground
 
                 onTextChanged: saveTimer.restart()
                 Timer {
