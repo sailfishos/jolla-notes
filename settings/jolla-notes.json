@@ -3,7 +3,7 @@
     {
         "path": "applications/jolla-notes.desktop",
         "title": "Notes",
-        "type": "page",
+        "type": "application",
         "icon": "image://theme/icon-m-notes",
         "params": {
             "source": "/usr/share/jolla-settings/pages/jolla-notes/notes.qml"
