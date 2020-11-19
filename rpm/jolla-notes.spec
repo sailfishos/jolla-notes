@@ -23,7 +23,7 @@ BuildRequires:  oneshot
 
 Requires:  jolla-notes-settings = %{version}
 Requires:  ambient-icons-closed
-Requires:  sailfishsilica-qt5 >= 1.1.64
+Requires:  sailfishsilica-qt5 >= 1.2.25
 Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  mapplauncherd >= 4.1.17
 Requires:  mapplauncherd-booster-silica-qt5

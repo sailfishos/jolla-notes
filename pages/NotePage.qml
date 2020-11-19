@@ -17,6 +17,8 @@ Page {
 
     property bool __jollanotes_notepage
 
+    highContrast: true
+
     // TODO: should some kind of IndexConnection go into the silica components?
     Connections {
         target: notesModel
