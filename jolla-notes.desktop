@@ -2,9 +2,13 @@
 Type=Application
 Name=Notes
 Icon=icon-launcher-notes
-Exec=invoker --type=silica-qt5 -s /usr/bin/jolla-notes
+Exec=/usr/bin/sailjail -p jolla-notes.desktop /usr/bin/jolla-notes
 X-MeeGo-Logical-Id=notes-de-name
 X-MeeGo-Translation-Catalog=notes
 X-Maemo-Service=com.jolla.notes
 X-Maemo-Object-Path=/
 X-Maemo-Method=com.jolla.notes.activateWindow
+[X-Sailjail]
+Permissions=Notes
+OrganizationName=com.jolla
+ApplicationName=notes

@@ -25,8 +25,7 @@ Requires:  jolla-notes-settings = %{version}
 Requires:  ambient-icons-closed
 Requires:  sailfishsilica-qt5 >= 1.2.25
 Requires:  qt5-qtdeclarative-import-localstorageplugin
-Requires:  mapplauncherd >= 4.1.17
-Requires:  mapplauncherd-booster-silica-qt5
+Requires:  sailjail-launch-approval
 Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
