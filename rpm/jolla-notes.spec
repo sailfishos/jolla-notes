@@ -32,6 +32,7 @@ Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
+%{_oneshot_requires_post}
 
 %description
 Note-taking application using Sailfish Silica components
@@ -91,6 +92,7 @@ desktop-file-install --delete-original       \
 %{_datadir}/translations/*.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
 %{_oneshotdir}/add-jolla-notes-import-default-handler
+%{_oneshotdir}/jolla-notes-move-data-to-new-location
 %dir %{_datadir}/jolla-vault/units
 %{_datadir}/jolla-vault/units/Notes.json
 
@@ -109,7 +111,9 @@ desktop-file-install --delete-original       \
 
 %post
 update-desktop-database -q
-
+if [ $1 -eq 2 ]; then
+add-oneshot --all-users --privileged jolla-notes-move-data-to-new-location || :
+fi
 
 %postun
 if [ $1 -eq 0 ]; then

@@ -186,7 +186,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     translator->load(QLocale(), "notes", "-", TRANSLATIONS_PATH);
 
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
-    app->setApplicationName("jolla-notes");
+    app->setOrganizationName(QStringLiteral("com.jolla"));
+    app->setApplicationName(QStringLiteral("notes"));
     app->installTranslator(engineeringEnglish.data());
     app->installTranslator(translator.data());
 

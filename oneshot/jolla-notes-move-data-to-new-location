@@ -1,0 +1,21 @@
+#!/bin/sh
+# Moves Notes database to new location
+OLD_PATH="$HOME/.local/share/jolla-notes/QML/OfflineStorage/Databases"
+NEW_PATH="$HOME/.local/share/com.jolla/notes/QML/OfflineStorage/Databases"
+
+remove_dir() {
+    if [ "$1" != "$2" ]
+    then
+        rmdir "$1"
+        remove_dir "${1%/*}" "$2"
+    fi
+}
+
+if [ -e "$OLD_PATH/" ] && [ ! -e "$NEW_PATH/" ]
+then
+    mkdir -p "$NEW_PATH"
+    if mv "$OLD_PATH/"*.sqlite "$OLD_PATH/"*.ini "$NEW_PATH/"
+    then
+        remove_dir "$OLD_PATH" "$HOME/.local/share"
+    fi
+fi
