@@ -1,5 +1,13 @@
+/*
+ * Copyright (C) 2015 - 2021 Jolla Ltd.
+ * Copyright (C) 2021 Open Mobile Platform LLC.
+ *
+ * License: Proprietary
+ */
+
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Share 1.0
 import org.nemomobile.configuration 1.0
 
 Page {
@@ -220,16 +228,16 @@ Page {
                         content["status"] = noteText
                         content["linkTitle"] = fileName
                     }
+                    shareAction.resources = [content]
+                    shareAction.mimeType = mimeType
+                    shareAction.trigger()
+                }
+                ShareAction {
+                    id: shareAction
 
-                    pageStack.animatorPush("Sailfish.TransferEngine.SharePage",
-                                           {
-                                               //: Page header for share method selection
-                                               //% "Share note"
-                                               "header": qsTrId("notes-he-share-note"),
-                                               "serviceFilter": ["sharing", "e-mail", "IM"],
-                                               "mimeType": mimeType,
-                                               "content": content
-                                           })
+                    //: Page header for share method selection
+                    //% "Share note"
+                    title: qsTrId("notes-he-share-note")
                 }
             }
             MenuItem {
