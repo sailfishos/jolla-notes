@@ -3,9 +3,9 @@
 TS_FILE = $$OUT_PWD/notes.ts
 EE_QM = $$OUT_PWD/notes_eng_en.qm
 
-ts.commands += lupdate $$PWD -ts $$TS_FILE
+ts.commands += lupdate $$PWD/.. -ts $$TS_FILE
 ts.output = $$TS_FILE
-ts.input = .
+ts.input = ..
 
 ts_install.files = $$TS_FILE
 ts_install.path = $$PREFIX/share/translations/source
@@ -26,3 +26,5 @@ PRE_TARGETDEPS += ts engineering_english
 DEFINES += TRANSLATIONS_PATH=\"\\\"\"$${TRANSLATIONS_PATH}\"\\\"\"
 
 INSTALLS += ts_install engineering_english_install
+
+OTHER_FILES += translations.js StoreDescription.qml
