@@ -10,4 +10,4 @@ qml.files = notes.qml cover pages qmldir
 desktop.files = jolla-notes.desktop jolla-notes-import.desktop
 
 include(sailfishapplication/sailfishapplication.pri)
-include(translations.pri)
+include(translations/translations.pri)
