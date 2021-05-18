@@ -53,6 +53,14 @@ ApplicationWindow
             app.activate()
         }
 
+        function openUrl(urls) {
+            if (urls.length === 0) {
+                app.activate()
+            } else {
+                importNoteFile(urls)
+            }
+        }
+
         function importNoteFile(pathList) {
             // If the user has an empty note open (or we automatically pushed newNote
             // page due to having no notes) then we need to pop that page.

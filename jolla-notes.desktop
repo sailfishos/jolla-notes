@@ -3,11 +3,12 @@ Type=Application
 Name=Notes
 Icon=icon-launcher-notes
 Exec=/usr/bin/sailjail -p jolla-notes.desktop /usr/bin/jolla-notes
+MimeType=text/plain;text/x-vnote;
 X-MeeGo-Logical-Id=notes-de-name
 X-MeeGo-Translation-Catalog=notes
 X-Maemo-Service=com.jolla.notes
 X-Maemo-Object-Path=/
-X-Maemo-Method=com.jolla.notes.activateWindow
+X-Maemo-Method=com.jolla.notes.openUrl
 [X-Sailjail]
 Permissions=Sharing;Privileged
 OrganizationName=com.jolla
