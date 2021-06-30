@@ -10,6 +10,6 @@ X-Maemo-Service=com.jolla.notes
 X-Maemo-Object-Path=/
 X-Maemo-Method=com.jolla.notes.openUrl
 [X-Sailjail]
-Permissions=Sharing;Privileged
+Permissions=Sharing
 OrganizationName=com.jolla
 ApplicationName=notes
