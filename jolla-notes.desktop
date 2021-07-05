@@ -9,7 +9,8 @@ X-MeeGo-Translation-Catalog=notes
 X-Maemo-Service=com.jolla.notes
 X-Maemo-Object-Path=/
 X-Maemo-Method=com.jolla.notes.openUrl
+
 [X-Sailjail]
-Permissions=Sharing
+Permissions=Sharing;UserDirs
 OrganizationName=com.jolla
 ApplicationName=notes
