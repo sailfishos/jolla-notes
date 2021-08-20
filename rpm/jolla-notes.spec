@@ -109,12 +109,7 @@ desktop-file-install --delete-original       \
 %{_datadir}/jolla-settings/pages/jolla-notes
 
 %post
-update-desktop-database -q
 if [ $1 -eq 2 ]; then
 add-oneshot --all-users --privileged jolla-notes-move-data-to-new-location || :
 fi
 
-%postun
-if [ $1 -eq 0 ]; then
-update-desktop-database -q
-fi
