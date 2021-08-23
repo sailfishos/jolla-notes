@@ -2,7 +2,6 @@ Name:       jolla-notes
 Summary:    Note-taking application
 Version:    1.0
 Release:    1
-Group:      Applications/Editors
 License:    Proprietary
 URL:        https://bitbucket.org/jolla/ui-jolla-notes
 Source0:    %{name}-%{version}.tar.bz2
@@ -19,7 +18,6 @@ BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
 BuildRequires: pkgconfig(vault) >= 1.0.2
 BuildRequires: pkgconfig(icu-i18n)
-BuildRequires:  oneshot
 
 Requires:  jolla-notes-settings = %{version}
 Requires:  ambient-icons-closed
@@ -31,7 +29,6 @@ Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
 Requires: vault >= 0.1.0
-%{_oneshot_requires_post}
 
 %description
 Note-taking application using Sailfish Silica components
@@ -90,8 +87,6 @@ desktop-file-install --delete-original       \
 %{_bindir}/jolla-notes
 %{_datadir}/translations/*.qm
 %{_datadir}/dbus-1/services/com.jolla.notes.service
-%{_oneshotdir}/add-jolla-notes-import-default-handler
-%{_oneshotdir}/jolla-notes-move-data-to-new-location
 %dir %{_datadir}/jolla-vault/units
 %{_datadir}/jolla-vault/units/Notes.json
 
@@ -107,14 +102,3 @@ desktop-file-install --delete-original       \
 %{_libdir}/qt5/qml/com/jolla/notes/settings
 %{_datadir}/jolla-settings/entries/*.json
 %{_datadir}/jolla-settings/pages/jolla-notes
-
-%post
-update-desktop-database -q
-if [ $1 -eq 2 ]; then
-add-oneshot --all-users --privileged jolla-notes-move-data-to-new-location || :
-fi
-
-%postun
-if [ $1 -eq 0 ]; then
-update-desktop-database -q
-fi
