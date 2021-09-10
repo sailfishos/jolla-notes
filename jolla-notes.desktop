@@ -11,6 +11,6 @@ X-Maemo-Object-Path=/
 X-Maemo-Method=com.jolla.notes.openUrl
 
 [X-Sailjail]
-Permissions=Sharing;UserDirs
+Permissions=UserDirs
 OrganizationName=com.jolla
 ApplicationName=notes
