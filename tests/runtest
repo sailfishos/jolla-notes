@@ -18,10 +18,10 @@ grep "//FIXTURE: " $testfile | cut -f 2 -d" " | while read fixture; do
         if [ -d /tmp/testdata/Fixture ]; then
             cp -a /tmp/testdata/Fixture $datadir
         else
-            /usr/lib/qt5/bin/qmltestrunner -input /opt/tests/jolla-notes/make_notes.qml
+            qmltestrunner -input /opt/tests/jolla-notes/make_notes.qml
             cp -a $datadir /tmp/testdata/Fixture
         fi
     fi
 done
 
-/usr/lib/qt5/bin/qmltestrunner -input $testfile
+qmltestrunner -input $testfile
