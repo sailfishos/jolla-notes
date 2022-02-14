@@ -353,7 +353,7 @@ TestCase {
             })
             if (highlight !== undefined) {
                 clickspy.target = item
-                testEvent.mouseRelease(main, pos.x, pos.y, Qt.LeftButton, 0, 0)
+                testEvent.mouseRelease(main, pos.x, pos.y, Qt.LeftButton, 0, 100)
                 clickspy.wait()
                 clickspy.target = undefined
                 return

@@ -15,7 +15,7 @@ WorkerScript.onMessage = function(msg) {
 
     } else if (msg.action === "remove") {
         model.remove(msg.idx)
-        for (var i = msg.idx; i < model.count; i++) {
+        for (i = msg.idx; i < model.count; i++) {
             model.setProperty(i, "pagenr", model.get(i).pagenr - 1)
         }
 

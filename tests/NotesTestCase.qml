@@ -24,11 +24,6 @@ SilicaTestCase {
             console.log("imSize " + main.pageStack.imSize + " count " + count)
         }
     }
-    SignalSpy {
-        id: countSpy
-        target: notesModel
-        signalName: "countChanged"
-    }
 
     function clear_db() {
         var db = Sql.LocalStorage.openDatabaseSync('silicanotes', '', 'Notes', 10000)
@@ -57,10 +52,8 @@ SilicaTestCase {
         // Skip the delay before the last note is saved.
         // It's cheating, but it's ok because this is a _fixture function.
         currentPage.saveNote()
-        countSpy.clear()
-        countSpy.wait()
 
-        compare(notesModel.count, oldCount + notes.length)
+        tryCompare(notesModel, "count", oldCount + notes.length)
     }
 
     function check_deletion(old_count, notetext) {

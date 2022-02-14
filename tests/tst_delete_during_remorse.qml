@@ -20,7 +20,7 @@ JollaNotes.Notes {
             tryCompare(main, 'applicationActive', true)
         }
 
-	function test_delete_during_remorse() {
+        function test_delete_during_remorse() {
             var prevCount = notesModel.count
 
             //Select items to click
