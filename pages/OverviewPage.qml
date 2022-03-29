@@ -122,7 +122,7 @@ Page {
             pageNumber: model.pagenr
             menu: contextMenuComponent
 
-            onClicked: pageStack.animatorPush(notePage, { currentIndex: model.index } )
+            onClicked: pageStack.push(notePage, { currentIndex: model.index } )
 
             Rectangle {
                 id: flashRect
