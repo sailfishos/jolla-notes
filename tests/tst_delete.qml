@@ -44,8 +44,10 @@ JollaNotes.Notes {
             longclick_center(item)
 
             // Context menu should now be open
+            var menu = find_context_menu(currentPage)
+            verify(menu, "context menu found")
 
-            var action = find_text(currentPage, "notes-la-delete")
+            var action = find_text(menu, "notes-la-delete")
             verify_displayed(action, "context menu delete note action")
             click_center(action)
 

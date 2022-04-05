@@ -69,11 +69,11 @@ SilicaTestCase {
     }
 
     function check_remorse() {
-        var remorse = wait_find("remorse item started", currentPage,
-                                function (it) {
-            return it.text == "notes-la-deleting"
-                   && it.visible && it.opacity == 1.0
-        })
-        fastforward_remorseitem(remorse)
+        var remorseView = wait_find("remorse item started", currentPage,
+                                    function (it) {
+                                        return (it.hasOwnProperty("__silica_remorse_item")
+                                                && !!it.__silica_remorse_item)
+                                    })
+        fastforward_remorseitem(remorseView.__silica_remorse_item)
     }
 }
