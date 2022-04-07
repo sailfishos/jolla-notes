@@ -172,6 +172,15 @@ TestCase {
     }
 
     function find_context_menu(item) {
+        var contextMenuContainer = find(item, function (it) {
+            return (it.hasOwnProperty("__silica_contextmenu_instance")
+                    && !!it.__silica_contextmenu_instance)
+        })
+
+        if (contextMenuContainer) {
+            return contextMenuContainer.__silica_contextmenu_instance
+        }
+
         return find(item, function (it) {
             return it.hasOwnProperty("closeOnActivation")
                 && it.hasOwnProperty("_parentMouseArea")
