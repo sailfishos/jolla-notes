@@ -2,5 +2,7 @@ Makefile
 jolla-notes
 *.pro.user*
 *.o
+*.so
 *.ts
 *.qm
+*.moc
