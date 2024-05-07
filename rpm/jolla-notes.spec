@@ -16,11 +16,11 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  qt5-qttools
 BuildRequires:  qt5-qttools-linguist
-BuildRequires: pkgconfig(vault) >= 1.0.2
-BuildRequires: pkgconfig(icu-i18n)
+BuildRequires:  pkgconfig(vault) >= 1.0.2
+BuildRequires:  pkgconfig(icu-i18n)
 
 Requires:  jolla-notes-settings = %{version}
-Requires:  ambient-icons-closed
+Requires:  sailfish-content-graphics-closed
 Requires:  sailfishsilica-qt5 >= 1.2.25
 Requires:  qt5-qtdeclarative-import-localstorageplugin
 Requires:  sailjail-launch-approval
@@ -28,7 +28,7 @@ Requires:  qt5-plugin-sqldriver-sqlite
 Requires:  declarative-transferengine-qt5 >= 0.3.1
 Requires:  nemo-qml-plugin-configuration-qt5
 Requires:  %{name}-all-translations
-Requires: vault >= 0.1.0
+Requires:  vault >= 0.1.0
 
 %description
 Note-taking application using Sailfish Silica components
@@ -63,21 +63,15 @@ Settings page for jolla-notes
 
 %build
 %qmake5 jolla-notes.pro
-make %{_smp_mflags}
+%make_build
 
 %install
-rm -rf %{buildroot}
 %qmake5_install
 
 mkdir -p %{buildroot}%{_datadir}/mapplauncherd/privileges.d
 install -m 644 -p %{SOURCE1} %{buildroot}%{_datadir}/mapplauncherd/privileges.d/
 
-desktop-file-install --delete-original       \
-  --dir %{buildroot}%{_datadir}/applications \
-   %{buildroot}%{_datadir}/applications/*.desktop
-
 %files
-%defattr(-,root,root,-)
 %{_datadir}/applications/*.desktop
 %{_datadir}/jolla-notes
 %{_datadir}/mapplauncherd/privileges.d/*
@@ -91,11 +85,9 @@ desktop-file-install --delete-original       \
 %{_datadir}/jolla-vault/units/Notes.json
 
 %files ts-devel
-%defattr(-,root,root,-)
 %{_datadir}/translations/source/*.ts
 
 %files tests
-%defattr(-,root,root,-)
 /opt/tests/jolla-notes
 
 %files settings
