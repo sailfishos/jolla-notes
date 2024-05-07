@@ -12,6 +12,7 @@ ApplicationWindow
     initialPage: Component {
         OverviewPage {
             id: overviewpage
+
             property Item currentPage: pageStack.currentPage
             onCurrentPageChanged: {
                 if (currentPage == overviewpage) {

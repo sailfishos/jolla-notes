@@ -31,6 +31,12 @@ Page {
         }
     }
 
+    property int _cornerRounding: Math.max(Screen.topLeftCorner.radius,
+                                           Screen.topRightCorner.radius,
+                                           Screen.bottomLeftCorner.radius,
+                                           Screen.bottomRightCorner.radius)
+    property bool _searchActive
+
     onStatusChanged: {
         if (status === PageStatus.Active) {
             if (populated && _flashDelegateIndexes.length) {
@@ -44,20 +50,23 @@ Page {
                 notesModel.refresh() // refresh search
             }
         } else if (status === PageStatus.Inactive) {
-            if (notesModel.filter.length == 0) view.headerItem.active = false
+            if (notesModel.filter.length == 0) {
+                overviewpage._searchActive = false
+            }
         }
     }
 
     SilicaGridView {
         id: view
 
+        // reference column width: 960 / 4
+        property int columnCount: Math.floor((isLandscape ? Screen.height : Screen.width) / (Theme.pixelRatio * 240))
+
         currentIndex: -1
         anchors.fill: overviewpage
         model: notesModel
         cellHeight: overviewpage.width / columnCount
         cellWidth: cellHeight
-        // reference column width: 960 / 4
-        property int columnCount: Math.floor((isLandscape ? Screen.height : Screen.width) / (Theme.pixelRatio * 240))
 
         onMovementStarted: {
             focus = false   // close the vkb
@@ -75,6 +84,7 @@ Page {
                                                     : qsTrId("notes-la-overview-placeholder")
             }
             Component.onCompleted: text = placeholderText()
+
             Binding {
                 when: placeholder.opacity == 0.0
                 target: placeholder
@@ -84,20 +94,39 @@ Page {
 
             enabled: notesModel.populated && notesModel.count === 0
         }
-        header: SearchField {
-            width: parent.width
-            canHide: text.length === 0
-            active: false
-            inputMethodHints: Qt.ImhNone    // Enable predictive text
 
-            onHideClicked: {
-                active = false
+        header: Column {
+            width: view.width
+
+            Item {
+                width: 1
+                height: Math.max(overviewpage._cornerRounding,
+                                 overviewpage.orientation == Orientation.Portrait ? Screen.topCutout.height : 0)
             }
 
-            onTextChanged: notesModel.filter = text
+            SearchField {
+                width: parent.width
+                canHide: text.length === 0
+                active: overviewpage._searchActive
+                inputMethodHints: Qt.ImhNone // Enable predictive text
 
-            EnterKey.iconSource: "image://theme/icon-m-enter-close"
-            EnterKey.onClicked: focus = false
+                onActiveChanged: {
+                    if (active) {
+                        forceActiveFocus()
+                    }
+                }
+
+                onHideClicked: overviewpage._searchActive = false
+                onTextChanged: notesModel.filter = text
+
+                EnterKey.iconSource: "image://theme/icon-m-enter-close"
+                EnterKey.onClicked: focus = false
+            }
+        }
+
+        footer: Item {
+            width: 1
+            height: overviewpage._cornerRounding
         }
 
         delegate: NoteItem {
@@ -117,7 +146,9 @@ Page {
             }
 
 
-            text: model.text ? Theme.highlightText(model.text.substr(0, Math.min(model.text.length, 300)), notesModel.filter, Theme.highlightColor) : ""
+            text: model.text ? Theme.highlightText(model.text.substr(0, Math.min(model.text.length, 300)),
+                                                   notesModel.filter, Theme.highlightColor)
+                             : ""
             color: model.color
             pageNumber: model.pagenr
             menu: contextMenuComponent
@@ -126,11 +157,14 @@ Page {
 
             Rectangle {
                 id: flashRect
+
                 anchors.fill: parent
                 color: noteItem.color
                 opacity: 0.0
+
                 SequentialAnimation {
                     id: flashAnim
+
                     running: false
                     PropertyAnimation { target: flashRect; property: "opacity"; to: Theme.opacityLow; duration: 600; easing.type: Easing.InOutQuad }
                     PropertyAnimation { target: flashRect; property: "opacity"; to: 0.01; duration: 600; easing.type: Easing.InOutQuad }
@@ -141,15 +175,12 @@ Page {
         }
 
         PullDownMenu {
-            id: pullDownMenu
-
             MenuItem {
                 visible: notesModel.filter.length > 0 || notesModel.count > 0
                 //% "Search"
                 text: qsTrId("notes-me-search")
                 onClicked: {
-                    view.headerItem.active = true
-                    view.headerItem.forceActiveFocus()
+                    overviewpage._searchActive = true
                 }
             }
 
@@ -165,6 +196,7 @@ Page {
 
     Component {
         id: contextMenuComponent
+
         ContextMenu {
             id: contextMenu
 
