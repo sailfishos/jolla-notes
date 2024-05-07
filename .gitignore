@@ -1,4 +1,5 @@
 Makefile
+Makefile.*
 jolla-notes
 *.pro.user*
 *.o
@@ -6,3 +7,4 @@ jolla-notes
 *.ts
 *.qm
 *.moc
+moc_*
