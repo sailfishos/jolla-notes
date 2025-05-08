@@ -272,6 +272,7 @@ Page {
 
                 SequentialAnimation {
                     id: newNoteAnimation
+
                     NumberAnimation {
                         target: noteview
                         property: "opacity"
@@ -288,15 +289,18 @@ Page {
 
         Column {
             id: column
+
             width: page.width
 
             Item {
                 id: headerItem
+
                 width: parent.width
                 height: Theme.itemSizeLarge
 
                 ColorItem {
                     id: colorItem
+
                     color: noteview.color
                     pageNumber: noteview.pageNumber
                     onClicked: openColorPicker()
@@ -304,6 +308,7 @@ Page {
             }
             TextArea {
                 id: textArea
+
                 font { family: Theme.fontFamily; pixelSize: Theme.fontSizeMedium }
                 width: parent.width
                 height: Math.max(noteview.height - headerItem.height, implicitHeight)
@@ -315,8 +320,10 @@ Page {
                 backgroundStyle: TextEditor.NoBackground
 
                 onTextChanged: saveTimer.restart()
+
                 Timer {
                     id: saveTimer
+
                     interval: 5000
                     onTriggered: page.saveNote()
                 }
@@ -331,6 +338,7 @@ Page {
 
     ConfigurationValue {
         id: transferAsVNoteConfig
+
         key: "/apps/jolla-notes/settings/transferAsVNote"
         defaultValue: false
     }

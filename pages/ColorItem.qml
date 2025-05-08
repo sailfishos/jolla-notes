@@ -16,8 +16,10 @@ Rectangle {
         verticalCenter: parent.verticalCenter
         topMargin: Theme.paddingLarge
     }
+
     Label {
         id: label
+
         font.pixelSize: Theme.fontSizeLarge
         anchors.centerIn: parent
     }

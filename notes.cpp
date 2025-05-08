@@ -211,5 +211,3 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     app->removeTranslator(engineeringEnglish.data());
     return result;
 }
-
-

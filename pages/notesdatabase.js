@@ -78,7 +78,8 @@ function updateNotes(filter, callback) {
     db.readTransaction(function (tx) {
         var results
         if (filter.length > 0) {
-            results = tx.executeSql("SELECT pagenr, color, body FROM notes WHERE body LIKE '%" + filter.replace(regex, escaper) + "%' ESCAPE '\\' ORDER BY pagenr")
+            results = tx.executeSql("SELECT pagenr, color, body FROM notes WHERE body LIKE '%"
+                                    + filter.replace(regex, escaper) + "%' ESCAPE '\\' ORDER BY pagenr")
         } else {
             results = tx.executeSql("SELECT pagenr, color, body FROM notes ORDER BY pagenr")
         }

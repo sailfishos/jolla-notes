@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 CoverBackground {
     property string testName: "coverpage"
     property int topMargin: Theme.itemSizeSmall
-    property int itemCount: Math.round((parent.height-Theme.itemSizeSmall)/label.lineHeight)
+    property int itemCount: Math.round((parent.height - Theme.itemSizeSmall) / label.lineHeight)
 
     Repeater {
         model: itemCount
@@ -20,6 +20,7 @@ CoverBackground {
 
     Label {
         id: label
+
         property var noteText: {
             if (pageStack.depth > 1 && currentNotePage) {
                 return currentNotePage.text.trim()
@@ -29,17 +30,19 @@ CoverBackground {
 
             return undefined
         }
-        text: noteText !== undefined
-              ? noteText.replace(/\n/g, " ")
-              // From notes.cpp
-              : qsTrId("notes-de-name")
-        x: Theme.paddingSmall/2
+
+        text: noteText !== undefined ? noteText.replace(/\n/g, " ")
+                                     : // From notes.cpp
+                                       qsTrId("notes-de-name")
+        x: Theme.paddingSmall / 2
         y: topMargin - baselineOffset - Theme.paddingSmall + (noteText !== undefined ? 0 : lineHeight)
         opacity: Theme.opacityHigh
         font.pixelSize: Theme.fontSizeExtraLarge
         font.italic: true
         width: noteText !== undefined ? parent.width + Theme.itemSizeLarge : parent.width - Theme.paddingSmall
-        horizontalAlignment: noteText !== undefined || implicitWidth > width - Theme.paddingSmall ? Text.AlignLeft : Text.AlignHCenter
+        horizontalAlignment: noteText !== undefined || implicitWidth > width - Theme.paddingSmall
+                             ? Text.AlignLeft
+                             : Text.AlignHCenter
         lineHeightMode: Text.FixedHeight
         lineHeight: Math.floor(Theme.fontSizeExtraLarge * 1.35)
         wrapMode: noteText !== undefined ? Text.Wrap : Text.NoWrap
