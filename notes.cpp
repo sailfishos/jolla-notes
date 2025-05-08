@@ -180,6 +180,8 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
+    QQuickWindow::setDefaultAlphaBuffer(true);
+
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
     engineeringEnglish->load("notes_eng_en", TRANSLATIONS_PATH);
     QScopedPointer<QTranslator> translator(new QTranslator);
