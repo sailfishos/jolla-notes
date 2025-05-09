@@ -77,11 +77,11 @@ Page {
 
             // Avoid flickering empty state placeholder when updating search results
             function placeholderText() {
-                //% "Sorry, we couldn't find anything"
-                return notesModel.filter.length > 0 ? qsTrId("notes-la-could_not_find_anything")
-                                                      //: Comforting text when overview is empty
+                return notesModel.filter.length > 0 ? //% "Sorry, we couldn't find anything"
+                                                      qsTrId("notes-la-could_not_find_anything")
+                                                    : //: Comforting text when overview is empty
                                                       //% "Write a note"
-                                                    : qsTrId("notes-la-overview-placeholder")
+                                                      qsTrId("notes-la-overview-placeholder")
             }
             Component.onCompleted: text = placeholderText()
 
@@ -166,10 +166,33 @@ Page {
                     id: flashAnim
 
                     running: false
-                    PropertyAnimation { target: flashRect; property: "opacity"; to: Theme.opacityLow; duration: 600; easing.type: Easing.InOutQuad }
-                    PropertyAnimation { target: flashRect; property: "opacity"; to: 0.01; duration: 600; easing.type: Easing.InOutQuad }
-                    PropertyAnimation { target: flashRect; property: "opacity"; to: Theme.opacityLow; duration: 600; easing.type: Easing.InOutQuad }
-                    PropertyAnimation { target: flashRect; property: "opacity"; to: 0.00; duration: 600; easing.type: Easing.InOutQuad }
+                    PropertyAnimation { target: flashRect
+                        property: "opacity"
+                        to: Theme.opacityLow
+                        duration: 600
+                        easing.type: Easing.InOutQuad
+                    }
+                    PropertyAnimation {
+                        target: flashRect
+                        property: "opacity"
+                        to: 0.01
+                        duration: 600
+                        easing.type: Easing.InOutQuad
+                    }
+                    PropertyAnimation {
+                        target: flashRect
+                        property: "opacity"
+                        to: Theme.opacityLow
+                        duration: 600
+                        easing.type: Easing.InOutQuad
+                    }
+                    PropertyAnimation {
+                        target: flashRect
+                        property: "opacity"
+                        to: 0.00
+                        duration: 600
+                        easing.type: Easing.InOutQuad
+                    }
                 }
             }
         }

@@ -3,8 +3,7 @@ import Sailfish.Silica 1.0
 import Nemo.DBus 2.0
 import "pages"
 
-ApplicationWindow
-{
+ApplicationWindow {
     id: app
 
     property Item currentNotePage

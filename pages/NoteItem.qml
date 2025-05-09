@@ -36,6 +36,7 @@ GridItem {
         anchors { fill: parent; margins: Theme.paddingLarge }
         Text {
             id: summary
+
             anchors {
                 top: parent.top
                 topMargin: - (font.pixelSize / 4)
@@ -50,8 +51,10 @@ GridItem {
             maximumLineCount: Math.floor((height - Theme.paddingLarge) / fontMetrics.height)
             elide: Text.ElideRight
         }
+
         FontMetrics {
             id: fontMetrics
+
             font: summary.font
         }
 
@@ -64,6 +67,7 @@ GridItem {
 
         Rectangle {
             id: colortag
+
             property string testName: "colortag"
 
             anchors.bottom: parent.bottom

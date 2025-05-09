@@ -14,20 +14,20 @@ import com.jolla.notes.settings.translations 1.0
 ApplicationSettings {
     ComboBox {
         id: transferFormatCombo
+
         //% "Sharing format"
         label: qsTrId("settings_notes-he-sharing_format")
         currentIndex: transferAsVNoteConfig.value == false ? 0 : 1
         onCurrentIndexChanged: transferAsVNoteConfig.value = currentIndex == 0 ? false : true
         menu: ContextMenu {
             id: transferFormatComboMenu
+
             MenuItem {
-                id: transferAsPTextMenu
                 //: Whether to transfer notes as plain text files
                 //% "Plain-text"
                 text: qsTrId("settings_notes-la-plain-text")
             }
             MenuItem {
-                id: transferAsVNoteMenu
                 //: Whether to transfer notes as vNote files
                 //% "vNote"
                 text: qsTrId("settings_notes-la-vnote")
@@ -37,6 +37,7 @@ ApplicationSettings {
 
     Label {
         id: vnoteWarningLabel
+
         anchors.left: transferFormatCombo.left
         anchors.leftMargin: transferFormatCombo.labelMargin
         anchors.right: parent.right
@@ -56,6 +57,7 @@ ApplicationSettings {
 
     ConfigurationValue {
        id: transferAsVNoteConfig
+
        key: "/apps/jolla-notes/settings/transferAsVNote"
        defaultValue: false
     }
