@@ -1,3 +1,9 @@
+# SPDX-FileCopyrightText: 2015 Jolla Ltd.
+# SPDX-FileCopyrightText: 2020 Open Mobile Platform LLC.
+# SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 TEMPLATE = lib
 TARGET = notessettingsplugin
 

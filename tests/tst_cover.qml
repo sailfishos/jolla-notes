@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2015 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Test the app cover
 // The cover actions will be tested with the robot for now.
 //FIXTURE: defaultnotes

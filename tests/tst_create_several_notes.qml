@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2014 - 2017 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 //Testcase for manual testcase:
 //Create several notes one by one (JB#11100)
 //Testing that it is possible to create multiple notes one by one from pulley

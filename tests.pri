@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2013 - 2014 Jolla Ltd.
+# SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+#
+# SPDX-License-Identifier: BSD-3-Clause
 
 tests.files = tests/*.qml tests/runtest tests/README
 tests.path = /opt/tests/$$TARGET

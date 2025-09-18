@@ -1,5 +1,7 @@
-// Copyright (C) 2012-2013 Jolla Ltd.
-// Contact: Richard Braakman <richard.braakman@jollamobile.com>
+// SPDX-FileCopyrightText: 2017 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
 
 // The page numbers in the db must stay sequential (starting from 1),
 // but the page numbers in the model may have gaps if the filter is active.

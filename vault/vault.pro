@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2016 - 2019 Jolla Ltd.
+# SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 TARGET = notes-vault
 
 CONFIG += warn_on c++11

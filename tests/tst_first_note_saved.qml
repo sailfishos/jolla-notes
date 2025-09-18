@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2015 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Test that the note written in tst_first_note was saved and is still there
 
 import QtTest 1.0

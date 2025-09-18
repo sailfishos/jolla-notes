@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2014 - 2015 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Helper file to create a default set of notes for use by the tests.
 // The runtest script will only run this once and store the resulting
 // database, so that it can re-use it for all tests that need the fixture.
