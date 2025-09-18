@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2022 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Helper functions specifically for jolla-notes testing,
 // on top of SilicaTestCase which has the general helpers.
 // Assumption: the application window has id 'main'

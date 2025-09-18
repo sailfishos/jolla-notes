@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2014 - 2022 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 //Deleting a note will not delete a wrong note (JB#17311)
 //Test that when deleting one note selecting another doesn't change the target of delete action
 //FIXTURE: defaultnotes

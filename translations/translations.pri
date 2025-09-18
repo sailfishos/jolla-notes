@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2021 Jolla Ltd.
+# SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 # Caller must have set PREFIX
 
 TS_FILE = $$OUT_PWD/notes.ts

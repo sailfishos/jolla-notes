@@ -1,9 +1,7 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 Jolla Ltd.
-** Contact: Chris Adams <chris.adams@jollamobile.com>
-**
-****************************************************************************/
+// SPDX-FileCopyrightText: 2015 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include <QQmlExtensionPlugin>
 #include <QQmlEngine>

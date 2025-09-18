@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2016 - 2020 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 #include <vault/unit.h>
 #include <functional>
 #include <QCoreApplication>

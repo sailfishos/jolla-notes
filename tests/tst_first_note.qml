@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2017 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Test that app is empty on startup, has comforter text on the overview,
 // and it's possible to write a note
 //FIXTURE: empty

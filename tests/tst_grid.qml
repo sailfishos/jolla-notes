@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2017 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Test that note items are visible in the overview,
 // with tint, page number and color tag.
 //FIXTURE: defaultnotes

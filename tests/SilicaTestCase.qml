@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2022 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Helper functions to do feature tests with QtQuickTest
 // Assumption: the application window has id 'main'
 // Most apps will also want an app-specific testcase component

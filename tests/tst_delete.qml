@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2013 - 2022 Jolla Ltd.
+// SPDX-FileCopyrightText: 2025 Jolla Mobile Ltd
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Test that notes can be deleted from the overview or the note page
 //FIXTURE: defaultnotes
 
