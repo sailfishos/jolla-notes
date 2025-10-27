@@ -208,6 +208,7 @@ Page {
         PullDownMenu {
             MenuItem {
                 visible: fileProvider.directories.length > 0
+                    || journalProvider.notebooks.length > 0
                 //% "Change provider"
                 text: qsTrId("notes-me-provider")
                 onClicked: {
@@ -268,6 +269,9 @@ Page {
                 } else if (providerId == "files") {
                     notesModel.provider = fileProvider
                     fileProvider.path = sourceId
+                } else if (providerId == "journals") {
+                    notesModel.provider = journalProvider
+                    journalProvider.notebookUid = sourceId
                 }
             }
         }

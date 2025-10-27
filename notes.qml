@@ -40,6 +40,11 @@ ApplicationWindow {
         onModified: notesModel.refresh()
     }
 
+    JournalProvider {
+        id: journalProvider
+        onModified: notesModel.refresh()
+    }
+
     function openNewNote(operationType) {
         pageStack.pop(null, PageStackAction.Immediate)
         pageStack.animatorPush(notePage, {potentialPage: 1, editMode: true}, operationType)

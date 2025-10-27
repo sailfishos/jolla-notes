@@ -20,6 +20,7 @@
 #include <unicode/ucsdet.h>
 
 #include "directoryfiles.h"
+#include "calendarjournals.h"
 
 #include "vnote.h"
 #include "sailfishapplication.h"
@@ -192,6 +193,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterUncreatableType<File>("Jolla.Notes", 1, 0, "File",
                                      "Use a DirectoryFiles object to retrieve File objects.");
     qmlRegisterType<DirectoryFiles>("Jolla.Notes", 1, 0, "DirectoryFiles");
+    qmlRegisterUncreatableType<CalendarJournal>("Jolla.Notes", 1, 0, "CalendarJournal",
+                                                "Use a CalendarJournals object to retrieve Journal objects.");
+    qmlRegisterType<CalendarJournals>("Jolla.Notes", 1, 0, "CalendarJournals");
 
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
     engineeringEnglish->load("notes_eng_en", TRANSLATIONS_PATH);

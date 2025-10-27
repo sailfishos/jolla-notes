@@ -44,6 +44,15 @@ Page {
                     onClicked: select("files", modelData)
                 }
             }
+            Repeater {
+                model: journalProvider.notebooks
+                delegate: ProviderItem {
+                    text: modelData.label
+                    description: modelData.description
+                    iconSource: modelData.icon
+                    onClicked: select("journals", modelData.uid)
+                }
+            }
         }
 
         VerticalScrollDecorator {}
