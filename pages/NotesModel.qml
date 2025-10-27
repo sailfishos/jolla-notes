@@ -67,7 +67,7 @@ ListModel {
     function newNote(position, initialtext, color) {
         var _color = color + "" // convert to string
         provider.newNote(position, _color, initialtext, function (note) {
-            var msg = {'action': 'insert', 'model': model, "uid": note.uid, "text": note.text, "color": note.color }
+            var msg = {'action': 'insert', 'model': model, "uid": note.uid, 'title': note.title, "text": note.text, "color": note.color }
             worker.sendMessage(msg)
         })
     }
