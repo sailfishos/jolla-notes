@@ -16,6 +16,7 @@ Page {
     // potentialPage is for empty notes that haven't been added to the db yet.
     property int potentialPage
     property alias editMode: textArea.focus
+    property alias title: titleLabel.text
     property alias text: textArea.text
     property alias color: noteview.color
     property alias pageNumber: noteview.pageNumber
@@ -29,6 +30,7 @@ Page {
         var item = notesModel.getByUid(uid)
         if (item != undefined) {
             potentialPage = 0
+            page.title = item.title
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
@@ -70,6 +72,7 @@ Page {
             noteview.savedText = ''
             noteview.text = ''
             page.uid = ''
+            page.title = ''
             noteview.color = notesModel.nextColor()
             noteview.pageNumber = potentialPage
         }
@@ -254,6 +257,24 @@ Page {
 
                 width: parent.width
                 height: Theme.itemSizeLarge
+
+                Label {
+                    id: titleLabel
+
+                    font {
+                        pixelSize: Theme.fontSizeLarge
+                        family: Theme.fontFamilyHeading
+                    }
+                    color: Theme.highlightColor
+                    anchors {
+                        left: parent.left
+                        leftMargin: Theme.horizontalPageMargin
+                        right: colorItem.left
+                        rightMargin: Theme.paddingMedium
+                        verticalCenter: headerItem.verticalCenter
+                    }
+                    truncationMode: TruncationMode.Fade
+                }
 
                 ColorItem {
                     id: colorItem

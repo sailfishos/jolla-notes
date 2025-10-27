@@ -158,7 +158,7 @@ Page {
                                                    notesModel.filter, Theme.highlightColor)
                              : ""
             color: model.color
-            pageNumber: index + 1
+            title: model.title == "" ? (index + 1) : model.title
             menu: contextMenuComponent
 
             onClicked: pageStack.animatorPush(notePage, { uid: model.uid, pageNumber: index + 1 } )
