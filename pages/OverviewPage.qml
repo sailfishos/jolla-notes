@@ -207,6 +207,15 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                visible: false
+                //% "Change provider"
+                text: qsTrId("notes-me-provider")
+                onClicked: {
+                    pageStack.animatorPush(providerPage)
+                }
+            }
+
+            MenuItem {
                 visible: notesModel.filter.length > 0 || notesModel.count > 0
                 //% "Search"
                 text: qsTrId("notes-me-search")
@@ -246,6 +255,17 @@ Page {
                 property string uid
                 onClicked: uid = contextMenu.parent.uid // parent is null by the time delayedClick() is called
                 onDelayedClick: notesModel.moveToTop(uid)
+            }
+        }
+    }
+
+    Component {
+        id: providerPage
+        ProviderPage {
+            onSelected: {
+                if (providerId == "local") {
+                    notesModel.setLocalProvider()
+                }
             }
         }
     }
