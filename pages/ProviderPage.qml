@@ -34,6 +34,15 @@ Page {
                 text: qsTrId("notes-me-local")
                 onClicked: select("local", "")
             }
+            Repeater {
+                model: journalProvider.model
+                delegate: ProviderItem {
+                    text: accountDisplayName
+                    description: providerDisplayName
+                    iconSource: accountIcon
+                    onClicked: select("journals", StandardPaths.cache + "/nextcloud-" + accountId + "-mkcal.db")
+                }
+            }
         }
 
         VerticalScrollDecorator {}

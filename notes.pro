@@ -6,10 +6,10 @@
 TARGET = jolla-notes
 CONFIG += warn_on link_pkgconfig
 
-PKGCONFIG += icu-i18n
+PKGCONFIG += icu-i18n KF5CalendarCore libmkcal-qt5 accounts-qt5
 
-HEADERS += src/vnote.h
-SOURCES += src/notes.cpp
+HEADERS += src/vnote.h src/calendarjournals.h
+SOURCES += src/notes.cpp src/calendarjournals.cpp
 
 qml.files = notes.qml cover pages qmldir
 desktop.files = jolla-notes.desktop jolla-notes-import.desktop

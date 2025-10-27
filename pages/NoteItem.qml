@@ -75,6 +75,7 @@ GridItem {
 
             property string testName: "colortag"
 
+            visible: noteitem.color != "#000000"
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             width: Theme.itemSizeExtraSmall

@@ -206,7 +206,7 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                visible: false
+                visible: journalProvider.model.count > 0
                 //% "Change provider"
                 text: qsTrId("notes-me-provider")
                 onClicked: {
@@ -264,6 +264,9 @@ Page {
             onSelected: {
                 if (providerId == "local") {
                     notesModel.setLocalProvider()
+                } else if (providerId == "journals") {
+                    notesModel.provider = journalProvider
+                    journalProvider.databasePath = sourceId
                 }
             }
         }
