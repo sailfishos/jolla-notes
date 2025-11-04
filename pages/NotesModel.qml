@@ -30,10 +30,12 @@ ListModel {
                 model.newNoteInserted()
             } else if (messageObject.reply == "update") {
                 populated = true
+                updated()
             }
         }
     }
     signal newNoteInserted
+    signal updated
 
     Component.onCompleted: {
         refresh()
