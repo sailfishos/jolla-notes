@@ -207,7 +207,7 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                visible: false
+                visible: fileProvider.directories.length > 0
                 //% "Change provider"
                 text: qsTrId("notes-me-provider")
                 onClicked: {
@@ -265,6 +265,9 @@ Page {
             onSelected: {
                 if (providerId == "local") {
                     notesModel.setLocalProvider()
+                } else if (providerId == "files") {
+                    notesModel.provider = fileProvider
+                    fileProvider.path = sourceId
                 }
             }
         }

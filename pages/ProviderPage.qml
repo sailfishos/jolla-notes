@@ -34,6 +34,16 @@ Page {
                 text: qsTrId("notes-me-local")
                 onClicked: select("local", "")
             }
+            Repeater {
+                model: fileProvider.directories
+                delegate: ProviderItem {
+                    visible: fileProvider.validatePath(modelData)
+                    text: /[^/]*$/.exec(modelData)[0]
+                    description: /^.*[/]/.exec(modelData)[0]
+                    iconSource: "image://theme/icon-m-folder"
+                    onClicked: select("files", modelData)
+                }
+            }
         }
 
         VerticalScrollDecorator {}

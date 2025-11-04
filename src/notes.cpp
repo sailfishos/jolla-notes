@@ -19,6 +19,8 @@
 
 #include <unicode/ucsdet.h>
 
+#include "directoryfiles.h"
+
 #include "vnote.h"
 #include "sailfishapplication.h"
 
@@ -186,6 +188,10 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QQuickWindow::setDefaultAlphaBuffer(true);
+
+    qmlRegisterUncreatableType<File>("Jolla.Notes", 1, 0, "File",
+                                     "Use a DirectoryFiles object to retrieve File objects.");
+    qmlRegisterType<DirectoryFiles>("Jolla.Notes", 1, 0, "DirectoryFiles");
 
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
     engineeringEnglish->load("notes_eng_en", TRANSLATIONS_PATH);
