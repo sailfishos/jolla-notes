@@ -12,78 +12,36 @@ import Nemo.Configuration 1.0
 Page {
     id: page
 
-    // currentIndex is for allocated notes.
+    property string uid
     // potentialPage is for empty notes that haven't been added to the db yet.
-    property int currentIndex: -1
     property int potentialPage
     property alias editMode: textArea.focus
     property alias text: textArea.text
     property alias color: noteview.color
     property alias pageNumber: noteview.pageNumber
-    property bool loaded  // only load from notesModel[currentIndex] once
+    property bool loaded  // only load from model once
 
     property bool __jollanotes_notepage
 
     highContrast: true
 
-    // TODO: should some kind of IndexConnection go into the silica components?
-    Connections {
-        target: notesModel
-
-        onRowsRemoved: {
-            console.log("Notes removed: " + first + ".." + last)
-            if (currentIndex >= first) {
-                if (currentIndex > last) {
-                    currentIndex -= (last - first + 1)
-                } else {
-                    // current note was deleted; turn it into a potential note
-                    potentialPage = pageNumber
-                }
-            }
-        }
-
-        onRowsInserted: {
-            console.log("Notes inserted: " + first + ".." + last)
-            if (currentIndex >= first)
-                currentIndex += (last - first + 1)
-        }
-
-        onRowsMoved: {
-            console.log("Notes moved: " + start + ".." + end + " -> " + row)
-            // start and end are indexes from before the move,
-            // "row" is start's new index after the move
-            var numMoved = end - start + 1
-            if (currentIndex >= start && currentIndex <= end) {
-                // current note was among those moved
-                currentIndex += start - row
-            } else if (currentIndex > end && currentIndex < row + numMoved) {
-                // moved notes jumped over current note
-                currentIndex -= numMoved
-            } else if (currentIndex < start && currentIndex >= row) {
-                // moved notes jumped before current note
-                currentIndex += numMoved
-            }
-        }
-        onNewNoteInserted: currentIndex = 0
-    }
-
-    onCurrentIndexChanged: {
-        if (!loaded && currentIndex >= 0 && currentIndex < notesModel.count) {
+    onUidChanged: {
+        var item = notesModel.getByUid(uid)
+        if (item != undefined) {
             potentialPage = 0
-            var item = notesModel.get(currentIndex)
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
-            noteview.pageNumber = item.pagenr
             loaded = true
+        } else {
+            console.warn("note not found, uid = ", uid)
         }
     }
 
     onStatusChanged: {
         if (status == PageStatus.Deactivating) {
-            if (currentIndex >= 0 && noteview.text.trim() == '') {
-                notesModel.deleteNote(currentIndex)
-                currentIndex = -1
+            if (page.uid != '' && noteview.text.trim() == '') {
+                notesModel.deleteNote(page.uid)
             } else {
                 saveNote()
             }
@@ -99,8 +57,8 @@ Page {
                     notesModel.newNote(potentialPage, text, noteview.color)
                     return true
                 }
-            } else {
-                notesModel.updateNote(currentIndex, text)
+            } else if (page.uid != '') {
+                notesModel.updateNote(page.uid, text)
                 return true
             }
         }
@@ -109,9 +67,9 @@ Page {
 
     onPotentialPageChanged: {
         if (potentialPage) {
-            currentIndex = -1
             noteview.savedText = ''
             noteview.text = ''
+            page.uid = ''
             noteview.color = notesModel.nextColor()
             noteview.pageNumber = potentialPage
         }
@@ -120,11 +78,11 @@ Page {
     function openColorPicker() {
         var obj = pageStack.animatorPush("Sailfish.Silica.ColorPickerPage",
                                          {"colors": notesModel.availableColors})
-        obj.pageCompleted.connect(function(page) {
-            page.colorClicked.connect(function(color) {
+        obj.pageCompleted.connect(function(colorPage) {
+            colorPage.colorClicked.connect(function(color) {
                 noteview.color = color
-                if (currentIndex >= 0) {
-                    notesModel.updateColor(currentIndex, color)
+                if (page.uid != '') {
+                    notesModel.updateColor(page.uid, color)
                 }
                 pageStack.pop()
             })
@@ -195,10 +153,10 @@ Page {
                             // If the note text is empty then the note
                             // will be deleted by onStatusChanged, and
                             // there should not be a remorse timer etc.
-                            if (page.currentIndex >= 0
+                            if (page.uid != ''
                                     && noteview.text.trim() != '') {
                                 var overview = pageStack.previousPage()
-                                overview.showDeleteNote(page.currentIndex)
+                                overview.showDeleteNote(page.uid)
                             }
                             pageStack.pop(null, PageStackAction.Immediate)
                             noteview.opacity = 1.0

@@ -3,38 +3,37 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+function indexOf(model, uid) {
+    for (var idx = 0; idx < model.count; idx++) {
+        if (model.get(idx).uid == uid)
+            return idx
+    }
+    console.warn("unable to find index of uid", uid)
+    return undefined
+}
+
 WorkerScript.onMessage = function(msg) {
     var i
     var model = msg.model
 
     if (msg.action === "insert") {
         model.insert(0, {
-                         "pagenr": msg.pagenr,
+                         "uid": msg.uid,
                          "text": msg.text,
                          "color": msg.color
                      })
-        for (i = 1; i < model.count; i++) {
-            model.setProperty(i, "pagenr", model.get(i).pagenr + 1)
-        }
 
     } else if (msg.action === "remove") {
-        model.remove(msg.idx)
-        for (i = msg.idx; i < model.count; i++) {
-            model.setProperty(i, "pagenr", model.get(i).pagenr - 1)
-        }
+        model.remove(indexOf(model, msg.uid))
 
     } else if (msg.action === "colorupdate") {
-        model.setProperty(msg.idx, "color", msg.color)
+        model.setProperty(indexOf(model, msg.uid), "color", msg.color)
 
     } else if (msg.action === "textupdate") {
-        model.setProperty(msg.idx, "text", msg.text)
+        model.setProperty(indexOf(model, msg.uid), "text", msg.text)
 
     } else if (msg.action === "movetotop") {
-        model.move(msg.idx, 0, 1) // move 1 item to position 0
-        model.setProperty(0, "pagenr", 1)
-        for (i = 1; i <= msg.idx; i++) {
-            model.setProperty(i, "pagenr", model.get(i).pagenr + 1)
-        }
+        model.move(indexOf(model, msg.uid), 0, 1) // move 1 item to position 0
 
     } else if (msg.action === "update") {
         var results = msg.results
@@ -45,13 +44,13 @@ WorkerScript.onMessage = function(msg) {
             var result = results[i]
             if (i < model.count) {
                 model.set(i, {
-                              "pagenr": result.pagenr,
+                              "uid": result.uid,
                               "text": result.text,
                               "color": result.color
                           })
             } else {
                 model.append({
-                                 "pagenr": result.pagenr,
+                                 "uid": result.uid,
                                  "text": result.text,
                                  "color": result.color
                              })
