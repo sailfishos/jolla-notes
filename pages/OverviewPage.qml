@@ -161,7 +161,7 @@ Page {
             pageNumber: index + 1
             menu: contextMenuComponent
 
-            onClicked: pageStack.push(notePage, { uid: model.uid, pageNumber: index + 1 } )
+            onClicked: pageStack.animatorPush(notePage, { uid: model.uid, pageNumber: index + 1 } )
 
             Rectangle {
                 id: flashRect
