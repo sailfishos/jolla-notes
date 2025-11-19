@@ -58,36 +58,54 @@ ListModel {
         return availableColors[index]
     }
 
-    function newNote(pagenr, initialtext, color) {
+    function newNote(position, initialtext, color) {
         var _color = color + "" // convert to string
-        Database.newNote(pagenr, _color, initialtext)
-        var msg = {'action': 'insert', 'model': model, "pagenr": pagenr, "text": initialtext, "color": _color }
+        Database.newNote(position, _color, initialtext, function (note) {
+            var msg = {'action': 'insert', 'model': model, "uid": note.uid, "text": note.text, "color": note.color }
+            worker.sendMessage(msg)
+        })
+    }
+
+    function updateNote(uid, text) {
+        Database.updateNote(uid, text)
+        var msg = {'action': 'textupdate', 'model': model, 'uid': uid, 'text': text}
         worker.sendMessage(msg)
     }
 
-    function updateNote(idx, text) {
-        Database.updateNote(get(idx).pagenr, text)
-        var msg = {'action': 'textupdate', 'model': model, 'idx': idx, 'text': text}
-        worker.sendMessage(msg)
-    }
-
-    function updateColor(idx, color) {
+    function updateColor(uid, color) {
         var _color = color + "" // convert to string
-        Database.updateColor(get(idx).pagenr, _color)
-        var msg = {'action': 'colorupdate', 'model': model, 'idx': idx, 'color': _color}
+        Database.updateColor(uid, _color)
+        var msg = {'action': 'colorupdate', 'model': model, 'uid': uid, 'color': _color}
         worker.sendMessage(msg)
     }
 
-    function moveToTop(idx) {
-        Database.moveToTop(get(idx).pagenr)
-        var msg = {'action': 'movetotop', 'model': model, 'idx': idx}
+    function moveToTop(uid) {
+        Database.moveToTop(uid)
+        var msg = {'action': 'movetotop', 'model': model, 'uid': uid}
         worker.sendMessage(msg)
         moveCount++
     }
 
-    function deleteNote(idx) {
-        Database.deleteNote(get(idx).pagenr)
-        var msg = {'action': 'remove', 'model': model, "idx": idx}
+    function deleteNote(uid) {
+        Database.deleteNote(uid)
+        var msg = {'action': 'remove', 'model': model, "uid": uid}
         worker.sendMessage(msg)
+    }
+
+    function getByUid(uid) {
+        for (var idx = 0; idx < model.count; idx++) {
+            var item = get(idx)
+            if (item.uid == uid)
+                return item
+        }
+        return undefined
+    }
+
+    function indexOf(uid) {
+        for (var idx = 0; idx < model.count; idx++) {
+            if (get(idx).uid == uid)
+                return idx
+        }
+        return undefined
     }
 }

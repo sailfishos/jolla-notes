@@ -75,22 +75,34 @@ var escaper = function escaper(char){
     return r[m.indexOf(char)]
 }
 
+// In the following functions, the special column ROWID is being used
+// as a unique identifier for the notes. The NotesModel.qml requires
+// to be able to uniquely identify notes with a string. The ROWID
+// can play this role. Indeed, the NotesModel is not storing these
+// ids elsewhere, just using them for identification purpose only
+// during the run time. In case, we ever run VACUUM on the database,
+// we can simply emit a refresh() on the model, to reload all notes
+// and get the new ROWIDs.
 function updateNotes(filter, callback) {
     var db = openDb()
     db.readTransaction(function (tx) {
         var results
+        // Stringify the rowid to avoid NotesModel.qml to
+        // create a 'uid' field of int type and create
+        // issues with potential other note backends using
+        // strings.
         if (filter.length > 0) {
-            results = tx.executeSql("SELECT pagenr, color, body FROM notes WHERE body LIKE '%"
+            results = tx.executeSql("SELECT CAST(rowid as TEXT) AS rowid, pagenr, color, body FROM notes WHERE body LIKE '%"
                                     + filter.replace(regex, escaper) + "%' ESCAPE '\\' ORDER BY pagenr")
         } else {
-            results = tx.executeSql("SELECT pagenr, color, body FROM notes ORDER BY pagenr")
+            results = tx.executeSql("SELECT CAST(rowid as TEXT) AS rowid, pagenr, color, body FROM notes ORDER BY pagenr")
         }
 
         var array = []
         for (var i = 0; i < results.rows.length; i++) {
             var item = results.rows.item(i)
             array[i] = {
-                "pagenr": item.pagenr,
+                "uid": item.rowid,
                 "text": item.body,
                 "color": item.color
             }
@@ -100,47 +112,50 @@ function updateNotes(filter, callback) {
     })
 }
 
-function newNote(pagenr, color, initialtext) {
+function newNote(pagenr, color, initialtext, callback) {
     var db = openDb()
     db.transaction(function (tx) {
         tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr >= ?',
                       [pagenr])
-        tx.executeSql('INSERT INTO notes (pagenr, color, body) VALUES (?, ?, ?)',
-                      [pagenr, color, initialtext])
+        var result = tx.executeSql('INSERT INTO notes (pagenr, color, body) VALUES (?, ?, ?)',
+                                   [pagenr, color, initialtext])
+        // Return the newly created note.
+        callback({"uid": result.insertId,
+                  "text": initialtext,
+                  "color": color})
     })
 }
 
-function updateNote(pagenr, text) {
+function updateNote(uid, text) {
     var db = openDb()
     db.transaction(function (tx) {
-        tx.executeSql('UPDATE notes SET body = ? WHERE pagenr = ?',
-                      [text, pagenr])
+        tx.executeSql('UPDATE notes SET body = ? WHERE rowid = ?',
+                      [text, uid])
     })
 }
 
-function updateColor(pagenr, color) {
+function updateColor(uid, color) {
     var db = openDb()
     db.transaction(function (tx) {
-        tx.executeSql('UPDATE notes SET color = ? WHERE pagenr = ?',
-                      [color, pagenr])
+        tx.executeSql('UPDATE notes SET color = ? WHERE rowid = ?',
+                      [color, uid])
     })
 }
 
-function moveToTop(pagenr) {
+function moveToTop(uid) {
     var db = openDb()
     db.transaction(function (tx) {
-        // Use modulo-pagenr arithmetic to rotate the page numbers: add 1 to
-        // all of them except pagenr itself, which goes to 1.
-        tx.executeSql('UPDATE notes SET pagenr = (pagenr % ?) + 1 WHERE pagenr <= ?',
-                      [pagenr, pagenr])
+        tx.executeSql('UPDATE notes SET pagenr = pagenr + 1 WHERE pagenr < (SELECT pagenr FROM notes WHERE rowid = ?)',
+                      [uid])
+        tx.executeSql('UPDATE notes SET pagenr = 1 WHERE rowid = ?', [uid])
     })
 }
 
-function deleteNote(pagenr) {
+function deleteNote(uid) {
     var db = openDb();
     db.transaction(function (tx) {
-        tx.executeSql('DELETE FROM notes WHERE pagenr = ?', [pagenr])
-        tx.executeSql('UPDATE notes SET pagenr = pagenr - 1 WHERE pagenr > ?',
-                      [pagenr])
+        tx.executeSql('UPDATE notes SET pagenr = pagenr - 1 WHERE pagenr > (SELECT pagenr FROM notes WHERE rowid = ?)',
+                      [uid])
+        tx.executeSql('DELETE FROM notes WHERE rowid = ?', [uid])
     })
 }

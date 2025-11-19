@@ -9,14 +9,17 @@ import Sailfish.Silica 1.0
 Page {
     id: overviewpage
 
-    function showDeleteNote(index) {
-        // This is needed both for UI (the user should see the remorse item)
-        // and to make sure the delegate exists.
-        view.positionViewAtIndex(index, GridView.Contain)
-        // Set currentIndex in order to find the corresponding currentItem.
-        // Is this really the only way to look up a delegate by index?
-        view.currentIndex = index
-        view.currentItem.deleteNote()
+    function showDeleteNote(uid) {
+        var index = notesModel.indexOf(uid)
+        if (index !== undefined) {
+            // This is needed both for UI (the user should see the remorse item)
+            // and to make sure the delegate exists.
+            view.positionViewAtIndex(index, GridView.Contain)
+            // Set currentIndex in order to find the corresponding currentItem.
+            // Is this really the only way to look up a delegate by index?
+            view.currentIndex = index
+            view.currentItem.deleteNote()
+        }
     }
     function flashGridDelegate(index) {
         // This is needed both for UI (the user should see the remorse item)
@@ -137,12 +140,12 @@ Page {
         delegate: NoteItem {
             id: noteItem
 
-            // make model.index accessible to other delegates
-            property int index: model.index
+            // make model.uid accessible to other delegates
+            property string uid: model.uid
 
             function deleteNote() {
                 remorseDelete(function() {
-                    notesModel.deleteNote(index)
+                    notesModel.deleteNote(model.uid)
                 })
             }
 
@@ -155,10 +158,10 @@ Page {
                                                    notesModel.filter, Theme.highlightColor)
                              : ""
             color: model.color
-            pageNumber: model.pagenr
+            pageNumber: index + 1
             menu: contextMenuComponent
 
-            onClicked: pageStack.push(notePage, { currentIndex: model.index } )
+            onClicked: pageStack.animatorPush(notePage, { uid: model.uid, pageNumber: index + 1 } )
 
             Rectangle {
                 id: flashRect
@@ -239,10 +242,10 @@ Page {
                 //: Move this note to be first in the list
                 //% "Move to top"
                 text: qsTrId("notes-la-move-to-top")
-                visible: contextMenu.parent && contextMenu.parent.index > 0
-                property int index
-                onClicked: index = contextMenu.parent.index // parent is null by the time delayedClick() is called
-                onDelayedClick: notesModel.moveToTop(index)
+                visible: contextMenu.parent && contextMenu.parent.uid != ''
+                property string uid
+                onClicked: uid = contextMenu.parent.uid // parent is null by the time delayedClick() is called
+                onDelayedClick: notesModel.moveToTop(uid)
             }
         }
     }
