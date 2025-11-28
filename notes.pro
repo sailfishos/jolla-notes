@@ -8,8 +8,8 @@ CONFIG += warn_on link_pkgconfig
 
 PKGCONFIG += icu-i18n
 
-HEADERS += vnote.h
-SOURCES += notes.cpp
+HEADERS += src/vnote.h
+SOURCES += src/notes.cpp
 
 qml.files = notes.qml cover pages qmldir
 desktop.files = jolla-notes.desktop jolla-notes-import.desktop
