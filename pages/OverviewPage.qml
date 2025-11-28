@@ -153,12 +153,11 @@ Page {
                 flashAnim.running = true
             }
 
-
             text: model.text ? Theme.highlightText(model.text.substr(0, Math.min(model.text.length, 300)),
                                                    notesModel.filter, Theme.highlightColor)
                              : ""
             color: model.color
-            pageNumber: index + 1
+            title: model.title && model.title == "" ? (index + 1) : model.title
             menu: contextMenuComponent
 
             onClicked: pageStack.animatorPush(notePage, { uid: model.uid, pageNumber: index + 1 } )
@@ -207,6 +206,15 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                visible: journalProvider.model.count > 0
+                //% "Change provider"
+                text: qsTrId("notes-me-provider")
+                onClicked: {
+                    pageStack.animatorPush(providerPage)
+                }
+            }
+
+            MenuItem {
                 visible: notesModel.filter.length > 0 || notesModel.count > 0
                 //% "Search"
                 text: qsTrId("notes-me-search")
@@ -246,6 +254,20 @@ Page {
                 property string uid
                 onClicked: uid = contextMenu.parent.uid // parent is null by the time delayedClick() is called
                 onDelayedClick: notesModel.moveToTop(uid)
+            }
+        }
+    }
+
+    Component {
+        id: providerPage
+        ProviderPage {
+            onSelected: {
+                if (providerId == "local") {
+                    notesModel.setLocalProvider()
+                } else if (providerId == "journals") {
+                    notesModel.provider = journalProvider
+                    journalProvider.databasePath = sourceId
+                }
             }
         }
     }

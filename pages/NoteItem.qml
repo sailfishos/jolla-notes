@@ -9,7 +9,7 @@ import Sailfish.Silica 1.0
 GridItem {
     id: noteitem
 
-    property int pageNumber
+    property alias title: titleText.text
     property color color
     property alias text: summary.text
 
@@ -75,6 +75,7 @@ GridItem {
 
             property string testName: "colortag"
 
+            visible: noteitem.color != "#000000"
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             width: Theme.itemSizeExtraSmall
@@ -85,7 +86,7 @@ GridItem {
     }
 
     Text {
-        id: pagenumber
+        id: titleText
 
         anchors.baseline: parent.bottom
         anchors.baselineOffset: -Theme.paddingMedium
@@ -95,6 +96,7 @@ GridItem {
         color: highlighted ? Theme.highlightColor : Theme.primaryColor
         font { family: Theme.fontFamily; pixelSize: Theme.fontSizeLarge }
         horizontalAlignment: Text.AlignRight
-        text: noteitem.pageNumber
+        width: parent.width - colortag.width - Theme.paddingSmall - Theme.paddingLarge
+        elide: Text.ElideLeft
     }
 }

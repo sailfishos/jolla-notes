@@ -16,6 +16,7 @@ Page {
     // potentialPage is for empty notes that haven't been added to the db yet.
     property int potentialPage
     property alias editMode: textArea.focus
+    property alias title: titleLabel.text
     property alias text: textArea.text
     property alias color: noteview.color
     property alias pageNumber: noteview.pageNumber
@@ -23,12 +24,54 @@ Page {
 
     property bool __jollanotes_notepage
 
+    property bool _conflictResolution
+
     highContrast: true
+
+    // TODO: should some kind of IndexConnection go into the silica components?
+    Connections {
+        target: notesModel
+
+        onUpdated: {
+            if (page.uid == '')
+                return
+
+            var item = notesModel.getByUid(page.uid)
+            if (item == undefined) {
+                // current note was deleted; turn it into a potential note
+                potentialPage = pageNumber
+            } else if (noteview.savedText != item.text && !_conflictResolution) {
+                _conflictResolution = true
+                console.log("conflict on changed note", page.uid)
+                var obj = pageStack.animatorPush(Qt.resolvedUrl("ConflictPage.qml"),
+                                                 {"savedText": item.text, "text": noteview.text})
+                obj.pageCompleted.connect(function(conflict) {
+                    conflict.statusChanged.connect(function() {
+                        if (conflict.status == PageStatus.Deactivating) {
+                            console.log("solving conflict with strategy", conflict.resolution)
+                            if (conflict.resolution == "newFromCurrent") {
+                                potentialPage = 1
+                            } else if (conflict.resolution == "storeCurrent") {
+                                var item = notesModel.getByUid(page.uid)
+                                noteview.savedText = item.text
+                            } else if (conflict.resolution == "discardCurrent") {
+                                var item = notesModel.getByUid(page.uid)
+                                noteview.savedText = item.text
+                                noteview.text = item.text
+                            }
+                            _conflictResolution = false
+                        }
+                    })
+                })
+            }
+        }
+    }
 
     onUidChanged: {
         var item = notesModel.getByUid(uid)
         if (item != undefined) {
             potentialPage = 0
+            page.title = item.title
             noteview.savedText = item.text
             noteview.text = item.text
             noteview.color = item.color
@@ -50,7 +93,7 @@ Page {
 
     function saveNote() {
         var text = textArea.text
-        if (text != noteview.savedText) {
+        if (text != noteview.savedText && !_conflictResolution) {
             noteview.savedText = text
             if (potentialPage) {
                 if (text.trim() != '') {
@@ -68,8 +111,8 @@ Page {
     onPotentialPageChanged: {
         if (potentialPage) {
             noteview.savedText = ''
-            noteview.text = ''
             page.uid = ''
+            page.title = ''
             noteview.color = notesModel.nextColor()
             noteview.pageNumber = potentialPage
         }
@@ -207,6 +250,7 @@ Page {
                     if (!newNoteAnimation.running || force) {
                         app.pageStack.replace(notePage, {
                                                   potentialPage: 1,
+                                                  text: '',
                                                   editMode: true
                                               }, PageStackAction.Immediate)
                         notesModel.newNoteInserted.disconnect(replace)
@@ -254,6 +298,24 @@ Page {
 
                 width: parent.width
                 height: Theme.itemSizeLarge
+
+                Label {
+                    id: titleLabel
+
+                    font {
+                        pixelSize: Theme.fontSizeLarge
+                        family: Theme.fontFamilyHeading
+                    }
+                    color: Theme.highlightColor
+                    anchors {
+                        left: parent.left
+                        leftMargin: Theme.horizontalPageMargin
+                        right: colorItem.left
+                        rightMargin: Theme.paddingMedium
+                        verticalCenter: headerItem.verticalCenter
+                    }
+                    truncationMode: TruncationMode.Fade
+                }
 
                 ColorItem {
                     id: colorItem

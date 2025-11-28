@@ -19,6 +19,8 @@
 
 #include <unicode/ucsdet.h>
 
+#include "calendarjournals.h"
+
 #include "vnote.h"
 #include "sailfishapplication.h"
 
@@ -186,6 +188,10 @@ QStringList VNoteConverter::importFromFile(const QUrl &filePath) const
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QQuickWindow::setDefaultAlphaBuffer(true);
+
+    qmlRegisterUncreatableType<CalendarJournal>("Jolla.Notes", 1, 0, "CalendarJournal",
+                                                "Use a CalendarJournals object to retrieve Journal objects.");
+    qmlRegisterType<CalendarJournals>("Jolla.Notes", 1, 0, "CalendarJournals");
 
     QScopedPointer<QTranslator> engineeringEnglish(new QTranslator);
     engineeringEnglish->load("notes_eng_en", TRANSLATIONS_PATH);
