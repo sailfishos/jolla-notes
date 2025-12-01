@@ -9,29 +9,23 @@ import "../../../usr/share/jolla-notes/pages"
 
 TestCase {
     name: "NotesModel"
+
     SignalSpy {
         id: countSpy
+
         target: model
         signalName: "countChanged"
     }
     SignalSpy {
         id: populatedSpy
+
         target: model
         signalName: "populatedChanged"
     }
     NotesModel {
         id: model
     }
-    function validPageNumbers() {
-        for (var i = 0; i < model.count; i++) {
-            var item = model.get(i)
-            if (item.pagenr !== (i+1)) {
-                console.log("model pagenumber mismatch", item.pagenr, i+1, substr(item.text))
-                return false
-            }
-        }
-        return true
-    }
+
     function initTestCase() {
         if (!model.populated) {
             populatedSpy.clear()
@@ -39,13 +33,15 @@ TestCase {
             cleanup()
         }
     }
+
     function cleanup() {
         while (model.count > 0) {
-            model.deleteNote(0)
+            model.deleteNote(model.get(0).uid)
             countSpy.clear()
             countSpy.wait()
         }
     }
+
     function test_model() {
         var count = model.count
 
@@ -54,17 +50,15 @@ TestCase {
         count = count + 1
         countSpy.clear()
         countSpy.wait()
-        compare (model.count, count)
-        verify(validPageNumbers())
+        compare(model.count, count)
 
         console.log("Add new note")
         model.newNote(1, "Second text", model.nextColor())
         count = count + 1
         countSpy.clear()
         countSpy.wait()
-        compare (model.count, count)
+        compare(model.count, count)
         compare(model.get(0).text, "Second text")
-        verify(validPageNumbers())
 
         console.log("Search")
         model.filter = "Fi"
@@ -77,8 +71,7 @@ TestCase {
         countSpy.clear()
         countSpy.wait()
         compare(model.get(0).text, "Second text")
-        compare (model.count, count)
-        verify(validPageNumbers())
+        compare(model.count, count)
 
         console.log("Search no results")
         model.filter = "unlikely_STRING_.;?+"
@@ -97,18 +90,17 @@ TestCase {
         model.filter = ""
         countSpy.clear()
         countSpy.wait()
-        compare (model.count, count)
-        verify(validPageNumbers())
+        compare(model.count, count)
 
         console.log("Delete")
-        model.deleteNote(0)
+        model.deleteNote(model.get(0).uid)
         count = count - 1
         countSpy.clear()
         countSpy.wait()
-        compare (model.count, count)
+        compare(model.count, count)
         compare(model.get(0).text, "First text")
-        verify(validPageNumbers())
     }
+
     function test_specialcharacters() {
         var count = model.count
 
@@ -119,8 +111,7 @@ TestCase {
         count = count + 3
         countSpy.clear()
         countSpy.wait()
-        compare (model.count, count)
-        verify(validPageNumbers())
+        compare(model.count, count)
 
         model.filter = "\n"
         countSpy.clear()
