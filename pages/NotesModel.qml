@@ -22,6 +22,7 @@ ListModel {
         key: "/apps/jolla-notes/next_color_index"
         defaultValue: 0
     }
+    property var provider: Database
     property var worker: WorkerScript {
         source: "notesmodel.js"
         onMessage: {
@@ -29,10 +30,12 @@ ListModel {
                 model.newNoteInserted()
             } else if (messageObject.reply == "update") {
                 populated = true
+                updated()
             }
         }
     }
     signal newNoteInserted
+    signal updated
 
     Component.onCompleted: {
         refresh()
@@ -42,9 +45,14 @@ ListModel {
         }
     }
     onFilterChanged: refresh()
+    onProviderChanged: refresh()
+
+    function setLocalProvider() {
+        provider = Database
+    }
 
     function refresh() {
-        Database.updateNotes(filter, function (results) {
+        provider.updateNotes(filter, function (results) {
             var msg = {'action': 'update', 'model': model, 'results': results}
             worker.sendMessage(msg)
         })
@@ -60,34 +68,34 @@ ListModel {
 
     function newNote(position, initialtext, color) {
         var _color = color + "" // convert to string
-        Database.newNote(position, _color, initialtext, function (note) {
-            var msg = {'action': 'insert', 'model': model, "uid": note.uid, "text": note.text, "color": note.color }
+        provider.newNote(position, _color, initialtext, function (note) {
+            var msg = {'action': 'insert', 'model': model, "uid": note.uid, 'title': note.title, "text": note.text, "color": note.color }
             worker.sendMessage(msg)
         })
     }
 
     function updateNote(uid, text) {
-        Database.updateNote(uid, text)
+        provider.updateNote(uid, text)
         var msg = {'action': 'textupdate', 'model': model, 'uid': uid, 'text': text}
         worker.sendMessage(msg)
     }
 
     function updateColor(uid, color) {
         var _color = color + "" // convert to string
-        Database.updateColor(uid, _color)
+        provider.updateColor(uid, _color)
         var msg = {'action': 'colorupdate', 'model': model, 'uid': uid, 'color': _color}
         worker.sendMessage(msg)
     }
 
     function moveToTop(uid) {
-        Database.moveToTop(uid)
+        provider.moveToTop(uid)
         var msg = {'action': 'movetotop', 'model': model, 'uid': uid}
         worker.sendMessage(msg)
         moveCount++
     }
 
     function deleteNote(uid) {
-        Database.deleteNote(uid)
+        provider.deleteNote(uid)
         var msg = {'action': 'remove', 'model': model, "uid": uid}
         worker.sendMessage(msg)
     }

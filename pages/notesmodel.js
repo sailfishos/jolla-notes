@@ -19,6 +19,7 @@ WorkerScript.onMessage = function(msg) {
     if (msg.action === "insert") {
         model.insert(0, {
                          "uid": msg.uid,
+                         "title": msg.title,
                          "text": msg.text,
                          "color": msg.color
                      })
@@ -45,12 +46,14 @@ WorkerScript.onMessage = function(msg) {
             if (i < model.count) {
                 model.set(i, {
                               "uid": result.uid,
+                              "title": result.title,
                               "text": result.text,
                               "color": result.color
                           })
             } else {
                 model.append({
                                  "uid": result.uid,
+                                 "title": result.title,
                                  "text": result.text,
                                  "color": result.color
                              })

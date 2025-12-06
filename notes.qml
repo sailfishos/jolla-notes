@@ -35,6 +35,11 @@ ApplicationWindow {
     // exposed as a property so that the tests can access it
     property NotesModel notesModel: NotesModel { id: notesModel }
 
+    JournalProvider {
+        id: journalProvider
+        onModified: notesModel.refresh()
+    }
+
     function openNewNote(operationType) {
         pageStack.pop(null, PageStackAction.Immediate)
         pageStack.animatorPush(notePage, {potentialPage: 1, editMode: true}, operationType)

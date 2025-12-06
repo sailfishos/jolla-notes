@@ -103,6 +103,7 @@ function updateNotes(filter, callback) {
             var item = results.rows.item(i)
             array[i] = {
                 "uid": item.rowid,
+                "title": '',
                 "text": item.body,
                 "color": item.color
             }
@@ -121,6 +122,7 @@ function newNote(pagenr, color, initialtext, callback) {
                                    [pagenr, color, initialtext])
         // Return the newly created note.
         callback({"uid": result.insertId,
+                  "title": '',
                   "text": initialtext,
                   "color": color})
     })
